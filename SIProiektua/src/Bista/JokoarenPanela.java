@@ -2,7 +2,6 @@ package Bista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -10,113 +9,95 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Eredua.Entitatea;
+import Eredua.Espaziontzia;
+import Eredua.Etsaia;
 import Eredua.JokoKudeatzailea;
+import Eredua.Tableroa;
+import Eredua.Tiroa;
 import Kontrolatzailea.TeklatuKontroladorea;
 
 import java.awt.GridLayout;
 
 public class JokoarenPanela extends JFrame implements Observer {
 
+	//Atributuak
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JPanel palMatrizea;
+	private JPanel pnlMatrizea;
 	private JPanel[][] laukiak;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					JokoarenPanela frame = new JokoarenPanela();
-					frame.setVisible(true);
-					//Jokoa hasieratu
-					JokoKudeatzailea.getNireJK().hasiJokoa();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
+	//Eraikitzailea
 	public JokoarenPanela() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
-		//Observer konektatu
-		JokoKudeatzailea.getNireJK().addObserver(this);
+		//Observer konektatu (Tableroa)
+		JokoKudeatzailea.getNireJK().getTableroa().addObserver(this);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
-		contentPane.add(getPalMatrizea(), BorderLayout.CENTER);
+		contentPane.add(getPnlMatrizea(), BorderLayout.CENTER);
 		//Matrizea sortu
-		matrizeaSortu(JokoKudeatzailea.getNireJK());
+		matrizeaSortu();
 		//Teklatua konektatu
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);
 		this.setFocusable(true); //Teklatua irakurtzeko
 		this.requestFocusInWindow();
 	}
+	
+	//Metodoak
 	//Matrizea sortu
-	private void matrizeaSortu(JokoKudeatzailea nireJK) {
-		getPalMatrizea().setLayout(new GridLayout(60, 100, 0, 0));	
+	private void matrizeaSortu() {
+		getPnlMatrizea().setLayout(new GridLayout(60, 100, 0, 0));	
 		laukiak = new JPanel[100][60];
-		int[][] mat = nireJK.getMatrizea();
+		Tableroa t = JokoKudeatzailea.getNireJK().getTableroa();
 		
 		//Ezkerretik eskumara eta goitik behera 
 		for (int y=0; y < 60; y++){
 			for (int x = 0; x < 100; x++) {
 				JPanel laukia = new JPanel();
-				//Hasierako koloreak jarri
-				if (mat != null) {
-					if (mat[x][y] == 1) {
-						laukia.setBackground(Color.GREEN); // Ontzia
-					} else if (mat[x][y] == 2) {
-						laukia.setBackground(Color.RED);   // Etsaia
-					} else if (mat[x][y] == 3) {
-						laukia.setBackground(Color.YELLOW); // Tiroa
-					} else {
-						laukia.setBackground(Color.BLACK); // Espazio hutsa
-					}
-				} else {
-					laukia.setBackground(Color.BLACK);
-				}
+				Entitatea e = t.getEntitatea(x, y);
+				koloreaJarri(laukia, e);
 				laukiak[x][y] = laukia;
-				getPalMatrizea().add(laukia);
+				getPnlMatrizea().add(laukia);
 			}
 		}
 	}
 
+	private void koloreaJarri(JPanel laukia, Entitatea e) {
+		if (e instanceof Espaziontzia) {
+			laukia.setBackground(Color.GREEN);
+		} else if (e instanceof Etsaia) {
+			laukia.setBackground(Color.RED);
+		} else if (e instanceof Tiroa) {
+			laukia.setBackground(Color.YELLOW);
+		} else {
+			laukia.setBackground(Color.BLACK);
+		}
+		
+	}
+	
 	//Matrizea eguneratu
 	@Override
 	public void update(Observable o, Object arg) {
-		int[][] mat = JokoKudeatzailea.getNireJK().getMatrizea();
-		if (mat == null) return;
+		Tableroa t = (Tableroa) o;
 		
 		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 100; x++) {
-				if (mat[x][y] == 1) {
-					laukiak[x][y].setBackground(Color.GREEN);
-				} else if (mat[x][y] == 2) {
-					laukiak[x][y].setBackground(Color.RED);
-				} else if (mat[x][y] == 3) {
-					laukiak[x][y].setBackground(Color.YELLOW);
-				} else {
-					laukiak[x][y].setBackground(Color.BLACK);
-				}
+				Entitatea e = t.getEntitatea(x, y);
+				koloreaJarri(laukiak[x][y], e);
 			}
-		}	
-	}
-
-	private JPanel getPalMatrizea() {
-		if (palMatrizea == null) {
-			palMatrizea = new JPanel();
-			palMatrizea.setBackground(Color.BLACK);
 		}
-		return palMatrizea;
+	}	
+
+	private JPanel getPnlMatrizea() {
+		if (pnlMatrizea == null) {
+			pnlMatrizea = new JPanel();
+			pnlMatrizea.setBackground(Color.BLACK);
+		}
+		return pnlMatrizea;
 	}
+	
 }

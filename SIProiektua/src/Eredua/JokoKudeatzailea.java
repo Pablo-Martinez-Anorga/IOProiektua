@@ -2,24 +2,23 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
-public class JokoKudeatzailea extends Observable{
+public class JokoKudeatzailea{
 	
 	//Atributu estatikoa
 	private static JokoKudeatzailea nireJK = null;
 	
 	//Atributuak
-	private int[][] matrizea;
-	private boolean jokoaHasiDa;
 	private Espaziontzia espaziontzia;
     private List<Etsaia> etsaiak;
     private List<Tiroa> tiroak;
+    private Tableroa nireTableroa;
+	private Partida unekoPartida;
 	
 	//Eraikitzailea
 	private JokoKudeatzailea() {
-		this.matrizea = new int [100][60];
-		this.jokoaHasiDa = false;
+		this.nireTableroa = new Tableroa();
+		this.unekoPartida = new Partida();
 		this.etsaiak = new ArrayList<>();
         this.tiroak = new ArrayList<>();
         this.espaziontzia = new Espaziontzia(50, 55);//Hasierako posizioa
@@ -33,40 +32,33 @@ public class JokoKudeatzailea extends Observable{
 		return nireJK;
 	}
 	
-	//Metodoak (setChanged(); eta notifyObservers(); metodo guztietan)
+	//Metodoak
 	
-	public int[][] getMatrizea(){
-		//Matrizea garbitu
-		this.matrizea = new int[100][60];
-		//Ontzia sartu
-		if (this.espaziontzia != null) {
-			this.matrizea[this.espaziontzia.getX()][this.espaziontzia.getY()] = 1;
-		}
-		//Etsaiak sartu
+	public Tableroa getTableroa() {
+		return this.nireTableroa;
+	}
+	
+	private void taulaEguneratu() {
+		nireTableroa.garbituMatrizea();
+		nireTableroa.entitateaSartu(espaziontzia); //Ontzia jarri
 		for (Etsaia e : etsaiak) {
-			if (e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-				this.matrizea[e.getX()][e.getY()] = 2;
-			}
+			nireTableroa.entitateaSartu(e); //Etsaiak jarri
 		}
-		//Tiroak sartu
 		for (Tiroa t : tiroak) {
-			if (t.getX() >= 0 && t.getX() < 100 && t.getY() >= 0 && t.getY() < 60) {
-				this.matrizea[t.getX()][t.getY()] = 3;
-			}
+			nireTableroa.entitateaSartu(t); //Tiroak jarri
 		}
-		
-		return this.matrizea;
+		nireTableroa.bistaEguneratu();
 	}
 	
 	public void hasiJokoa() {
-		this.jokoaHasiDa = true;
+		unekoPartida.hasiJokoa();
 		//Etsaiak sortu
 		etsaiakSortu();
 		//Tiroak mugitzeko
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (jokoaHasiDa) {
+				while (unekoPartida.isJokoaHasiDa()) {
 					eguneratuTiroak(); //Tiroak igo		
 					try {
 						Thread.sleep(50); //Tiroan abiadura
@@ -77,11 +69,11 @@ public class JokoKudeatzailea extends Observable{
 			}
 		});
 		tiroenHaria.start();
-		//Etsaiek mugitu
+		//Etsaiak mugitu
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (jokoaHasiDa) {
+				while (unekoPartida.isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
 					try {
 						Thread.sleep(200); //Etsaien abiadura
@@ -92,27 +84,23 @@ public class JokoKudeatzailea extends Observable{
 			}
 		});
 		etsaienHaria.start();
-		setChanged();
-        notifyObservers();
+		taulaEguneratu();
 	}
 	
 	private void etsaiakSortu() {
+		int y_posizioa = 5;
 		//Zerrenda garbitu
 		this.etsaiak.clear();
 		//4-8 tarteko etsaiak sortu
 		int etsaiKopurua = (int)(Math.random() * 5) + 4;
 		ArrayList<Integer> erabilitakoX = new ArrayList<>();
-		
 		for (int i = 0; i < etsaiKopurua; i++) {
 			//Posizioa esleitu
 			int x_posizioa = (int)(Math.random() * 100); 
 			//Pozizioa erabilita badago beste bat esleitu
 			while (erabilitakoX.contains(x_posizioa)) {
 				x_posizioa = (int)(Math.random() * 100); 
-			}
-			erabilitakoX.add(x_posizioa);
-			int y_posizioa = 5;           
-			
+			}          
 			Etsaia etsaiBerria = new Etsaia(x_posizioa, y_posizioa);
 			this.etsaiak.add(etsaiBerria);
 		}
@@ -120,15 +108,13 @@ public class JokoKudeatzailea extends Observable{
 
 	public void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);
-        setChanged();
-        notifyObservers();
+		taulaEguneratu();
     }
 	
 	public void tiroEgin() {
 		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1);
         this.tiroak.add(berria);
-        setChanged();
-        notifyObservers();
+        taulaEguneratu();
     }
 	
 	public void eguneratuEtsaiak() {
@@ -136,8 +122,7 @@ public class JokoKudeatzailea extends Observable{
 		for (int i = 0; i < etsaiak.size(); i++) {
 			etsaiak.get(i).mugitu();
 		}
-		setChanged();
-		notifyObservers();
+		taulaEguneratu();
     }
 	
 	public void eguneratuTiroak() {
@@ -147,18 +132,17 @@ public class JokoKudeatzailea extends Observable{
 			t.mugitu();
 			//Pantailatik ateratzen bada, zerrendatik ezabatu
 			if (t.getY() < 0) {
-				tiroak.remove(i);
+				tiroak.remove(i);//Ezabatu pantailatik kanpo
 				i--; //Indizea atzera bota, bat ezabatu dugulako
 			}
 		}
-        setChanged();
-        notifyObservers();
+		taulaEguneratu();
     }
 	
 	public void talkakEgiaztatu() {
         // Tiroek etsaiak jotzen dituzten begiratzeko
-		setChanged();
-        notifyObservers();
+		//TODO
+		taulaEguneratu();
     }
 	
 	public boolean posizioaLibreDa(int pX, int pY) {
