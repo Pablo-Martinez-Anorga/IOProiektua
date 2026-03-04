@@ -60,8 +60,38 @@ public class JokoKudeatzailea extends Observable{
 	
 	public void hasiJokoa() {
 		this.jokoaHasiDa = true;
+		//Etsaiak sortu
 		etsaiakSortu();
-		
+		//Tiroak mugitzeko
+		Thread tiroenHaria = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (jokoaHasiDa) {
+					eguneratuTiroak(); //Tiroak igo		
+					try {
+						Thread.sleep(50); //Tiroan abiadura
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		tiroenHaria.start();
+		//Etsaiek mugitu
+		Thread etsaienHaria = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (jokoaHasiDa) {
+					eguneratuEtsaiak(); 
+					try {
+						Thread.sleep(200); //Etsaien abiadura
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		etsaienHaria.start();
 		setChanged();
         notifyObservers();
 	}
@@ -102,20 +132,25 @@ public class JokoKudeatzailea extends Observable{
     }
 	
 	public void eguneratuEtsaiak() {
-        // Etsaiak beherantz mugitzeko
-		for (Etsaia e : etsaiak) {
-            e.mugitu();
-            
-        }
-		 setChanged();
-	        notifyObservers();
+        //Etsaiak mugitzeko
+		for (int i = 0; i < etsaiak.size(); i++) {
+			etsaiak.get(i).mugitu();
+		}
+		setChanged();
+		notifyObservers();
     }
 	
 	public void eguneratuTiroak() {
-        // Tiroak gorantz mugitzeko
-		for (Tiroa t : tiroak) {
-            t.mugitu();
-        }
+        //Tiroak gorantz mugitzeko
+		for (int i = 0; i < tiroak.size(); i++) {
+			Tiroa t = tiroak.get(i);
+			t.mugitu();
+			//Pantailatik ateratzen bada, zerrendatik ezabatu
+			if (t.getY() < 0) {
+				tiroak.remove(i);
+				i--; //Indizea atzera bota, bat ezabatu dugulako
+			}
+		}
         setChanged();
         notifyObservers();
     }
@@ -125,5 +160,14 @@ public class JokoKudeatzailea extends Observable{
 		setChanged();
         notifyObservers();
     }
+	
+	public boolean posizioaLibreDa(int pX, int pY) {
+	    for (Etsaia e : etsaiak) {
+	        if (e.getX() == pX && e.getY() == pY) {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
 
 }

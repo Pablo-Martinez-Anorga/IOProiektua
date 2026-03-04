@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.JokoKudeatzailea;
+import Kontrolatzailea.TeklatuKontroladorea;
 
 import java.awt.GridLayout;
 
@@ -54,7 +55,11 @@ public class JokoarenPanela extends JFrame implements Observer {
 		contentPane.add(getPalMatrizea(), BorderLayout.CENTER);
 		//Matrizea sortu
 		matrizeaSortu(JokoKudeatzailea.getNireJK());
-
+		//Teklatua konektatu
+		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
+		this.addKeyListener(teklatua);
+		this.setFocusable(true); //Teklatua irakurtzeko
+		this.requestFocusInWindow();
 	}
 	//Matrizea sortu
 	private void matrizeaSortu(JokoKudeatzailea nireJK) {
