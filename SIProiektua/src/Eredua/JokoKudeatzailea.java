@@ -100,7 +100,8 @@ public class JokoKudeatzailea{
 			//Pozizioa erabilita badago beste bat esleitu
 			while (erabilitakoX.contains(x_posizioa)) {
 				x_posizioa = (int)(Math.random() * 100); 
-			}          
+			}       
+			erabilitakoX.add(x_posizioa);
 			Etsaia etsaiBerria = new Etsaia(x_posizioa, y_posizioa);
 			this.etsaiak.add(etsaiBerria);
 		}
@@ -112,7 +113,7 @@ public class JokoKudeatzailea{
     }
 	
 	public void tiroEgin() {
-		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1);
+		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2);
         this.tiroak.add(berria);
         taulaEguneratu();
     }
@@ -122,6 +123,8 @@ public class JokoKudeatzailea{
 		for (int i = 0; i < etsaiak.size(); i++) {
 			etsaiak.get(i).mugitu();
 		}
+		talkakEgiaztatu();
+		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
     }
 	
@@ -136,14 +139,64 @@ public class JokoKudeatzailea{
 				i--; //Indizea atzera bota, bat ezabatu dugulako
 			}
 		}
+		talkakEgiaztatu();
 		taulaEguneratu();
     }
 	
 	public void talkakEgiaztatu() {
-        // Tiroek etsaiak jotzen dituzten begiratzeko
-		//TODO
-		taulaEguneratu();
+		// 1. Tiroak vs Etsaiak 
+		for (int i = tiroak.size() - 1; i >= 0; i--) {
+	        Tiroa t = tiroak.get(i);
+	        boolean tiroakAsmatuDu = false;
+	        int j = etsaiak.size() - 1;
+	        
+	        while (j >= 0 && !tiroakAsmatuDu) {
+	            Etsaia e = etsaiak.get(j);
+	            if (t.getX() == e.getX() && t.getY() == e.getY()) {
+	                etsaiak.remove(j); // "Etsaiak espaziontziaren tiroekin suntsituko dira."
+	                tiroakAsmatuDu = true; 
+	            }
+	            j--;
+	        }
+	        
+	        if (tiroakAsmatuDu) {
+	            tiroak.remove(i);
+	        }
+	    }
+
+	    // 2. Etsaiak vs Espaziontzia
+	    for (int i = 0; i < etsaiak.size(); i++) {
+	        Etsaia e = etsaiak.get(i);
+	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
+	            unekoPartida.amaituJokoa(false); // Amaitu jokoa
+	            System.out.println("¡Etsai batek ukitu zaitu! Galdu duzu.");
+	            // "Game Over" bistaratu behar
+	        }
+	    }
+	    jokoEgoeraEgiaztatu();
     }
+	
+	public void jokoEgoeraEgiaztatu() {
+	    // IRABAZI
+	    if (etsaiak.isEmpty() && unekoPartida.isJokoaHasiDa()) {
+	        unekoPartida.amaituJokoa(true); 
+	        System.out.println("ZORIONAK! Irabazi duzu.");
+	    }
+	    
+	    // GALDU
+	    if (unekoPartida.isJokoaHasiDa()) {
+	        boolean inbasioa = false;
+	        int i = 0;
+	        while (i < etsaiak.size() && !inbasioa) {
+	            if (etsaiak.get(i).getY() >= 59) { 
+	                unekoPartida.amaituJokoa(false); 
+	                System.out.println("GALDU DUZU. Etsaiek matrizearen azpitik alde egin dute.");
+	                inbasioa = true;
+	            }
+	            i++;
+	        }
+	    }
+	}
 	
 	public boolean posizioaLibreDa(int pX, int pY) {
 	    for (Etsaia e : etsaiak) {
@@ -153,5 +206,4 @@ public class JokoKudeatzailea{
 	    }
 	    return true;
 	}
-
 }
