@@ -1,21 +1,22 @@
 package Kontrolatzailea;
 
-import Bista.JokoarenPanela;
+import Bista.HasieraPanela;
 import Eredua.JokoKudeatzailea;
 
 public class Nagusia {
-	public static void main(String[] args) {
-		// EREDUA
-		JokoKudeatzailea jk = JokoKudeatzailea.getNireJK();
-		
-		// BISTA(lehengo leihoa kargatu behar da)
-		//HasieraPanela hp = new HasieraPanela();
-        //hp.setVisible(true);
-		//JokoarenPanela jp = new JokoarenPanela();
-		//jp.setVisible(true);
+    // Ziurtatu lerro hau EXACTO dagoela: public static void main(String[] args)
+    public static void main(String[] args) {
+        // Eredua hasieratu (Singleton)
+        JokoKudeatzailea.getNireJK();
 
-		//Jokoa hasi(HasieraPanela egingo du)
-		//jk.hasiJokoa();
-	}
+        // Bista kargatu (Hasiera leihoa)
+        HasieraPanela hp = new HasieraPanela();
 
+        // Kontrolatzailea sortu eta hasierako pantailari eman
+        BotoiKontroladorea bk = new BotoiKontroladorea(hp);
+        hp.setKontrolatzailea(bk);
+
+        // Erakutsi
+        hp.setVisible(true);
+    }
 }

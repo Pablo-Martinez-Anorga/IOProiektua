@@ -68,7 +68,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 
 	private void koloreaJarri(JPanel laukia, Entitatea e) {
 		if (e instanceof Espaziontzia) {
-			laukia.setBackground(Color.GREEN);
+			laukia.setBackground(JokoKudeatzailea.getNireJK().getOntziKolorea());
 		} else if (e instanceof Etsaia) {
 			laukia.setBackground(Color.RED);
 		} else if (e instanceof Tiroa) {
