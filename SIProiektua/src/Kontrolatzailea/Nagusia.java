@@ -1,22 +1,24 @@
 package Kontrolatzailea;
 
-import Bista.HasieraPanela;
+import Bista.HasieraLeihoa; // Ziurtatu izena ondo idatzita dagoela (Lehioa)
 import Eredua.JokoKudeatzailea;
 
 public class Nagusia {
-    // Ziurtatu lerro hau EXACTO dagoela: public static void main(String[] args)
-    public static void main(String[] args) {
-        // Eredua hasieratu (Singleton)
-        JokoKudeatzailea.getNireJK();
 
-        // Bista kargatu (Hasiera leihoa)
-        HasieraPanela hp = new HasieraPanela();
+	public static void main(String[] args) {
+		// 1. Eredua hasieratu
+		JokoKudeatzailea.getNireJK();
 
-        // Kontrolatzailea sortu eta hasierako pantailari eman
-        BotoiKontroladorea bk = new BotoiKontroladorea(hp);
-        hp.setKontrolatzailea(bk);
+		// 2. Bista berria sortu (Window Builder-ekin egin duzuna)
+		HasieraLeihoa hl = new HasieraLeihoa();
 
-        // Erakutsi
-        hp.setVisible(true);
-    }
+		// 3. Kontrolatzailea sortu eta leihoa pasatu
+		BotoiKontroladorea bk = new BotoiKontroladorea(hl);
+
+		// 4. Lotu bista eta kontrolatzailea
+		hl.setKontrolatzailea(bk);
+
+		// 5. Erakutsi leihoa
+		hl.setVisible(true);
+	}
 }

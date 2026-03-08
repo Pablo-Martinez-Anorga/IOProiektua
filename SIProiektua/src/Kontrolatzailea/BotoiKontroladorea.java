@@ -3,39 +3,40 @@ package Kontrolatzailea;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import Bista.HasieraPanela;
-import Bista.JokoarenPanela;
+import javax.swing.JFrame; // JFrame orokorra erabiliko dugu erroreak saihesteko
 import Eredua.JokoKudeatzailea;
+import Bista.JokoarenPanela;
 
 public class BotoiKontroladorea implements ActionListener {
 	
-	private HasieraPanela hp;
+	private JFrame leihoa; // JFrame denez, HasieraLehioa onartuko du arazorik gabe
 
-	public BotoiKontroladorea(HasieraPanela pHasiera) {
-		this.hp = pHasiera;
+	// Konstruktore honek JFrame bat jasotzen du (zure HasieraLehioa JFrame bat da)
+	public BotoiKontroladorea(JFrame pLeihoa) {
+		this.leihoa = pLeihoa;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String aukera = e.getActionCommand(); // Botoiaren testua jasotzen du (G, B, R)
+		String aukera = e.getActionCommand(); 
 		JokoKudeatzailea jk = JokoKudeatzailea.getNireJK();
 
-		// 1. Kolorea esleitu jokalariaren aukeraren arabera (E12)
-		if (aukera.equals("G")) {
+		if ("G".equals(aukera)) {
 			jk.setOntziKolorea(Color.GREEN);
-		} else if (aukera.equals("B")) {
+		} else if ("B".equals(aukera)) {
 			jk.setOntziKolorea(Color.BLUE);
-		} else if (aukera.equals("R")) {
+		} else if ("R".equals(aukera)) {
 			jk.setOntziKolorea(Color.RED);
 		}
 
-		// 2. Jokoa hasieratu ereduaren aldetik (E13)
 		jk.hasiJokoa();
 
-		// 3. Pantaila aldaketa (E14): Hasierakoa itxi eta jokoarena ireki
-		hp.dispose(); // Hasierako JFrame-a ixten du
+		// Hasierako leihoa itxi
+		if (leihoa != null) {
+			leihoa.dispose();
+		}
 		
+		// Jokoaren bista ireki
 		JokoarenPanela jp = new JokoarenPanela();
 		jp.setVisible(true);
 		
