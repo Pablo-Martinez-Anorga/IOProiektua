@@ -54,6 +54,39 @@ public class JokoKudeatzailea extends Observable {
 	public void hasiJokoa() {
 		this.unekoPartida.hasiJokoa();
 		etsaiakSortu(); // Etsaiak hasieratu jokoa hastean
+		
+		//Tiroak mugitu
+		Thread tiroenHaria = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (unekoPartida.isJokoaHasiDa()) {
+					eguneratuTiroak(); // Tiroak gora igo		
+					try {
+						Thread.sleep(50); // Tiroen abiadura
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		tiroenHaria.start();
+		
+		//Etsaiak mugitu
+		Thread etsaienHaria = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (unekoPartida.isJokoaHasiDa()) {
+					eguneratuEtsaiak(); 
+					try {
+						Thread.sleep(200); // Etsaien abiadura
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		etsaienHaria.start();
+		
 		taulaEguneratu();
 	}
 	
@@ -125,15 +158,17 @@ public class JokoKudeatzailea extends Observable {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
-	        int j = etsaiak.size() - 1;
+	        //int j = etsaiak.size() - 1;
 	        
-	        while (j >= 0 && !tiroakAsmatuDu) {
+	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
 	            Etsaia e = etsaiak.get(j);
-	            if (t.getX() == e.getX() && t.getY() == e.getY()) {
-	                etsaiak.remove(j); // "Etsaiak espaziontziaren tiroekin suntsituko dira."
+	            
+	            if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
+	                etsaiak.remove(j); 
 	                tiroakAsmatuDu = true; 
+	                System.out.println("KOLPEA! Etsaia suntsituta.");
+	                break; // Tiro honek etsai bat jo du, ezin du gehiago suntsitu
 	            }
-	            j--;
 	        }
 	        
 	        if (tiroakAsmatuDu) {
@@ -174,10 +209,23 @@ public class JokoKudeatzailea extends Observable {
 	        }
 	    }
 	}
-	
 
 	public boolean posizioaLibreDa(int x, int y) {
 		return this.nireTableroa.getEntitatea(x, y) == null;
+	}
+	
+	public void eguneratuTiroak() {
+		for (int i = 0; i < tiroak.size(); i++) {
+			Tiroa t = tiroak.get(i);
+			talkakEgiaztatu();
+			t.mugitu();
+			// Pantailatik ateratzen bada, zerrendatik ezabatu (memoria garbitzeko)
+			if (t.getY() < 0) {
+				tiroak.remove(i);
+				i--; 
+			}
+		}
+		taulaEguneratu();
 	}
 
 }
