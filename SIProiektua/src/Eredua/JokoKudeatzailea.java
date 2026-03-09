@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Observable;
 import java.awt.Color; // Koloreak kudeatzeko beharrezkoa
 
-public class JokoKudeatzailea extends Observable {
+public class JokoKudeatzailea {
 	
 	// Atributu estatikoa (Singleton)
 	private static JokoKudeatzailea nireJK = null;
@@ -91,23 +91,19 @@ public class JokoKudeatzailea extends Observable {
 	}
 	
 	private void taulaEguneratu() {
+		//Matrizea garbitu
 		this.nireTableroa.garbituMatrizea();
-		
 		// Espaziontzia sartu
 		this.nireTableroa.entitateaSartu(this.espaziontzia);
-		
 		// Etsaiak sartu
 		for (Etsaia e : etsaiak) {
 			this.nireTableroa.entitateaSartu(e);
-		}
-			
+		}	
 		// Tiroak sartu
 		for (Tiroa t : tiroak) {
 			this.nireTableroa.entitateaSartu(t);
 		}
-		
-		setChanged();
-		notifyObservers();
+		this.nireTableroa.bistaEguneratu();
 	}	
 
 	private void etsaiakSortu() {
@@ -130,16 +126,15 @@ public class JokoKudeatzailea extends Observable {
 		}
 		taulaEguneratu();
 	}
-		
-
 
 	public void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);
+		talkakEgiaztatu();
 		taulaEguneratu();
     }
 	
 	public void tiroEgin() {
-		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2);
+		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1);
         this.tiroak.add(berria);
         taulaEguneratu();
     }
@@ -158,7 +153,6 @@ public class JokoKudeatzailea extends Observable {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
-	        //int j = etsaiak.size() - 1;
 	        
 	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
 	            Etsaia e = etsaiak.get(j);

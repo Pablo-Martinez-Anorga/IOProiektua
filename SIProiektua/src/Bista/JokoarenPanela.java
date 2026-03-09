@@ -39,7 +39,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 		//Matrizea sortu
 		matrizeaSortu();
 		//Observer konektatu 
-		JokoKudeatzailea.getNireJK().addObserver(this);
+		JokoKudeatzailea.getNireJK().getTableroa().addObserver(this);
 		//Teklatua konektatu
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);
@@ -82,8 +82,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 	//Matrizea eguneratu
 	@Override
 	public void update(Observable o, Object arg) {
-		JokoKudeatzailea jk = (JokoKudeatzailea) o;
-		Tableroa t = jk.getTableroa();
+		Tableroa t = (Tableroa) o;
 		
 		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 100; x++) {
