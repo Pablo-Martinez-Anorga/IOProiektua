@@ -82,12 +82,13 @@ public class JokoarenPanela extends JFrame implements Observer {
 	//Matrizea eguneratu
 	@Override
 	public void update(Observable o, Object arg) {
-		Tableroa t = (Tableroa) o;
-		
-		for (int y = 0; y < 60; y++) {
-			for (int x = 0; x < 100; x++) {
-				Entitatea e = t.getEntitatea(x, y);
-				koloreaJarri(laukiak[x][y], e);
+		if (o instanceof Tableroa) {
+	        Tableroa t = (Tableroa) o;
+			for (int y = 0; y < 60; y++) {
+				for (int x = 0; x < 100; x++) {
+					Entitatea e = t.getEntitatea(x, y);
+					koloreaJarri(laukiak[x][y], e);
+				}
 			}
 		}
 	}	
