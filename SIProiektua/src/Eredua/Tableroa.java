@@ -1,45 +1,52 @@
 package Eredua;
 
-import java.util.Observable;
-
-public class Tableroa extends Observable{
+public class Tableroa {
 	
-	//Atributuak
-	private Entitatea[][] laukiak;
+	// Atributuak
+	private Gelaxka[][] gelaxkak;
 	
-	//Eraikitzailea
+	// Eraikitzailea
 	public Tableroa() {
-		this.laukiak = new Entitatea[100][60];
+		this.gelaxkak = new Gelaxka[100][60];
+		hasieratuGelaxkak();
 	}
 	
-	//Metodoak
+	// Metodoak
+	private void hasieratuGelaxkak() {
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				this.gelaxkak[i][j] = new Gelaxka(i, j);
+			}
+		}
+	}
+	
 	public void garbituMatrizea() {
-		this.laukiak = new Entitatea[100][60];
+		// Gelaxka guztiak hustu
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				this.gelaxkak[i][j].hustu();
+			}
+		}
 	}
 	
 	public void entitateaSartu(Entitatea e) {
 		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-			this.laukiak[e.getX()][e.getY()] = e;
+			this.gelaxkak[e.getX()][e.getY()].setEntitatea(e);
 		}
 	}
 	
 	public void entitateaKendu(Entitatea e) {
 		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-			this.laukiak[e.getX()][e.getY()] = null;
+			this.gelaxkak[e.getX()][e.getY()].hustu();
 		}
 	}
 	
-	public Entitatea getEntitatea(int x, int y) {
-		return this.laukiak[x][y];
+	public Gelaxka getGelaxka(int x, int y) {
+		return this.gelaxkak[x][y];
 	}
 	
-	public Entitatea[][] getLaukiak() {
-		return this.laukiak;
-	}
-	
-	public void bistaEguneratu() {
-		setChanged();
-		notifyObservers();
+	public Gelaxka[][] getGelaxkak() {
+		return this.gelaxkak;
 	}
 
 }
