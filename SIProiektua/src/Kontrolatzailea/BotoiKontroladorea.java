@@ -1,17 +1,15 @@
 package Kontrolatzailea;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame; // JFrame orokorra erabiliko dugu erroreak saihesteko
+import javax.swing.JFrame; 
 import Eredua.JokoKudeatzailea;
 import Bista.JokoarenPanela;
 
 public class BotoiKontroladorea implements ActionListener {
 	
-	private JFrame leihoa; // JFrame denez, HasieraLehioa onartuko du arazorik gabe
+	private JFrame leihoa;
 
-	// Konstruktore honek JFrame bat jasotzen du (zure HasieraLehioa JFrame bat da)
 	public BotoiKontroladorea(JFrame pLeihoa) {
 		this.leihoa = pLeihoa;
 	}
@@ -21,12 +19,13 @@ public class BotoiKontroladorea implements ActionListener {
 		String aukera = e.getActionCommand(); 
 		JokoKudeatzailea jk = JokoKudeatzailea.getNireJK();
 
+		// ORAIN STRING DIRA (Testua), EZ java.awt.Color
 		if ("G".equals(aukera)) {
-			jk.setOntziKolorea(Color.GREEN);
+			jk.setOntziKolorea("GREEN");
 		} else if ("B".equals(aukera)) {
-			jk.setOntziKolorea(Color.BLUE);
+			jk.setOntziKolorea("BLUE");
 		} else if ("R".equals(aukera)) {
-			jk.setOntziKolorea(Color.RED);
+			jk.setOntziKolorea("RED");
 		}
 
 		jk.hasiJokoa();

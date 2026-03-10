@@ -3,9 +3,8 @@ package Eredua;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.awt.Color; // Koloreak kudeatzeko beharrezkoa
 
-public class JokoKudeatzailea {
+public class JokoKudeatzailea extends Observable {
 	
 	// Atributu estatikoa (Singleton)
 	private static JokoKudeatzailea nireJK = null;
@@ -16,7 +15,7 @@ public class JokoKudeatzailea {
     private List<Tiroa> tiroak;
     private Tableroa nireTableroa;
 	private Partida unekoPartida;
-	private Color ontziKolorea; // Jokalariak aukeratutako kolorea gordetzeko (E12)
+	private String ontziKolorea; // Orain String da, ez Color (Bistak erabakiko du)
 	
 	// Eraikitzailea
 	private JokoKudeatzailea() {
@@ -35,34 +34,31 @@ public class JokoKudeatzailea {
 		return nireJK;
 	}
 	
-	// METODO BERRIAK (Zuk eskatutakoak)
-	
-	public void setOntziKolorea(Color pKolorea) {
+	// Kolorea kudeatzeko metodoak (String bezala)
+	public void setOntziKolorea(String pKolorea) {
 	    this.ontziKolorea = pKolorea;
 	}
 
-	public Color getOntziKolorea() {
+	public String getOntziKolorea() {
 	    return this.ontziKolorea;
 	}
 
-	// EXISTITZEN DIREN METODOAK (Taldearen logika errespetatuz)
-	
 	public Tableroa getTableroa() {
 		return this.nireTableroa;
 	}
 	
 	public void hasiJokoa() {
 		this.unekoPartida.hasiJokoa();
-		etsaiakSortu(); // Etsaiak hasieratu jokoa hastean
+		etsaiakSortu(); 
 		
-		//Tiroak mugitu
+		// Tiroen haria
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (unekoPartida.isJokoaHasiDa()) {
-					eguneratuTiroak(); // Tiroak gora igo		
+					eguneratuTiroak(); 		
 					try {
-						Thread.sleep(50); // Tiroen abiadura
+						Thread.sleep(50); 
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -71,14 +67,14 @@ public class JokoKudeatzailea {
 		});
 		tiroenHaria.start();
 		
-		//Etsaiak mugitu
+		// Etsaien haria
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (unekoPartida.isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
 					try {
-						Thread.sleep(200); // Etsaien abiadura
+						Thread.sleep(200); 
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -91,32 +87,26 @@ public class JokoKudeatzailea {
 	}
 	
 	private void taulaEguneratu() {
-		//Matrizea garbitu
+		// Matrizea garbitu
 		this.nireTableroa.garbituMatrizea();
-		// Espaziontzia sartu
+		// Entitateak sartu
 		this.nireTableroa.entitateaSartu(this.espaziontzia);
-		// Etsaiak sartu
 		for (Etsaia e : etsaiak) {
 			this.nireTableroa.entitateaSartu(e);
 		}	
-		// Tiroak sartu
 		for (Tiroa t : tiroak) {
 			this.nireTableroa.entitateaSartu(t);
 		}
-		this.nireTableroa.bistaEguneratu();
+		// Oharra: Gelaxkak automatikoki eguneratzen dira orain, ez dugu bistaEguneratu deitu behar
 	}	
 
 	private void etsaiakSortu() {
 		int y_posizioa = 5;
-		//Zerrenda garbitu
 		this.etsaiak.clear();
-		//4-8 tarteko etsaiak sortu
 		int etsaiKopurua = (int)(Math.random() * 5) + 4;
 		ArrayList<Integer> erabilitakoX = new ArrayList<>();
 		for (int i = 0; i < etsaiKopurua; i++) {
-			//Posizioa esleitu
 			int x_posizioa = (int)(Math.random() * 100); 
-			//Pozizioa erabilita badago beste bat esleitu
 			while (erabilitakoX.contains(x_posizioa)) {
 				x_posizioa = (int)(Math.random() * 100); 
 			}       
@@ -149,55 +139,49 @@ public class JokoKudeatzailea {
     }
 	
 	public void talkakEgiaztatu() {
-		// 1. Tiroak vs Etsaiak 
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
-	        
 	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
 	            Etsaia e = etsaiak.get(j);
-	            
 	            if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
 	                etsaiak.remove(j); 
 	                tiroakAsmatuDu = true; 
-	                System.out.println("KOLPEA! Etsaia suntsituta.");
-	                break; // Tiro honek etsai bat jo du, ezin du gehiago suntsitu
+	                break; 
 	            }
 	        }
-	        
 	        if (tiroakAsmatuDu) {
 	            tiroak.remove(i);
 	        }
 	    }
 
-	    // 2. Etsaiak vs Espaziontzia
 	    for (int i = 0; i < etsaiak.size(); i++) {
 	        Etsaia e = etsaiak.get(i);
 	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
-	            unekoPartida.amaituJokoa(false); // Amaitu jokoa
-	            System.out.println("¡Etsai batek ukitu zaitu! Galdu duzu.");
-	            // "Game Over" bistaratu behar
+	            unekoPartida.amaituJokoa(false); 
+	            setChanged();
+	            notifyObservers("GALDU"); // Bistari abisatu
 	        }
 	    }
 	    jokoEgoeraEgiaztatu();
     }
 	
 	public void jokoEgoeraEgiaztatu() {
-	    // IRABAZI
 	    if (etsaiak.isEmpty() && unekoPartida.isJokoaHasiDa()) {
 	        unekoPartida.amaituJokoa(true); 
-	        System.out.println("ZORIONAK! Irabazi duzu.");
+	        setChanged();
+	        notifyObservers("IRABAZI"); // Bistari abisatu
 	    }
 	    
-	    // GALDU
 	    if (unekoPartida.isJokoaHasiDa()) {
 	        boolean inbasioa = false;
 	        int i = 0;
 	        while (i < etsaiak.size() && !inbasioa) {
 	            if (etsaiak.get(i).getY() >= 59) { 
 	                unekoPartida.amaituJokoa(false); 
-	                System.out.println("GALDU DUZU. Etsaiek matrizearen azpitik alde egin dute.");
 	                inbasioa = true;
+	                setChanged();
+	                notifyObservers("GALDU"); // Bistari abisatu
 	            }
 	            i++;
 	        }
@@ -205,7 +189,8 @@ public class JokoKudeatzailea {
 	}
 
 	public boolean posizioaLibreDa(int x, int y) {
-		return this.nireTableroa.getEntitatea(x, y) == null;
+		// Orain Gelaxka erabiltzen dugu
+		return this.nireTableroa.getGelaxka(x, y).isHutsik();
 	}
 	
 	public void eguneratuTiroak() {
@@ -213,7 +198,6 @@ public class JokoKudeatzailea {
 			Tiroa t = tiroak.get(i);
 			talkakEgiaztatu();
 			t.mugitu();
-			// Pantailatik ateratzen bada, zerrendatik ezabatu (memoria garbitzeko)
 			if (t.getY() < 0) {
 				tiroak.remove(i);
 				i--; 
