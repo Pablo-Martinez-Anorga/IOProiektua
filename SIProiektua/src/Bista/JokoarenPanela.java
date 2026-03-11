@@ -37,7 +37,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 		
 		// JokoKudeatzailea behatu (Irabazi/Galdu egoerak kudeatzeko)
 		JokoKudeatzailea.getNireJK().addObserver(this);
-		
+		JokoKudeatzailea.getNireJK().getUnekoPartida().addObserver(this);
 		// Teklatua konektatu
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);
