@@ -66,12 +66,12 @@ public class JokoarenPanela extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// Orain JokoarenPanela bakarrik JokoKudeatzailearen mezuak jasotzen ditu (Galdu/Irabazi)
+		// JokoarenPanela bakarrik JokoKudeatzailearen mezuak jasotzen ditu (Galdu/Irabazi)
 		if (arg instanceof String) {
 			String mezua = (String) arg;
 			if (mezua.equals("GALDU")) {
 				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
-				this.dispose(); // Irakasleak eskatutakoa: Dena itxi eta garbitu
+				this.dispose(); // Dena itxi eta garbitu
 			} else if (mezua.equals("IRABAZI")) {
 				JOptionPane.showMessageDialog(this, "ZORIONAK! IRABAZI DUZU!", "Garaipena", JOptionPane.INFORMATION_MESSAGE);
 				this.dispose(); 

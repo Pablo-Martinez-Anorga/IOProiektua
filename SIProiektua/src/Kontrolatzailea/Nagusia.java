@@ -1,6 +1,6 @@
 package Kontrolatzailea;
 
-import Bista.HasieraLeihoa; // Ziurtatu izena ondo idatzita dagoela (Lehioa)
+import Bista.HasieraLeihoa; // Ziurtatu izena ondo idatzita dagoela
 import Eredua.JokoKudeatzailea;
 
 public class Nagusia {
@@ -9,7 +9,7 @@ public class Nagusia {
 		// 1. Eredua hasieratu
 		JokoKudeatzailea.getNireJK();
 
-		// 2. Bista berria sortu (Window Builder-ekin egin duzuna)
+		// 2. Bista berria sortu
 		HasieraLeihoa hl = new HasieraLeihoa();
 
 		// 3. Kontrolatzailea sortu eta leihoa pasatu

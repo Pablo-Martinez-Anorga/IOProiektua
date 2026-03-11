@@ -19,7 +19,6 @@ public class BotoiKontroladorea implements ActionListener {
 		String aukera = e.getActionCommand(); 
 		JokoKudeatzailea jk = JokoKudeatzailea.getNireJK();
 
-		// ORAIN STRING DIRA (Testua), EZ java.awt.Color
 		if ("G".equals(aukera)) {
 			jk.setOntziKolorea("GREEN");
 		} else if ("B".equals(aukera)) {
