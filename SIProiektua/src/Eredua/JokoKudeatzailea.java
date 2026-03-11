@@ -122,7 +122,7 @@ public class JokoKudeatzailea extends Observable {
     }
 	
 	public void tiroEgin() {
-		this.tiroak.add(new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1));
+		this.tiroak.add(new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2));
         taulaEguneratu();
     }
 	
