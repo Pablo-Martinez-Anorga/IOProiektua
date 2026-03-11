@@ -11,16 +11,21 @@ public class JokoKudeatzailea extends Observable {
 	private Espaziontzia espaziontzia;
     private List<Etsaia> etsaiak;
     private List<Tiroa> tiroak;
-    private Tableroa nireTableroa;
 	private Partida unekoPartida;
 	private String ontziKolorea; 
+	private Gelaxka[][] gelaxkak;
 	
 	private JokoKudeatzailea() {
-		this.nireTableroa = new Tableroa();
 		this.unekoPartida = new Partida();
 		this.etsaiak = new ArrayList<>();
         this.tiroak = new ArrayList<>();
-        this.espaziontzia = new Espaziontzia(50, 55); 
+        this.espaziontzia = new Espaziontzia(50, 55);
+        this.gelaxkak = new Gelaxka[100][60];
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				this.gelaxkak[i][j] = new Gelaxka(i, j);
+			}
+		}
 	}
 	
 	public static JokoKudeatzailea getNireJK() {
@@ -36,7 +41,10 @@ public class JokoKudeatzailea extends Observable {
 	
 	public void setOntziKolorea(String pKolorea) { this.ontziKolorea = pKolorea; }
 	public String getOntziKolorea() { return this.ontziKolorea; }
-	public Tableroa getTableroa() { return this.nireTableroa; }
+
+	public Gelaxka getGelaxka(int x, int y) {
+		return this.gelaxkak[x][y];
+	}
 	
 	public void hasiJokoa() {
 		this.unekoPartida.hasiJokoa();
@@ -70,11 +78,27 @@ public class JokoKudeatzailea extends Observable {
 		taulaEguneratu();
 	}
 	
+	private void garbituMatrizea() {
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				if (!this.gelaxkak[i][j].isHutsik()) { 
+					this.gelaxkak[i][j].hustu();
+				}
+			}
+		}
+	}
+	
+	private void entitateaSartu(Entitatea e) {
+		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
+			this.gelaxkak[e.getX()][e.getY()].setEntitatea(e);
+		}
+	}
+	
 	private void taulaEguneratu() {
-		this.nireTableroa.garbituMatrizea();
-		this.nireTableroa.entitateaSartu(this.espaziontzia);
-		for (Etsaia e : etsaiak) { this.nireTableroa.entitateaSartu(e); }	
-		for (Tiroa t : tiroak) { this.nireTableroa.entitateaSartu(t); }
+		garbituMatrizea();
+		entitateaSartu(this.espaziontzia);
+		for (Etsaia e : etsaiak) { entitateaSartu(e); }	
+		for (Tiroa t : tiroak) { entitateaSartu(t); }
 	}	
 
 	private void etsaiakSortu() {
@@ -150,7 +174,12 @@ public class JokoKudeatzailea extends Observable {
 	}
 
 	public boolean posizioaLibreDa(int x, int y) {
-		return this.nireTableroa.getGelaxka(x, y).isHutsik();
+		for (Etsaia e : etsaiak) {
+			if (e.getX() == x && e.getY() == y) {
+				return false;
+			}
+		}
+		return this.gelaxkak[x][y].isHutsik();
 	}
 	
 	public void eguneratuTiroak() {

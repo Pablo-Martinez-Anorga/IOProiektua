@@ -17,16 +17,16 @@ public class Gelaxka extends Observable {
     public void setEntitatea(Entitatea entitatea) {
         this.entitatea = entitatea;
         setChanged();
+        if (this.entitatea == null) {
+            notifyObservers("HUTSA");
+        } else if (this.entitatea instanceof Espaziontzia) {
+            notifyObservers("ESPAZIONTZIA");
+        } else if (this.entitatea instanceof Etsaia) {
+            notifyObservers("ETSAIA");
+        } else if (this.entitatea instanceof Tiroa) {
+            notifyObservers("TIROA");
+        }
         notifyObservers();
-    }
-
- 
-    public String getEdukiaMota() {
-        if (this.entitatea == null) return "HUTSA";
-        if (this.entitatea instanceof Espaziontzia) return "ESPAZIONTZIA";
-        if (this.entitatea instanceof Etsaia) return "ETSAIA";
-        if (this.entitatea instanceof Tiroa) return "TIROA";
-        return "HUTSA";
     }
 
     public Entitatea getEntitatea() { return this.entitatea; }

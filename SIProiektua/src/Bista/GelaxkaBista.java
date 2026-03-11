@@ -19,10 +19,8 @@ public class GelaxkaBista extends JLabel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof Gelaxka) {
-			Gelaxka g = (Gelaxka) o;
-			
-			String mota = g.getEdukiaMota();
+		if (arg instanceof String) {
+			String mota = (String) arg;
 			
 			if (mota.equals("HUTSA")) {
 				this.setBackground(Color.BLACK);
