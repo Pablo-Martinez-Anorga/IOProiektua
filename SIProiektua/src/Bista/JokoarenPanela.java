@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.JokoKudeatzailea;
-import Eredua.Tableroa;
 import Eredua.Gelaxka;
 import Kontrolatzailea.TeklatuKontroladorea;
 
@@ -47,7 +46,6 @@ public class JokoarenPanela extends JFrame implements Observer {
 	
 	private void matrizeaSortu() {
 		getPnlMatrizea().setLayout(new GridLayout(60, 100, 0, 0));	
-		Tableroa t = JokoKudeatzailea.getNireJK().getTableroa();
 		
 		// Goitik behera eta ezkerretik eskumara (GridLayout ordenan)
 		for (int y = 0; y < 60; y++) {
@@ -55,9 +53,9 @@ public class JokoarenPanela extends JFrame implements Observer {
 				// Bistako gelaxka sortu
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
 				// Ereduko gelaxka lortu
-				Gelaxka ereduGelaxka = t.getGelaxka(x, y);
+				Gelaxka ereduGelaxka = JokoKudeatzailea.getNireJK().getGelaxka(x, y);
 				
-				// HEMEN DAGO GAKOA: Bistako JLabel-ak Ereduko Gelaxka behatuko du
+				// Bistako JLabel-ak Ereduko Gelaxka behatuko du
 				ereduGelaxka.addObserver(bistaGelaxka);
 				
 				// Panelera gehitu
