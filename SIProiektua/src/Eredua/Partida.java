@@ -1,45 +1,48 @@
 package Eredua;
 
-public class Partida {
+import java.util.Observable;
+
+public class Partida extends Observable {
 	
-	//Atributuak
+	// Singleton patroia
+	private static Partida nirePartida = null;
 	private boolean jokoaHasiDa;
-	private boolean irabazita;
-	private boolean galduta;
-	
-	//Eraikitzailea
-	public Partida() {
+
+	private Partida() {
 		this.jokoaHasiDa = false;
-		this.irabazita = false;
-		this.galduta = false;
 	}
-	
-	//Metodoak
-	public void hasiJokoa() {
+
+	public static Partida getNirePartida() {
+		if (nirePartida == null) {
+			nirePartida = new Partida();
+		}
+		return nirePartida;
+	}
+
+	// Jokoari hasiera eman
+	public void hasiPartida(String pKolorea) {
+		JokoKudeatzailea.getNireJK().setOntziKolorea(pKolorea);
+		JokoKudeatzailea.getNireJK().hasiJokoa();
+		
 		this.jokoaHasiDa = true;
-		this.irabazita = false;
-		this.galduta = false;
+		
+		// Bistari abisatu
+		setChanged();
+		notifyObservers("HASI");
 	}
-	
+
+	// Jokoa amaitu eta egoera jakinarazi
 	public void amaituJokoa(boolean irabazi) {
 		this.jokoaHasiDa = false;
+		setChanged();
 		if (irabazi) {
-            this.irabazita = true;
-        } else {
-            this.galduta = true;
-        }
+			notifyObservers("IRABAZI");
+		} else {
+			notifyObservers("GALDU");
+		}
 	}
-	//JokoKudeatzaileak partidaaren egoera begiratzeko
+
 	public boolean isJokoaHasiDa() {
-		return this.jokoaHasiDa;
+		return jokoaHasiDa;
 	}
-
-	public boolean irabaziDuEgiaztatu() {
-		return this.irabazita; 
-	}
-
-	public boolean galduDuEgiaztatu() {
-		return this.galduta; 
-	}
-	
 }

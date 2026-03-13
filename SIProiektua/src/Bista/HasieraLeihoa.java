@@ -3,6 +3,8 @@ package Bista;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,13 +12,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Kontrolatzailea.BotoiKontroladorea;
+import Eredua.Partida;
 
-public class HasieraLeihoa extends JFrame {
+public class HasieraLeihoa extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	
-	// GAKOA: Botoiak hemen kanpoan egon behar dira atributu gisa!
 	private JButton btnGreen;
 	private JButton btnBlue;
 	private JButton btnRed;
@@ -35,7 +36,6 @@ public class HasieraLeihoa extends JFrame {
 		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
 		contentPane.add(lblNewLabel);
 		
-		// KONTUZ: Hemen ez dugu "JButton btnGreen" jartzen, "btnGreen" bakarrik (lehen definitu dugulako)
 		btnGreen = new JButton("GREEN");
 		btnGreen.setActionCommand("G");
 		btnGreen.setBounds(40, 157, 98, 33);
@@ -51,12 +51,13 @@ public class HasieraLeihoa extends JFrame {
 		btnRed.setBounds(306, 157, 98, 33);
 		contentPane.add(btnRed);
 		
-		// Teklatuak funtziona dezan
 		this.setFocusable(true);
+		
+		// Partida behatu
+		Partida.getNirePartida().addObserver(this);
 	}
 
 	public void setKontrolatzailea(BotoiKontroladorea bk) {
-		// Orain bai, botoiak "ikusgarriak" dira metodo honentzat
 		btnGreen.addActionListener(bk);
 		btnBlue.addActionListener(bk);
 		btnRed.addActionListener(bk);
@@ -69,5 +70,15 @@ public class HasieraLeihoa extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_R) btnRed.doClick();
 			}
 		});
+	}
+
+	// Ereduak abisatzean leihoa itxi eta jokoa ireki
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof String && "HASI".equals(arg)) {
+			this.dispose(); 
+			JokoarenPanela jp = new JokoarenPanela();
+			jp.setVisible(true);
+		}
 	}
 }

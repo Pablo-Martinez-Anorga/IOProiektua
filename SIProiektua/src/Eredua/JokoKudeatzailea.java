@@ -2,31 +2,25 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
-public class JokoKudeatzailea extends Observable {
+public class JokoKudeatzailea {
 	
-	// Atributu estatikoa (Singleton)
+	// Singleton patroia
 	private static JokoKudeatzailea nireJK = null;
 	
-	// Atributuak
 	private Espaziontzia espaziontzia;
-    private List<Etsaia> etsaiak;
-    private List<Tiroa> tiroak;
-    private Tableroa nireTableroa;
-	private Partida unekoPartida;
-	private String ontziKolorea; // Orain String da, ez Color (Bistak erabakiko du)
+	private List<Etsaia> etsaiak;
+	private List<Tiroa> tiroak;
+	private Tableroa nireTableroa;
+	private String ontziKolorea; 
 	
-	// Eraikitzailea
 	private JokoKudeatzailea() {
 		this.nireTableroa = new Tableroa();
-		this.unekoPartida = new Partida();
 		this.etsaiak = new ArrayList<>();
-        this.tiroak = new ArrayList<>();
-        this.espaziontzia = new Espaziontzia(50, 55); // Hasierako posizioa
+		this.tiroak = new ArrayList<>();
+		this.espaziontzia = new Espaziontzia(50, 55); 
 	}
 	
-	// get metodoa (Singleton)
 	public static JokoKudeatzailea getNireJK() {
 		if (nireJK == null) {
 			nireJK = new JokoKudeatzailea();
@@ -34,28 +28,26 @@ public class JokoKudeatzailea extends Observable {
 		return nireJK;
 	}
 	
-	// Kolorea kudeatzeko metodoak (String bezala)
 	public void setOntziKolorea(String pKolorea) {
-	    this.ontziKolorea = pKolorea;
+		this.ontziKolorea = pKolorea;
 	}
 
 	public String getOntziKolorea() {
-	    return this.ontziKolorea;
+		return this.ontziKolorea;
 	}
 
 	public Tableroa getTableroa() {
 		return this.nireTableroa;
 	}
 	
+	// Hariak Partidaren egoeraren arabera mugitu
 	public void hasiJokoa() {
-		this.unekoPartida.hasiJokoa();
 		etsaiakSortu(); 
 		
-		// Tiroen haria
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (unekoPartida.isJokoaHasiDa()) {
+				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuTiroak(); 		
 					try {
 						Thread.sleep(50); 
@@ -67,11 +59,10 @@ public class JokoKudeatzailea extends Observable {
 		});
 		tiroenHaria.start();
 		
-		// Etsaien haria
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (unekoPartida.isJokoaHasiDa()) {
+				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
 					try {
 						Thread.sleep(200); 
@@ -87,9 +78,7 @@ public class JokoKudeatzailea extends Observable {
 	}
 	
 	private void taulaEguneratu() {
-		// Matrizea garbitu
 		this.nireTableroa.garbituMatrizea();
-		// Entitateak sartu
 		this.nireTableroa.entitateaSartu(this.espaziontzia);
 		for (Etsaia e : etsaiak) {
 			this.nireTableroa.entitateaSartu(e);
@@ -97,7 +86,6 @@ public class JokoKudeatzailea extends Observable {
 		for (Tiroa t : tiroak) {
 			this.nireTableroa.entitateaSartu(t);
 		}
-		// Oharra: Gelaxkak automatikoki eguneratzen dira orain, ez dugu bistaEguneratu deitu behar
 	}	
 
 	private void etsaiakSortu() {
@@ -121,13 +109,13 @@ public class JokoKudeatzailea extends Observable {
 		this.espaziontzia.mugitu(norabidea);
 		talkakEgiaztatu();
 		taulaEguneratu();
-    }
+	}
 	
 	public void tiroEgin() {
 		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1);
-        this.tiroak.add(berria);
-        taulaEguneratu();
-    }
+		this.tiroak.add(berria);
+		taulaEguneratu();
+	}
 	
 	public void eguneratuEtsaiak() {
 		for (Etsaia e : etsaiak) {
@@ -136,60 +124,54 @@ public class JokoKudeatzailea extends Observable {
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
-    }
+	}
 	
 	public void talkakEgiaztatu() {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
-	        Tiroa t = tiroak.get(i);
-	        boolean tiroakAsmatuDu = false;
-	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
-	            Etsaia e = etsaiak.get(j);
-	            if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
-	                etsaiak.remove(j); 
-	                tiroakAsmatuDu = true; 
-	                break; 
-	            }
-	        }
-	        if (tiroakAsmatuDu) {
-	            tiroak.remove(i);
-	        }
-	    }
+			Tiroa t = tiroak.get(i);
+			boolean tiroakAsmatuDu = false;
+			for (int j = etsaiak.size() - 1; j >= 0; j--) {
+				Etsaia e = etsaiak.get(j);
+				if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
+					etsaiak.remove(j); 
+					tiroakAsmatuDu = true; 
+					break; 
+				}
+			}
+			if (tiroakAsmatuDu) {
+				tiroak.remove(i);
+			}
+		}
 
-	    for (int i = 0; i < etsaiak.size(); i++) {
-	        Etsaia e = etsaiak.get(i);
-	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
-	            unekoPartida.amaituJokoa(false); 
-	            setChanged();
-	            notifyObservers("GALDU"); // Bistari abisatu
-	        }
-	    }
-	    jokoEgoeraEgiaztatu();
-    }
+		// Galdu dugun egiaztatu
+		for (int i = 0; i < etsaiak.size(); i++) {
+			Etsaia e = etsaiak.get(i);
+			if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
+				Partida.getNirePartida().amaituJokoa(false); 
+			}
+		}
+		jokoEgoeraEgiaztatu();
+	}
 	
 	public void jokoEgoeraEgiaztatu() {
-	    if (etsaiak.isEmpty() && unekoPartida.isJokoaHasiDa()) {
-	        unekoPartida.amaituJokoa(true); 
-	        setChanged();
-	        notifyObservers("IRABAZI"); // Bistari abisatu
-	    }
-	    
-	    if (unekoPartida.isJokoaHasiDa()) {
-	        boolean inbasioa = false;
-	        int i = 0;
-	        while (i < etsaiak.size() && !inbasioa) {
-	            if (etsaiak.get(i).getY() >= 59) { 
-	                unekoPartida.amaituJokoa(false); 
-	                inbasioa = true;
-	                setChanged();
-	                notifyObservers("GALDU"); // Bistari abisatu
-	            }
-	            i++;
-	        }
-	    }
+		if (etsaiak.isEmpty() && Partida.getNirePartida().isJokoaHasiDa()) {
+			Partida.getNirePartida().amaituJokoa(true); 
+		}
+		
+		if (Partida.getNirePartida().isJokoaHasiDa()) {
+			boolean inbasioa = false;
+			int i = 0;
+			while (i < etsaiak.size() && !inbasioa) {
+				if (etsaiak.get(i).getY() >= 59) { 
+					Partida.getNirePartida().amaituJokoa(false); 
+					inbasioa = true;
+				}
+				i++;
+			}
+		}
 	}
 
 	public boolean posizioaLibreDa(int x, int y) {
-		// Orain Gelaxka erabiltzen dugu
 		return this.nireTableroa.getGelaxka(x, y).isHutsik();
 	}
 	
@@ -205,5 +187,4 @@ public class JokoKudeatzailea extends Observable {
 		}
 		taulaEguneratu();
 	}
-
 }

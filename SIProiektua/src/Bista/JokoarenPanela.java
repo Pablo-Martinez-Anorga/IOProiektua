@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import Eredua.JokoKudeatzailea;
 import Eredua.Tableroa;
 import Eredua.Gelaxka;
+import Eredua.Partida;
 import Kontrolatzailea.TeklatuKontroladorea;
 
 import java.awt.GridLayout;
@@ -32,13 +33,11 @@ public class JokoarenPanela extends JFrame implements Observer {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPnlMatrizea(), BorderLayout.CENTER);
 		
-		// Matrizea sortu eta Ereduarekin lotu
 		matrizeaSortu();
 		
-		// JokoKudeatzailea behatu (Irabazi/Galdu egoerak kudeatzeko)
-		JokoKudeatzailea.getNireJK().addObserver(this);
+		// Partida behatu irabazi/galdu egoerak kudeatzeko
+		Partida.getNirePartida().addObserver(this);
 		
-		// Teklatua konektatu
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);
 		this.setFocusable(true); 
@@ -49,31 +48,24 @@ public class JokoarenPanela extends JFrame implements Observer {
 		getPnlMatrizea().setLayout(new GridLayout(60, 100, 0, 0));	
 		Tableroa t = JokoKudeatzailea.getNireJK().getTableroa();
 		
-		// Goitik behera eta ezkerretik eskumara (GridLayout ordenan)
 		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 100; x++) {
-				// Bistako gelaxka sortu
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
-				// Ereduko gelaxka lortu
 				Gelaxka ereduGelaxka = t.getGelaxka(x, y);
-				
-				// HEMEN DAGO GAKOA: Bistako JLabel-ak Ereduko Gelaxka behatuko du
 				ereduGelaxka.addObserver(bistaGelaxka);
-				
-				// Panelera gehitu
 				getPnlMatrizea().add(bistaGelaxka);
 			}
 		}
 	}
 
+	// Partidaren mezuak prozesatu
 	@Override
 	public void update(Observable o, Object arg) {
-		// Orain JokoarenPanela bakarrik JokoKudeatzailearen mezuak jasotzen ditu (Galdu/Irabazi)
 		if (arg instanceof String) {
 			String mezua = (String) arg;
 			if (mezua.equals("GALDU")) {
 				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
-				this.dispose(); // Irakasleak eskatutakoa: Dena itxi eta garbitu
+				this.dispose(); 
 			} else if (mezua.equals("IRABAZI")) {
 				JOptionPane.showMessageDialog(this, "ZORIONAK! IRABAZI DUZU!", "Garaipena", JOptionPane.INFORMATION_MESSAGE);
 				this.dispose(); 
