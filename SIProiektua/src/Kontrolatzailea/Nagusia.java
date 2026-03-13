@@ -1,13 +1,14 @@
 package Kontrolatzailea;
 
-import Bista.HasieraLeihoa; // Ziurtatu izena ondo idatzita dagoela
+import Bista.HasieraLeihoa;
 import Eredua.JokoKudeatzailea;
+import Eredua.Partida;
 
 public class Nagusia {
 
 	public static void main(String[] args) {
 		// 1. Eredua hasieratu
-		JokoKudeatzailea.getNireJK();
+		Partida.getNirePartida();
 
 		// 2. Bista berria sortu
 		HasieraLeihoa hl = new HasieraLeihoa();

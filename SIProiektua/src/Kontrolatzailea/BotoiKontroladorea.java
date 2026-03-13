@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame; 
 import Eredua.JokoKudeatzailea;
+import Eredua.Partida;
 import Bista.JokoarenPanela;
 
 public class BotoiKontroladorea implements ActionListener {
@@ -16,28 +17,24 @@ public class BotoiKontroladorea implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String aukera = e.getActionCommand(); 
-		JokoKudeatzailea jk = JokoKudeatzailea.getNireJK();
+	    String aukera = e.getActionCommand(); 
+	    
+	    // El Controlador le pasa el color elegido directamente a Partida
+	    if ("G".equals(aukera)) {
+	        Partida.getNirePartida().hasiJokoa("GREEN");
+	    } else if ("B".equals(aukera)) {
+	        Partida.getNirePartida().hasiJokoa("BLUE");
+	    } else if ("R".equals(aukera)) {
+	        Partida.getNirePartida().hasiJokoa("RED");
+	    }
 
-		if ("G".equals(aukera)) {
-			jk.setOntziKolorea("GREEN");
-		} else if ("B".equals(aukera)) {
-			jk.setOntziKolorea("BLUE");
-		} else if ("R".equals(aukera)) {
-			jk.setOntziKolorea("RED");
-		}
-
-		jk.hasiJokoa();
-
-		// Hasierako leihoa itxi
-		if (leihoa != null) {
-			leihoa.dispose();
-		}
-		
-		// Jokoaren bista ireki
-		JokoarenPanela jp = new JokoarenPanela();
-		jp.setVisible(true);
-		
-		System.out.println("Jokoa hasi da " + aukera + " kolorearekin.");
+	    // Hasierako leihoa itxi
+	    if (leihoa != null) {
+	        leihoa.dispose();
+	    }
+	    
+	    // Jokoaren bista ireki
+	    JokoarenPanela jp = new JokoarenPanela();
+	    jp.setVisible(true);
 	}
 }

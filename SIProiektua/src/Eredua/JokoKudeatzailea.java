@@ -11,12 +11,10 @@ public class JokoKudeatzailea extends Observable {
 	private Espaziontzia espaziontzia;
     private List<Etsaia> etsaiak;
     private List<Tiroa> tiroak;
-	private Partida unekoPartida;
 	private String ontziKolorea; 
 	private Gelaxka[][] gelaxkak;
 	
 	private JokoKudeatzailea() {
-		this.unekoPartida = new Partida();
 		this.etsaiak = new ArrayList<>();
         this.tiroak = new ArrayList<>();
         this.espaziontzia = new Espaziontzia(50, 55);
@@ -35,10 +33,6 @@ public class JokoKudeatzailea extends Observable {
 		return nireJK;
 	}
 	
-	public Partida getUnekoPartida() {
-		return this.unekoPartida;
-	}
-	
 	public void setOntziKolorea(String pKolorea) { this.ontziKolorea = pKolorea; }
 	public String getOntziKolorea() { return this.ontziKolorea; }
 
@@ -47,7 +41,6 @@ public class JokoKudeatzailea extends Observable {
 	}
 	
 	public void hasiJokoa() {
-		this.unekoPartida.hasiJokoa();
 		etsaiakSortu(); 
 		
 		setChanged();
@@ -56,7 +49,7 @@ public class JokoKudeatzailea extends Observable {
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (unekoPartida.isJokoaHasiDa()) {
+				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuTiroak(); 		
 					try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
 				}
@@ -67,7 +60,7 @@ public class JokoKudeatzailea extends Observable {
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (unekoPartida.isJokoaHasiDa()) {
+				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
 					try { Thread.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
 				}
@@ -151,22 +144,22 @@ public class JokoKudeatzailea extends Observable {
 	    for (int i = 0; i < etsaiak.size(); i++) {
 	        Etsaia e = etsaiak.get(i);
 	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
-	            unekoPartida.amaituJokoa(false); 
+	            Partida.getNirePartida().amaituJokoa(false); 
 	        }
 	    }
 	    jokoEgoeraEgiaztatu();
     }
 	
 	public void jokoEgoeraEgiaztatu() {
-		if (!unekoPartida.isJokoaHasiDa()) return;
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		
-		unekoPartida.etsaiKopuruaEguneratu(etsaiak.size());
+		Partida.getNirePartida().etsaiKopuruaEguneratu(etsaiak.size());
 	    
 	    boolean inbasioa = false;
 	    int i = 0;
 	    while (i < etsaiak.size() && !inbasioa) {
 	        if (etsaiak.get(i).getY() >= 59) { 
-	            unekoPartida.amaituJokoa(false); 
+	            Partida.getNirePartida().amaituJokoa(false); 
 	            inbasioa = true;
 	        }
 	        i++;

@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.JokoKudeatzailea;
+import Eredua.Partida;
 import Eredua.Gelaxka;
 import Kontrolatzailea.TeklatuKontroladorea;
 
@@ -34,9 +35,8 @@ public class JokoarenPanela extends JFrame implements Observer {
 		// Matrizea sortu eta Ereduarekin lotu
 		matrizeaSortu();
 		
-		// JokoKudeatzailea behatu (Irabazi/Galdu egoerak kudeatzeko)
-		JokoKudeatzailea.getNireJK().addObserver(this);
-		JokoKudeatzailea.getNireJK().getUnekoPartida().addObserver(this);
+		// Partida behatu
+		Partida.getNirePartida().addObserver(this);
 		// Teklatua konektatu
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);

@@ -4,21 +4,54 @@ import java.util.Observable;
 
 public class Partida extends Observable {
 	
+	// Singleton
+	private static Partida nirePartida = null;
+	
 	private boolean jokoaHasiDa;
 	private boolean irabazita;
 	private boolean galduta;
 	
-	public Partida() {
+	private Partida() {
 		this.jokoaHasiDa = false;
 		this.irabazita = false;
 		this.galduta = false;
 	}
 	
-	public void hasiJokoa() {
+	public static Partida getNirePartida() {
+		if (nirePartida == null) {
+			nirePartida = new Partida();
+		}
+		return nirePartida;
+	}
+	
+	// --- KONTROLADOREEKIN KOMUNIKATZEKO METODOAK --- //
+
+	public void hasiJokoa(String kolorea) {
 		this.jokoaHasiDa = true;
 		this.irabazita = false;
 		this.galduta = false;
+		
+		// Partidak JokoKudeatzaileari agintzen dio
+		JokoKudeatzailea.getNireJK().setOntziKolorea(kolorea);
+		JokoKudeatzailea.getNireJK().hasiJokoa();
+		
+		setChanged();
+		notifyObservers("HASI");
 	}
+	
+	public void mugituOntzia(String norabidea) {
+		if (this.jokoaHasiDa) {
+			JokoKudeatzailea.getNireJK().mugituOntzia(norabidea);
+		}
+	}
+	
+	public void tiroEgin() {
+		if (this.jokoaHasiDa) {
+			JokoKudeatzailea.getNireJK().tiroEgin();
+		}
+	}
+
+	// --- BUKAERA KUDEATZEKO --- //
 	
 	public void etsaiKopuruaEguneratu(int etsaiKopurua) {
 		if (this.jokoaHasiDa && etsaiKopurua == 0) {
