@@ -27,6 +27,7 @@ public class Partida extends Observable {
 	// --- KONTROLADOREEKIN KOMUNIKATZEKO METODOAK --- //
 
 	public void hasiJokoa(String kolorea) {
+		JokoKudeatzailea.getNireJK().setOntziKolorea(kolorea);
 		this.jokoaHasiDa = true;
 		this.irabazita = false;
 		this.galduta = false;
