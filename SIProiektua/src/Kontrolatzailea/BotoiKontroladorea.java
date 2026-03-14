@@ -2,17 +2,13 @@ package Kontrolatzailea;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame; 
-import Eredua.JokoKudeatzailea;
 import Eredua.Partida;
-import Bista.JokoarenPanela;
 
 public class BotoiKontroladorea implements ActionListener {
 	
-	private JFrame leihoa;
+	//private JFrame leihoa;
 
-	public BotoiKontroladorea(JFrame pLeihoa) {
-		this.leihoa = pLeihoa;
+	public BotoiKontroladorea() {
 	}
 
 	@Override
@@ -27,7 +23,7 @@ public class BotoiKontroladorea implements ActionListener {
 	    } else if ("R".equals(aukera)) {
 	        Partida.getNirePartida().hasiJokoa("RED");
 	    }
-
+	    /*
 	    // Hasierako leihoa itxi
 	    if (leihoa != null) {
 	        leihoa.dispose();
@@ -36,5 +32,7 @@ public class BotoiKontroladorea implements ActionListener {
 	    // Jokoaren bista ireki
 	    JokoarenPanela jp = new JokoarenPanela();
 	    jp.setVisible(true);
+	}
+	*/
 	}
 }

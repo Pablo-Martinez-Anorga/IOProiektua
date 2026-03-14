@@ -5,8 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
 
-import Eredua.Gelaxka;
-import Eredua.JokoKudeatzailea;
+import Eredua.Partida;
 
 public class GelaxkaBista extends JLabel implements Observer {
 
@@ -25,7 +24,7 @@ public class GelaxkaBista extends JLabel implements Observer {
 			if (mota.equals("HUTSA")) {
 				this.setBackground(Color.BLACK);
 			} else if (mota.equals("ESPAZIONTZIA")) {
-				String kolorea = JokoKudeatzailea.getNireJK().getOntziKolorea();
+				String kolorea = Partida.getNirePartida().getOntziKolorea();
 				if ("RED".equals(kolorea)) {
 					this.setBackground(Color.RED);
 				} else if ("BLUE".equals(kolorea)) {

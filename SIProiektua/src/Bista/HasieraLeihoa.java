@@ -5,15 +5,19 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Eredua.Partida;
 import Kontrolatzailea.BotoiKontroladorea;
 
-public class HasieraLeihoa extends JFrame {
+public class HasieraLeihoa extends JFrame implements Observer{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -58,6 +62,8 @@ public class HasieraLeihoa extends JFrame {
 		contentPane.add(panelErdian, BorderLayout.CENTER);
 		
 		this.setFocusable(true);
+		
+		Partida.getNirePartida().addObserver(this);
 	}
 
 	public void setKontrolatzailea(BotoiKontroladorea bk) {
@@ -73,5 +79,17 @@ public class HasieraLeihoa extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_R) btnRed.doClick();
 			}
 		});
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof String) {
+			String mezua = (String) arg;
+			if (mezua.equals("HASI")) {
+				JokoarenPanela jp = new JokoarenPanela();
+				jp.setVisible(true);
+				this.dispose(); 
+			}
+		}
 	}
 }

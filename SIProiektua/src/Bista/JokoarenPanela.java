@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
-import Eredua.JokoKudeatzailea;
 import Eredua.Partida;
 import Eredua.Gelaxka;
 import Kontrolatzailea.TeklatuKontroladorea;
@@ -53,7 +52,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 				// Bistako gelaxka sortu
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
 				// Ereduko gelaxka lortu
-				Gelaxka ereduGelaxka = JokoKudeatzailea.getNireJK().getGelaxka(x, y);
+				Gelaxka ereduGelaxka = Partida.getNirePartida().getGelaxka(x, y);
 				
 				// Bistako JLabel-ak Ereduko Gelaxka behatuko du
 				ereduGelaxka.addObserver(bistaGelaxka);

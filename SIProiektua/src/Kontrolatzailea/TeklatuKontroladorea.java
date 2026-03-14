@@ -3,7 +3,6 @@ package Kontrolatzailea;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import Eredua.JokoKudeatzailea;
 import Eredua.Partida;
 
 public class TeklatuKontroladorea extends KeyAdapter {

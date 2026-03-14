@@ -31,12 +31,10 @@ public class Partida extends Observable {
 		this.irabazita = false;
 		this.galduta = false;
 		
-		// Partidak JokoKudeatzaileari agintzen dio
-		JokoKudeatzailea.getNireJK().setOntziKolorea(kolorea);
-		JokoKudeatzailea.getNireJK().hasiJokoa();
-		
 		setChanged();
 		notifyObservers("HASI");
+		
+		JokoKudeatzailea.getNireJK().hasiJokoa();
 	}
 	
 	public void mugituOntzia(String norabidea) {
@@ -72,6 +70,14 @@ public class Partida extends Observable {
             setChanged();
             notifyObservers("GALDU"); 
         }
+	}
+	
+	public Gelaxka getGelaxka(int x, int y) {
+		return JokoKudeatzailea.getNireJK().getGelaxka(x, y);
+	}
+	
+	public String getOntziKolorea() {
+		return JokoKudeatzailea.getNireJK().getOntziKolorea();
 	}
 	
 	public boolean isJokoaHasiDa() { return this.jokoaHasiDa; }
