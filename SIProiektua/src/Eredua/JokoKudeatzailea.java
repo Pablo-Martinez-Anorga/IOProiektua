@@ -87,7 +87,7 @@ public class JokoKudeatzailea extends Observable {
 		}
 	}
 	
-	private void taulaEguneratu() {
+	private synchronized void taulaEguneratu() {
 		garbituMatrizea();
 		entitateaSartu(this.espaziontzia);
 		for (Etsaia e : etsaiak) { entitateaSartu(e); }	
@@ -108,25 +108,25 @@ public class JokoKudeatzailea extends Observable {
 		taulaEguneratu();
 	}
 
-	public void mugituOntzia(String norabidea) {
+	public synchronized void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);
 		talkakEgiaztatu();
 		taulaEguneratu();
     }
 	
-	public void tiroEgin() {
+	public synchronized void tiroEgin() {
 		this.tiroak.add(new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2));
         taulaEguneratu();
     }
 	
-	public void eguneratuEtsaiak() {
+	public synchronized void eguneratuEtsaiak() {
 		for (Etsaia e : etsaiak) { e.mugitu(); }
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
     }
 	
-	public void talkakEgiaztatu() {
+	public synchronized void talkakEgiaztatu() {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
@@ -175,16 +175,16 @@ public class JokoKudeatzailea extends Observable {
 		return this.gelaxkak[x][y].isHutsik();
 	}
 	
-	public void eguneratuTiroak() {
-		for (int i = 0; i < tiroak.size(); i++) {
-			Tiroa t = tiroak.get(i);
-			talkakEgiaztatu();
-			t.mugitu();
-			if (t.getY() < 0) {
-				tiroak.remove(i);
-				i--; 
-			}
-		}
-		taulaEguneratu();
+	public synchronized void eguneratuTiroak() {
+	    for (int i = 0; i < tiroak.size(); i++) {
+	        Tiroa t = tiroak.get(i);
+	        t.mugitu();
+	        if (t.getY() < 0) {
+	            tiroak.remove(i);
+	            i--; 
+	        }
+	    }
+	    talkakEgiaztatu();
+	    taulaEguneratu();
 	}
 }

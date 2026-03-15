@@ -15,7 +15,7 @@ public class BotoiKontroladorea implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 	    String aukera = e.getActionCommand(); 
 	    
-	    // El Controlador le pasa el color elegido directamente a Partida
+	    // Kontrolatzaileak kolorea pasatzen dio Partida-ri
 	    if ("G".equals(aukera)) {
 	        Partida.getNirePartida().hasiJokoa("GREEN");
 	    } else if ("B".equals(aukera)) {
@@ -23,16 +23,6 @@ public class BotoiKontroladorea implements ActionListener {
 	    } else if ("R".equals(aukera)) {
 	        Partida.getNirePartida().hasiJokoa("RED");
 	    }
-	    /*
-	    // Hasierako leihoa itxi
-	    if (leihoa != null) {
-	        leihoa.dispose();
-	    }
-	    
-	    // Jokoaren bista ireki
-	    JokoarenPanela jp = new JokoarenPanela();
-	    jp.setVisible(true);
-	}
-	*/
+	  
 	}
 }
