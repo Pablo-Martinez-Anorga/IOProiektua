@@ -172,7 +172,7 @@ public class JokoKudeatzailea extends Observable {
 				return false;
 			}
 		}
-		return this.gelaxkak[x][y].isHutsik();
+		return true;
 	}
 	
 	public synchronized void eguneratuTiroak() {
