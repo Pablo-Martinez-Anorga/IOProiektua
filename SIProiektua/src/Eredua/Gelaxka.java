@@ -26,7 +26,6 @@ public class Gelaxka extends Observable {
         } else if (this.entitatea instanceof Tiroa) {
             notifyObservers("TIROA");
         }
-        notifyObservers();
     }
 
     public Entitatea getEntitatea() { return this.entitatea; }
