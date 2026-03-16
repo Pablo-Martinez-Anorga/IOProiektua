@@ -51,11 +51,9 @@ public class JokoarenPanela extends JFrame implements Observer {
 			for (int x = 0; x < 100; x++) {
 				// Bistako gelaxka sortu
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
-				// Ereduko gelaxka lortu
-				Gelaxka ereduGelaxka = Partida.getNirePartida().getGelaxka(x, y);
 				
 				// Bistako JLabel-ak Ereduko Gelaxka behatuko du
-				ereduGelaxka.addObserver(bistaGelaxka);
+				Partida.getNirePartida().getGelaxka(x, y).addObserver(bistaGelaxka);
 				
 				// Panelera gehitu
 				getPnlMatrizea().add(bistaGelaxka);

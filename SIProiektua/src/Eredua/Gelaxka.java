@@ -13,6 +13,8 @@ public class Gelaxka extends Observable {
         this.y = y;
         this.entitatea = null; 
     }
+    
+    //GELAXKA BAKOITZARI EGOERA BAT JARRI, KOORDENATUZ LOTU ENTITATEAREKIN, ENTITATEA ATRIBUTUA KEMDU
 
     public void setEntitatea(Entitatea entitatea) {
         this.entitatea = entitatea;
@@ -33,7 +35,7 @@ public class Gelaxka extends Observable {
     public int getY() { return this.y; }
     public boolean isHutsik() { return this.entitatea == null; }
     
-    public void hustu() {
+    public void hustu() { 
         setEntitatea(null);
     }
 }

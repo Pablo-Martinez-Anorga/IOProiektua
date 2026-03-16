@@ -31,11 +31,11 @@ public class Partida extends Observable {
 		this.jokoaHasiDa = true;
 		this.irabazita = false;
 		this.galduta = false;
-		
+		JokoKudeatzailea.getNireJK().hasiJokoa();
 		setChanged();
 		notifyObservers("HASI");
 		
-		JokoKudeatzailea.getNireJK().hasiJokoa();
+		
 	}
 	
 	public void mugituOntzia(String norabidea) {
@@ -52,6 +52,7 @@ public class Partida extends Observable {
 
 	// --- BUKAERA KUDEATZEKO --- //
 	
+	//METODO HAY JOKOKUDEATZAILEAN
 	public void etsaiKopuruaEguneratu(int etsaiKopurua) {
 		if (this.jokoaHasiDa && etsaiKopurua == 0) {
 			amaituJokoa(true);

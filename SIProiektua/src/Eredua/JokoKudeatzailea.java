@@ -2,9 +2,8 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable; 
 
-public class JokoKudeatzailea extends Observable { 
+public class JokoKudeatzailea { 
 	
 	private static JokoKudeatzailea nireJK = null;
 	
@@ -43,8 +42,8 @@ public class JokoKudeatzailea extends Observable {
 	public void hasiJokoa() {
 		etsaiakSortu(); 
 		
-		setChanged();
-		notifyObservers("HASI");
+		//setChanged();
+		//notifyObservers("HASI");
 		
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
@@ -56,6 +55,7 @@ public class JokoKudeatzailea extends Observable {
 			}
 		});
 		tiroenHaria.start();
+		
 		
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
@@ -81,6 +81,7 @@ public class JokoKudeatzailea extends Observable {
 		}
 	}
 	
+	//EGOERA ALDATU METODOGAITIK ALDATU
 	private void entitateaSartu(Entitatea e) {
 		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
 			this.gelaxkak[e.getX()][e.getY()].setEntitatea(e);
@@ -108,6 +109,8 @@ public class JokoKudeatzailea extends Observable {
 		taulaEguneratu();
 	}
 
+	//PRIBATUAK KLASE HONETAN ERABILITAKOAK
+	
 	public synchronized void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);
 		talkakEgiaztatu();
@@ -119,14 +122,14 @@ public class JokoKudeatzailea extends Observable {
         taulaEguneratu();
     }
 	
-	public synchronized void eguneratuEtsaiak() {
+	private synchronized void eguneratuEtsaiak() {
 		for (Etsaia e : etsaiak) { e.mugitu(); }
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
     }
 	
-	public synchronized void talkakEgiaztatu() {
+	private synchronized void talkakEgiaztatu() {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
@@ -150,7 +153,7 @@ public class JokoKudeatzailea extends Observable {
 	    jokoEgoeraEgiaztatu();
     }
 	
-	public void jokoEgoeraEgiaztatu() {
+	private void jokoEgoeraEgiaztatu() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		
 		Partida.getNirePartida().etsaiKopuruaEguneratu(etsaiak.size());
@@ -175,7 +178,7 @@ public class JokoKudeatzailea extends Observable {
 		return true;
 	}
 	
-	public synchronized void eguneratuTiroak() {
+	private synchronized void eguneratuTiroak() {
 	    for (int i = 0; i < tiroak.size(); i++) {
 	        Tiroa t = tiroak.get(i);
 	        t.mugitu();
