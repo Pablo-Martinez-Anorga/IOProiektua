@@ -37,4 +37,9 @@ public class Etsaia extends Entitatea {
 	        this.y = yBerria;
 		}
 	}
+
+	@Override
+	public String getMota() {
+		return "ETSAIA";
+	}
 }

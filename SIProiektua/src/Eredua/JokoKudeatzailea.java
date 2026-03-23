@@ -42,9 +42,6 @@ public class JokoKudeatzailea {
 	public void hasiJokoa() {
 		etsaiakSortu(); 
 		
-		//setChanged();
-		//notifyObservers("HASI");
-		
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -84,7 +81,7 @@ public class JokoKudeatzailea {
 	//EGOERA ALDATU METODOGAITIK ALDATU
 	private void entitateaSartu(Entitatea e) {
 		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-			this.gelaxkak[e.getX()][e.getY()].setEntitatea(e);
+			this.gelaxkak[e.getX()][e.getY()].setEgoera(e.getMota());
 		}
 	}
 	
@@ -156,7 +153,10 @@ public class JokoKudeatzailea {
 	private void jokoEgoeraEgiaztatu() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		
-		Partida.getNirePartida().etsaiKopuruaEguneratu(etsaiak.size());
+		if (this.etsaiak.isEmpty()) { 
+			Partida.getNirePartida().amaituJokoa(true);
+			return;
+		}
 	    
 	    boolean inbasioa = false;
 	    int i = 0;

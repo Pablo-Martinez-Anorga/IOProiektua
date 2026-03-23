@@ -33,4 +33,9 @@ public class Espaziontzia extends Entitatea {
 		//Klase abstaktua eskatzen du
 	}
 
+	@Override
+	public String getMota() {
+		return "ESPAZIONTZIA";
+	}
+
 }

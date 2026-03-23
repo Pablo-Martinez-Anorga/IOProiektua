@@ -1,6 +1,7 @@
 package Kontrolatzailea;
 
 import Bista.HasieraLeihoa;
+import Bista.JokoarenPanela;
 import Eredua.Partida;
 
 public class Nagusia {
@@ -11,6 +12,7 @@ public class Nagusia {
 
 		// 2. Bista berria sortu
 		HasieraLeihoa hl = new HasieraLeihoa();
+		JokoarenPanela jp = new JokoarenPanela();
 
 		// 3. Kontrolatzailea sortu eta leihoa pasatu
 		BotoiKontroladorea bk = new BotoiKontroladorea();

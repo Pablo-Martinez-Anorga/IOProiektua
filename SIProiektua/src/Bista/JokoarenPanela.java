@@ -66,7 +66,9 @@ public class JokoarenPanela extends JFrame implements Observer {
 		// JokoarenPanela bakarrik JokoKudeatzailearen mezuak jasotzen ditu (Galdu/Irabazi)
 		if (arg instanceof String) {
 			String mezua = (String) arg;
-			if (mezua.equals("GALDU")) {
+			if (mezua.equals("HASI")) {
+				this.setVisible(true);
+			} else if (mezua.equals("GALDU")) {
 				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
 				this.dispose(); // Dena itxi eta garbitu
 			} else if (mezua.equals("IRABAZI")) {

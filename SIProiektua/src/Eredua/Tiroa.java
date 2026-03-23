@@ -13,4 +13,9 @@ public class Tiroa extends Entitatea {
         this.y = this.y - 1;
 	}
 
+	@Override
+	public String getMota() {
+		return "TIROA";
+	}
+
 }

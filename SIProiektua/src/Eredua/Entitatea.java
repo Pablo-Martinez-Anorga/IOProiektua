@@ -23,4 +23,6 @@ public abstract class Entitatea {
 	}
 	
 	public abstract void mugitu(); 
+	
+	public abstract String getMota();
 }
