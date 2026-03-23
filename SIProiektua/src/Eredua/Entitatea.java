@@ -17,7 +17,6 @@ public abstract class Entitatea {
 		return this.x;
 	}
 
-	
 	public int getY() {
 		return this.y;
 	}

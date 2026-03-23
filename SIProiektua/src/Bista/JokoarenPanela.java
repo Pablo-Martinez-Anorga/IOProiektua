@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.Partida;
-import Eredua.Gelaxka;
 import Kontrolatzailea.TeklatuKontroladorea;
 
 import java.awt.GridLayout;
@@ -30,9 +29,6 @@ public class JokoarenPanela extends JFrame implements Observer {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPnlMatrizea(), BorderLayout.CENTER);
-		
-		// Matrizea sortu eta Ereduarekin lotu
-		matrizeaSortu();
 		
 		// Partida behatu
 		Partida.getNirePartida().addObserver(this);
@@ -58,6 +54,10 @@ public class JokoarenPanela extends JFrame implements Observer {
 				// Panelera gehitu
 				getPnlMatrizea().add(bistaGelaxka);
 			}
+			//Matrizea hasierako kolorekin margoztu
+			getPnlMatrizea().revalidate();
+			getPnlMatrizea().repaint();
+			
 		}
 	}
 
@@ -67,7 +67,11 @@ public class JokoarenPanela extends JFrame implements Observer {
 		if (arg instanceof String) {
 			String mezua = (String) arg;
 			if (mezua.equals("HASI")) {
+				matrizeaSortu();
 				this.setVisible(true);
+				//Hasieratik teklatuaren erreta bermatzeko  
+				this.requestFocusInWindow();
+				
 			} else if (mezua.equals("GALDU")) {
 				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
 				this.dispose(); // Dena itxi eta garbitu

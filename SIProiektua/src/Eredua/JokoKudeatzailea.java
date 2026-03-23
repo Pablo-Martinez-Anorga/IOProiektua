@@ -78,7 +78,6 @@ public class JokoKudeatzailea {
 		}
 	}
 	
-	//EGOERA ALDATU METODOGAITIK ALDATU
 	private void entitateaSartu(Entitatea e) {
 		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
 			this.gelaxkak[e.getX()][e.getY()].setEgoera(e.getMota());
@@ -105,8 +104,6 @@ public class JokoKudeatzailea {
 		}
 		taulaEguneratu();
 	}
-
-	//PRIBATUAK KLASE HONETAN ERABILITAKOAK
 	
 	public synchronized void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);

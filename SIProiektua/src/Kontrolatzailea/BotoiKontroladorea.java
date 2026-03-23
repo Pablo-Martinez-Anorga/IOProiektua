@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 import Eredua.Partida;
 
 public class BotoiKontroladorea implements ActionListener {
-	
-	//private JFrame leihoa;
 
 	public BotoiKontroladorea() {
 	}

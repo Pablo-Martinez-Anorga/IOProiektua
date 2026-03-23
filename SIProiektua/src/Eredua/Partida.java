@@ -24,7 +24,7 @@ public class Partida extends Observable {
 		return nirePartida;
 	}
 	
-	// --- KONTROLADOREEKIN KOMUNIKATZEKO METODOAK --- //
+	//KONTROLADOREEKIN KOMUNIKATZEKO METODOAK
 
 	public void hasiJokoa(String kolorea) {
 		JokoKudeatzailea.getNireJK().setOntziKolorea(kolorea);
@@ -48,7 +48,7 @@ public class Partida extends Observable {
 		}
 	}
 
-	// --- BUKAERA KUDEATZEKO --- //
+	//BUKAERA KUDEATZEKO
 	
 	public void amaituJokoa(boolean irabazi) {
 		if (!this.jokoaHasiDa) return; 

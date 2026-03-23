@@ -11,11 +11,9 @@ public class Gelaxka extends Observable {
     public Gelaxka(int x, int y) {
         this.x = x;
         this.y = y;
-        this.egoera = "HUTSA"; // hutsarekin hasieratu?
+        this.egoera = "HUTSA";
     }
     
-    //GELAXKA BAKOITZARI EGOERA BAT JARRI, KOORDENATUZ LOTU ENTITATEAREKIN, ENTITATEA ATRIBUTUA KENDU
-
     public void setEgoera(String egoeraBerria) {
         this.egoera = egoeraBerria;
         setChanged();

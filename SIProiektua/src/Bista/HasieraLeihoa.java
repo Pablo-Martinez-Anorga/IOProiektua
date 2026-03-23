@@ -86,10 +86,6 @@ public class HasieraLeihoa extends JFrame implements Observer{
 		if (arg instanceof String) {
 			String mezua = (String) arg;
 			if (mezua.equals("HASI")) {
-				// Ezabatu nagusia klsean ireki
-				//JokoarenPanela jp = new JokoarenPanela();
-				//jp.setVisible(true);
-				//Ezanatu
 				this.dispose(); 
 			}
 		}
