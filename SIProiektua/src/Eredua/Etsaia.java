@@ -4,7 +4,7 @@ public class Etsaia extends Entitatea {
 	
 	//Eraikitzailea
 	public Etsaia(int x, int y) {
-        super(x, y);
+        super(x, y, 3, 3);
     }
 	
 	//Metodoak
@@ -21,13 +21,13 @@ public class Etsaia extends Entitatea {
 		}
 		//Eskumara
 		else if (norabidea == 1) {
-			if (this.x < 99) {
+			if (this.x + this.zabalera < 100) {
 				xBerria = this.x + 1;
 			}
 		}
 		//Behera
 		else if (norabidea == 2) {
-			if (this.y < 59) {
+			if (this.y + this.altuera < 60) {
 				yBerria = this.y + 1;
 			}
 		}
@@ -36,5 +36,10 @@ public class Etsaia extends Entitatea {
 	        this.x = xBerria;
 	        this.y = yBerria;
 		}
+	}
+
+	@Override
+	public String getMota() {
+		return "ETSAIA";
 	}
 }

@@ -6,44 +6,47 @@ public class Gelaxka extends Observable {
     
     private int x;
     private int y;
-    private Entitatea entitatea; // Lo que hay dentro de la celda. Si es null, está vacía.
+    
+    private Egoera egoera; 
 
-    // Constructor
     public Gelaxka(int x, int y) {
         this.x = x;
         this.y = y;
-        this.entitatea = null; // Por defecto, la celda empieza vacía
+        this.egoera = new Hutsa(); //Hasierako egoera
     }
-
-    // Método para cambiar el contenido de la celda
-    public void setEntitatea(Entitatea entitatea) {
-        this.entitatea = entitatea;
-        
-        //Gelaxka aldatzean, bistari abisatu
+    
+    // 2. State patroiaren metodo estandar
+    public void egoeraAldatu(Egoera egoeraBerria) {
+        this.egoera = egoeraBerria;
         setChanged();
-        notifyObservers();
+        notifyObservers(this.egoera.getIzena()); // String-a bidali
     }
 
-    // Getters básicos
-    public Entitatea getEntitatea() {
-        return this.entitatea;
+    // String-a bidaltzeko zubia
+    public void setEgoera(String egoeraBerria) {
+        switch(egoeraBerria) {
+            case "HUTSA": egoeraAldatu(new Hutsa()); break;
+            case "ESPAZIONTZIA": egoeraAldatu(new EspaziontziaEgoera()); break;
+            case "ETSAIA": egoeraAldatu(new EtsaiaEgoera()); break;
+            case "TIROA": egoeraAldatu(new TiroaEgoera()); break;
+            default: egoeraAldatu(new Hutsa());
+        }
     }
 
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
+    public String getEgoera() { 
+        // Egoera lortu
+        return this.egoera.getIzena();
     }
     
-    // Método auxiliar útil para saber si la celda está vacía
-    public boolean isHutsik() {
-        return this.entitatea == null;
+    public int getX() { return this.x; }
+    public int getY() { return this.y; }
+    
+    public boolean isHutsik() { 
+        // Egoera galdetu
+        return this.egoera.isHutsik(); 
     }
     
-    // Método para vaciar la celda
-    public void hustu() {
-        setEntitatea(null);
+    public void hustu() { 
+        egoeraAldatu(new Hutsa());
     }
 }

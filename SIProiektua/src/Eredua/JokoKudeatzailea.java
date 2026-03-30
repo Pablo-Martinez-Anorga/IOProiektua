@@ -3,22 +3,26 @@ package Eredua;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JokoKudeatzailea {
+public class JokoKudeatzailea { 
 	
-	// Singleton patroia
 	private static JokoKudeatzailea nireJK = null;
 	
 	private Espaziontzia espaziontzia;
-	private List<Etsaia> etsaiak;
-	private List<Tiroa> tiroak;
-	private Tableroa nireTableroa;
+    private List<Etsaia> etsaiak;
+    private List<Tiroa> tiroak;
 	private String ontziKolorea; 
+	private Gelaxka[][] gelaxkak;
 	
 	private JokoKudeatzailea() {
-		this.nireTableroa = new Tableroa();
 		this.etsaiak = new ArrayList<>();
-		this.tiroak = new ArrayList<>();
-		this.espaziontzia = new Espaziontzia(50, 55); 
+        this.tiroak = new ArrayList<>();
+        this.espaziontzia = new Espaziontzia(50, 55);
+        this.gelaxkak = new Gelaxka[100][60];
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				this.gelaxkak[i][j] = new Gelaxka(i, j);
+			}
+		}
 	}
 	
 	public static JokoKudeatzailea getNireJK() {
@@ -28,19 +32,13 @@ public class JokoKudeatzailea {
 		return nireJK;
 	}
 	
-	public void setOntziKolorea(String pKolorea) {
-		this.ontziKolorea = pKolorea;
-	}
+	public void setOntziKolorea(String pKolorea) { this.ontziKolorea = pKolorea; }
+	public String getOntziKolorea() { return this.ontziKolorea; }
 
-	public String getOntziKolorea() {
-		return this.ontziKolorea;
-	}
-
-	public Tableroa getTableroa() {
-		return this.nireTableroa;
+	public Gelaxka getGelaxka(int x, int y) {
+		return this.gelaxkak[x][y];
 	}
 	
-	// Hariak Partidaren egoeraren arabera mugitu
 	public void hasiJokoa() {
 		etsaiakSortu(); 
 		
@@ -49,26 +47,19 @@ public class JokoKudeatzailea {
 			public void run() {
 				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuTiroak(); 		
-					try {
-						Thread.sleep(50); 
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
 				}
 			}
 		});
 		tiroenHaria.start();
+		
 		
 		Thread etsaienHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
-					try {
-						Thread.sleep(200); 
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					try { Thread.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
 				}
 			}
 		});
@@ -77,15 +68,40 @@ public class JokoKudeatzailea {
 		taulaEguneratu();
 	}
 	
-	private void taulaEguneratu() {
-		this.nireTableroa.garbituMatrizea();
-		this.nireTableroa.entitateaSartu(this.espaziontzia);
-		for (Etsaia e : etsaiak) {
-			this.nireTableroa.entitateaSartu(e);
-		}	
-		for (Tiroa t : tiroak) {
-			this.nireTableroa.entitateaSartu(t);
+	private void garbituMatrizea() {
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 60; j++) {
+				if (!this.gelaxkak[i][j].isHutsik()) { 
+					this.gelaxkak[i][j].hustu();
+				}
+			}
 		}
+	}
+	private void entitateaSartu(Entitatea e) {
+	    if (e != null) {
+	        int hasieraX = e.getX();
+	        int hasieraY = e.getY();
+	        
+	        int zabalera = e.getZabalera(); 
+	        int altuera = e.getAltuera();   
+
+	        for (int i = hasieraX; i < hasieraX + zabalera; i++) {
+	            for (int j = hasieraY; j < hasieraY + altuera; j++) {
+	                // Matrizea konprobatu
+	                if (i >= 0 && i < 100 && j >= 0 && j < 60) {
+	                    this.gelaxkak[i][j].setEgoera(e.getMota()); 
+	                }
+	            }
+	        }
+	    }
+	}
+	// ----------------------------------
+	
+	private synchronized void taulaEguneratu() {
+		garbituMatrizea();
+		entitateaSartu(this.espaziontzia);
+		for (Etsaia e : etsaiak) { entitateaSartu(e); }	
+		for (Tiroa t : tiroak) { entitateaSartu(t); }
 	}	
 
 	private void etsaiakSortu() {
@@ -95,96 +111,93 @@ public class JokoKudeatzailea {
 		ArrayList<Integer> erabilitakoX = new ArrayList<>();
 		for (int i = 0; i < etsaiKopurua; i++) {
 			int x_posizioa = (int)(Math.random() * 100); 
-			while (erabilitakoX.contains(x_posizioa)) {
-				x_posizioa = (int)(Math.random() * 100); 
-			}       
+			while (erabilitakoX.contains(x_posizioa)) { x_posizioa = (int)(Math.random() * 100); }       
 			erabilitakoX.add(x_posizioa);
-			Etsaia etsaiBerria = new Etsaia(x_posizioa, y_posizioa);
-			this.etsaiak.add(etsaiBerria);
+			this.etsaiak.add(new Etsaia(x_posizioa, y_posizioa));
 		}
 		taulaEguneratu();
 	}
-
-	public void mugituOntzia(String norabidea) {
+	
+	public synchronized void mugituOntzia(String norabidea) {
 		this.espaziontzia.mugitu(norabidea);
 		talkakEgiaztatu();
 		taulaEguneratu();
-	}
+    }
 	
-	public void tiroEgin() {
-		Tiroa berria = new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 1);
-		this.tiroak.add(berria);
-		taulaEguneratu();
-	}
+	public synchronized void tiroEgin() {
+		this.tiroak.add(new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2));
+        taulaEguneratu();
+    }
 	
-	public void eguneratuEtsaiak() {
-		for (Etsaia e : etsaiak) {
-			e.mugitu();
-		}
+	private synchronized void eguneratuEtsaiak() {
+		for (Etsaia e : etsaiak) { e.mugitu(); }
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
-	}
+    }
 	
-	public void talkakEgiaztatu() {
+	private synchronized void talkakEgiaztatu() {
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
-			Tiroa t = tiroak.get(i);
-			boolean tiroakAsmatuDu = false;
-			for (int j = etsaiak.size() - 1; j >= 0; j--) {
-				Etsaia e = etsaiak.get(j);
-				if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
-					etsaiak.remove(j); 
-					tiroakAsmatuDu = true; 
-					break; 
-				}
-			}
-			if (tiroakAsmatuDu) {
-				tiroak.remove(i);
-			}
-		}
+	        Tiroa t = tiroak.get(i);
+	        boolean tiroakAsmatuDu = false;
+	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
+	            Etsaia e = etsaiak.get(j);
+	            if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
+	                etsaiak.remove(j); 
+	                tiroakAsmatuDu = true; 
+	                break; 
+	            }
+	        }
+	        if (tiroakAsmatuDu) { tiroak.remove(i); }
+	    }
 
-		// Galdu dugun egiaztatu
-		for (int i = 0; i < etsaiak.size(); i++) {
-			Etsaia e = etsaiak.get(i);
-			if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
-				Partida.getNirePartida().amaituJokoa(false); 
-			}
-		}
-		jokoEgoeraEgiaztatu();
-	}
+	    for (int i = 0; i < etsaiak.size(); i++) {
+	        Etsaia e = etsaiak.get(i);
+	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
+	            Partida.getNirePartida().amaituJokoa(false); 
+	        }
+	    }
+	    jokoEgoeraEgiaztatu();
+    }
 	
-	public void jokoEgoeraEgiaztatu() {
-		if (etsaiak.isEmpty() && Partida.getNirePartida().isJokoaHasiDa()) {
-			Partida.getNirePartida().amaituJokoa(true); 
-		}
+	private void jokoEgoeraEgiaztatu() {
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		
-		if (Partida.getNirePartida().isJokoaHasiDa()) {
-			boolean inbasioa = false;
-			int i = 0;
-			while (i < etsaiak.size() && !inbasioa) {
-				if (etsaiak.get(i).getY() >= 59) { 
-					Partida.getNirePartida().amaituJokoa(false); 
-					inbasioa = true;
-				}
-				i++;
-			}
+		if (this.etsaiak.isEmpty()) { 
+			Partida.getNirePartida().amaituJokoa(true);
+			return;
 		}
+	    
+	    boolean inbasioa = false;
+	    int i = 0;
+	    while (i < etsaiak.size() && !inbasioa) {
+	        if (etsaiak.get(i).getY() >= 59) { 
+	            Partida.getNirePartida().amaituJokoa(false); 
+	            inbasioa = true;
+	        }
+	        i++;
+	    }
 	}
 
 	public boolean posizioaLibreDa(int x, int y) {
-		return this.nireTableroa.getGelaxka(x, y).isHutsik();
-	}
-	
-	public void eguneratuTiroak() {
-		for (int i = 0; i < tiroak.size(); i++) {
-			Tiroa t = tiroak.get(i);
-			talkakEgiaztatu();
-			t.mugitu();
-			if (t.getY() < 0) {
-				tiroak.remove(i);
-				i--; 
+		for (Etsaia e : etsaiak) {
+			if (e.getX() == x && e.getY() == y) {
+				return false;
 			}
 		}
-		taulaEguneratu();
+		return true;
+	}
+	
+	private synchronized void eguneratuTiroak() {
+	    for (int i = 0; i < tiroak.size(); i++) {
+	        Tiroa t = tiroak.get(i);
+	        t.mugitu();
+	        if (t.getY() < 0) {
+	            tiroak.remove(i);
+	            i--; 
+	        }
+	    }
+	    talkakEgiaztatu();
+	    taulaEguneratu();
 	}
 }

@@ -29,15 +29,40 @@ public class Tableroa {
 		}
 	}
 	
+	// --- METODOA ZUZENDUTA ZABALERA ETA ALTUERAREKIN ---
 	public void entitateaSartu(Entitatea e) {
-		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-			this.gelaxkak[e.getX()][e.getY()].setEntitatea(e);
+		if (e != null) {
+			int hasieraX = e.getX();
+			int hasieraY = e.getY();
+			int zabalera = e.getZabalera();
+			int altuera = e.getAltuera();
+
+			for (int i = hasieraX; i < hasieraX + zabalera; i++) {
+				for (int j = hasieraY; j < hasieraY + altuera; j++) {
+					if (i >= 0 && i < 100 && j >= 0 && j < 60) {
+						// setEntitatea(e) ordez, setEgoera erabiltzen dugu bere motarekin
+						this.gelaxkak[i][j].setEgoera(e.getMota());
+					}
+				}
+			}
 		}
 	}
 	
+	// --- METODOA ZUZENDUTA ZABALERA ETA ALTUERAREKIN ---
 	public void entitateaKendu(Entitatea e) {
-		if (e != null && e.getX() >= 0 && e.getX() < 100 && e.getY() >= 0 && e.getY() < 60) {
-			this.gelaxkak[e.getX()][e.getY()].hustu();
+		if (e != null) {
+			int hasieraX = e.getX();
+			int hasieraY = e.getY();
+			int zabalera = e.getZabalera();
+			int altuera = e.getAltuera();
+
+			for (int i = hasieraX; i < hasieraX + zabalera; i++) {
+				for (int j = hasieraY; j < hasieraY + altuera; j++) {
+					if (i >= 0 && i < 100 && j >= 0 && j < 60) {
+						this.gelaxkak[i][j].hustu();
+					}
+				}
+			}
 		}
 	}
 	
