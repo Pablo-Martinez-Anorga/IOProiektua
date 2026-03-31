@@ -6,9 +6,6 @@ import java.util.Observer;
 import javax.swing.JLabel;
 
 import Eredua.Gelaxka;
-import Eredua.Espaziontzia;
-import Eredua.Etsaia;
-import Eredua.Tiroa;
 import Eredua.JokoKudeatzailea;
 
 public class GelaxkaBista extends JLabel implements Observer {
@@ -25,10 +22,10 @@ public class GelaxkaBista extends JLabel implements Observer {
 		if (o instanceof Gelaxka) {
 			Gelaxka g = (Gelaxka) o;
 			
-			// Modeloaren egoeraren arabera kolorea aldatu
-			if (g.isHutsik()) {
+			// Modeloaren egoeraren arabera kolorea aldatu.
+			if (g.isHutsik() || g.getEgoera().equals("HUTSA")) {
 				this.setBackground(Color.BLACK);
-			} else if (g.getEntitatea() instanceof Espaziontzia) {
+			} else if (g.getEgoera().equals("ESPAZIONTZIA")) {
 				// Aukeratutako kolorea (String) irakurri eta Color bihurtu bistan
 				String kolorea = JokoKudeatzailea.getNireJK().getOntziKolorea();
 				if ("RED".equals(kolorea)) {
@@ -38,9 +35,9 @@ public class GelaxkaBista extends JLabel implements Observer {
 				} else {
 					this.setBackground(Color.GREEN);
 				}
-			} else if (g.getEntitatea() instanceof Etsaia) {
+			} else if (g.getEgoera().equals("ETSAIA")) {
 				this.setBackground(Color.RED);
-			} else if (g.getEntitatea() instanceof Tiroa) {
+			} else if (g.getEgoera().equals("TIROA")) {
 				this.setBackground(Color.YELLOW);
 			}
 		}

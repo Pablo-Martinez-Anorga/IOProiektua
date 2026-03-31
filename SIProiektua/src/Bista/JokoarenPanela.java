@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.JokoKudeatzailea;
-import Eredua.Tableroa;
 import Eredua.Gelaxka;
 import Eredua.Partida;
 import Kontrolatzailea.TeklatuKontroladorea;
@@ -40,18 +39,19 @@ public class JokoarenPanela extends JFrame implements Observer {
 		
 		TeklatuKontroladorea teklatua = new TeklatuKontroladorea();
 		this.addKeyListener(teklatua);
-		this.setFocusable(true); 
+		this.setFocusable(true);
 		this.requestFocusInWindow();
 	}
 	
 	private void matrizeaSortu() {
 		getPnlMatrizea().setLayout(new GridLayout(60, 100, 0, 0));	
-		Tableroa t = JokoKudeatzailea.getNireJK().getTableroa();
 		
 		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 100; x++) {
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
-				Gelaxka ereduGelaxka = t.getGelaxka(x, y);
+
+				Gelaxka ereduGelaxka = JokoKudeatzailea.getNireJK().getGelaxka(x, y);
+				
 				ereduGelaxka.addObserver(bistaGelaxka);
 				getPnlMatrizea().add(bistaGelaxka);
 			}
