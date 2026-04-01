@@ -15,7 +15,7 @@ public class Tiroa extends Entitatea {
 	}
 
 	@Override
-	public String getMota() {
-		return "TIROA";
+	public Egoera getEgoeraObject() {
+	    return new TiroaEgoera();
 	}
 }

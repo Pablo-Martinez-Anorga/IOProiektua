@@ -10,8 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 
-import Eredua.JokoKudeatzailea;
-import Eredua.Gelaxka;
 import Eredua.Partida;
 import Kontrolatzailea.TeklatuKontroladorea;
 
@@ -32,8 +30,6 @@ public class JokoarenPanela extends JFrame implements Observer {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPnlMatrizea(), BorderLayout.CENTER);
 		
-		matrizeaSortu();
-		
 		// Partida behatu irabazi/galdu egoerak kudeatzeko
 		Partida.getNirePartida().addObserver(this);
 		
@@ -49,10 +45,7 @@ public class JokoarenPanela extends JFrame implements Observer {
 		for (int y = 0; y < 60; y++) {
 			for (int x = 0; x < 100; x++) {
 				GelaxkaBista bistaGelaxka = new GelaxkaBista();
-
-				Gelaxka ereduGelaxka = JokoKudeatzailea.getNireJK().getGelaxka(x, y);
-				
-				ereduGelaxka.addObserver(bistaGelaxka);
+				Partida.getNirePartida().getGelaxka(x, y).addObserver(bistaGelaxka);
 				getPnlMatrizea().add(bistaGelaxka);
 			}
 		}
@@ -63,7 +56,12 @@ public class JokoarenPanela extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 		if (arg instanceof String) {
 			String mezua = (String) arg;
-			if (mezua.equals("GALDU")) {
+			
+			if (mezua.equals("HASI")) {
+				matrizeaSortu(); 
+				this.setVisible(true);
+				this.requestFocusInWindow();
+			}else if (mezua.equals("GALDU")) {
 				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
 				this.dispose(); 
 			} else if (mezua.equals("IRABAZI")) {

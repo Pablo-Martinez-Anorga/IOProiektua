@@ -79,17 +79,15 @@ public class JokoKudeatzailea {
 	}
 	private void entitateaSartu(Entitatea e) {
 	    if (e != null) {
-	        int hasieraX = e.getX();
-	        int hasieraY = e.getY();
-	        
-	        int zabalera = e.getZabalera(); 
-	        int altuera = e.getAltuera();   
+	    	int erdiaX = e.getX();
+	        int erdiaY = e.getY();
+	        int zabaleraErdia = e.getZabalera() / 2; 
+	        int altueraErdia = e.getAltuera() / 2;   
 
-	        for (int i = hasieraX; i < hasieraX + zabalera; i++) {
-	            for (int j = hasieraY; j < hasieraY + altuera; j++) {
-	                // Matrizea konprobatu
+	        for (int i = erdiaX - zabaleraErdia; i <= erdiaX + zabaleraErdia; i++) {
+	            for (int j = erdiaY - altueraErdia; j <= erdiaY + altueraErdia; j++) {
 	                if (i >= 0 && i < 100 && j >= 0 && j < 60) {
-	                    this.gelaxkak[i][j].setEgoera(e.getMota()); 
+	                    this.gelaxkak[i][j].egoeraAldatu(e.getEgoeraObject());
 	                }
 	            }
 	        }
@@ -125,7 +123,7 @@ public class JokoKudeatzailea {
     }
 	
 	public synchronized void tiroEgin() {
-		this.tiroak.add(new Tiroa(this.espaziontzia.getX(), this.espaziontzia.getY() - 2));
+		this.tiroak.addAll(this.espaziontzia.tiroEgin());
         taulaEguneratu();
     }
 	
@@ -137,12 +135,13 @@ public class JokoKudeatzailea {
     }
 	
 	private synchronized void talkakEgiaztatu() {
+		//Troak vs etsaiak
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 	        Tiroa t = tiroak.get(i);
 	        boolean tiroakAsmatuDu = false;
 	        for (int j = etsaiak.size() - 1; j >= 0; j--) {
 	            Etsaia e = etsaiak.get(j);
-	            if (t.getX() == e.getX() && Math.abs(t.getY() - e.getY()) <= 1) {
+	            if (barruanDago(t.getX(), t.getY(), e)) {
 	                etsaiak.remove(j); 
 	                tiroakAsmatuDu = true; 
 	                break; 
@@ -151,9 +150,10 @@ public class JokoKudeatzailea {
 	        if (tiroakAsmatuDu) { tiroak.remove(i); }
 	    }
 
+		//Tiroak vs espaziontzia
 	    for (int i = 0; i < etsaiak.size(); i++) {
 	        Etsaia e = etsaiak.get(i);
-	        if (e.getX() == espaziontzia.getX() && e.getY() == espaziontzia.getY()) {
+	        if (gainjartzenDira(e, espaziontzia)) {
 	            Partida.getNirePartida().amaituJokoa(false); 
 	        }
 	    }
@@ -179,10 +179,23 @@ public class JokoKudeatzailea {
 	    }
 	}
 
-	public boolean posizioaLibreDa(int x, int y) {
+	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
+		int eMinX = x - (mugitzenDenEtsaia.getZabalera() / 2);
+		int eMaxX = x + (mugitzenDenEtsaia.getZabalera() / 2);
+		int eMinY = y - (mugitzenDenEtsaia.getAltuera() / 2);
+		int eMaxY = y + (mugitzenDenEtsaia.getAltuera() / 2);
+
+		if (eMinX < 0 || eMaxX >= 100 || eMaxY >= 60) return false;
 		for (Etsaia e : etsaiak) {
-			if (e.getX() == x && e.getY() == y) {
-				return false;
+			if (e != mugitzenDenEtsaia) {
+				int bMinX = e.getX() - (e.getZabalera() / 2);
+				int bMaxX = e.getX() + (e.getZabalera() / 2);
+				int bMinY = e.getY() - (e.getAltuera() / 2);
+				int bMaxY = e.getY() + (e.getAltuera() / 2);
+
+				if (eMinX <= bMaxX && eMaxX >= bMinX && eMinY <= bMaxY && eMaxY >= bMinY) {
+					return false; 
+				}
 			}
 		}
 		return true;
@@ -200,4 +213,33 @@ public class JokoKudeatzailea {
 	    talkakEgiaztatu();
 	    taulaEguneratu();
 	}
+	
+	//Tiroa entitate baten barruan dagoen begiratu
+		private boolean barruanDago(int px, int py, Entitatea e) {
+			int eMinX = e.getX() - (e.getZabalera() / 2);
+			int eMaxX = e.getX() + (e.getZabalera() / 2);
+			int eMinY = e.getY() - (e.getAltuera() / 2);
+			int eMaxY = e.getY() + (e.getAltuera() / 2);
+			return (px >= eMinX && px <= eMaxX && py >= eMinY && py <= eMaxY);
+		}
+
+		//Espaziontzia eta etsaia elkar ukitzen duten begiratu
+		private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
+			int e1MinX = e1.getX() - (e1.getZabalera() / 2);
+			int e1MaxX = e1.getX() + (e1.getZabalera() / 2);
+			int e1MinY = e1.getY() - (e1.getAltuera() / 2);
+			int e1MaxY = e1.getY() + (e1.getAltuera() / 2);
+
+			int e2MinX = e2.getX() - (e2.getZabalera() / 2);
+			int e2MaxX = e2.getX() + (e2.getZabalera() / 2);
+			int e2MinY = e2.getY() - (e2.getAltuera() / 2);
+			int e2MaxY = e2.getY() + (e2.getAltuera() / 2);
+
+			return (e1MinX <= e2MaxX && e1MaxX >= e2MinX && e1MinY <= e2MaxY && e1MaxY >= e2MinY);
+		}
+		
+		public synchronized void aldatuArma() {
+			this.espaziontzia.aldatuArma();
+		}
+
 }

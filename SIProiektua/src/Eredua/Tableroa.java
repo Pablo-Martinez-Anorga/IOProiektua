@@ -1,4 +1,4 @@
-package Eredua;
+/*package Eredua;
 
 public class Tableroa {
 	
@@ -74,4 +74,4 @@ public class Tableroa {
 		return this.gelaxkak;
 	}
 
-}
+}*/

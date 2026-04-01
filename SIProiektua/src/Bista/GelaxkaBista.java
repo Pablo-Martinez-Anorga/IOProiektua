@@ -5,8 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JLabel;
 
-import Eredua.Gelaxka;
-import Eredua.JokoKudeatzailea;
+import Eredua.Partida;
 
 public class GelaxkaBista extends JLabel implements Observer {
 
@@ -19,15 +18,15 @@ public class GelaxkaBista extends JLabel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof Gelaxka) {
-			Gelaxka g = (Gelaxka) o;
+		if (arg instanceof String) {
+			String mota = (String) arg;
 			
 			// Modeloaren egoeraren arabera kolorea aldatu.
-			if (g.isHutsik() || g.getEgoera().equals("HUTSA")) {
+			if (mota.equals("HUTSA")) {
 				this.setBackground(Color.BLACK);
-			} else if (g.getEgoera().equals("ESPAZIONTZIA")) {
+			} else if (mota.equals("ESPAZIONTZIA")) {
 				// Aukeratutako kolorea (String) irakurri eta Color bihurtu bistan
-				String kolorea = JokoKudeatzailea.getNireJK().getOntziKolorea();
+				String kolorea = Partida.getNirePartida().getOntziKolorea();
 				if ("RED".equals(kolorea)) {
 					this.setBackground(Color.RED);
 				} else if ("BLUE".equals(kolorea)) {
@@ -35,9 +34,9 @@ public class GelaxkaBista extends JLabel implements Observer {
 				} else {
 					this.setBackground(Color.GREEN);
 				}
-			} else if (g.getEgoera().equals("ETSAIA")) {
+			} else if (mota.equals("ETSAIA")) {
 				this.setBackground(Color.RED);
-			} else if (g.getEgoera().equals("TIROA")) {
+			} else if (mota.equals("TIROA")) {
 				this.setBackground(Color.YELLOW);
 			}
 		}

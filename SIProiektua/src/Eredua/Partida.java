@@ -21,10 +21,9 @@ public class Partida extends Observable {
 
 	// Jokoari hasiera eman
 	public void hasiPartida(String pKolorea) {
+		this.jokoaHasiDa = true;
 		JokoKudeatzailea.getNireJK().setOntziKolorea(pKolorea);
 		JokoKudeatzailea.getNireJK().hasiJokoa();
-		
-		this.jokoaHasiDa = true;
 		
 		// Bistari abisatu
 		setChanged();
@@ -44,5 +43,29 @@ public class Partida extends Observable {
 
 	public boolean isJokoaHasiDa() {
 		return jokoaHasiDa;
+	}
+	
+	public Gelaxka getGelaxka(int x, int y) {
+		return JokoKudeatzailea.getNireJK().getGelaxka(x, y);
+	}
+	
+	public String getOntziKolorea() {
+		return JokoKudeatzailea.getNireJK().getOntziKolorea();
+	}
+	
+	public void mugituOntzia(String norabidea) {
+		JokoKudeatzailea.getNireJK().mugituOntzia(norabidea);
+	}
+	
+	public void aldatuArma() {
+		if (this.jokoaHasiDa) {
+			JokoKudeatzailea.getNireJK().aldatuArma();
+		}
+	}
+	
+	public void tiroEgin() {
+		if (this.jokoaHasiDa) {
+			JokoKudeatzailea.getNireJK().tiroEgin();
+		}
 	}
 }

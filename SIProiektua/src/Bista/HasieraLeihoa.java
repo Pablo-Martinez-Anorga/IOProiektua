@@ -75,10 +75,11 @@ public class HasieraLeihoa extends JFrame implements Observer {
 	// Ereduak abisatzean leihoa itxi eta jokoa ireki
 	@Override
 	public void update(Observable o, Object arg) {
-		if (arg instanceof String && "HASI".equals(arg)) {
-			this.dispose(); 
-			JokoarenPanela jp = new JokoarenPanela();
-			jp.setVisible(true);
+		if (arg instanceof String) {
+			String mezua = (String) arg;
+			if (mezua.equals("HASI")) {
+				this.dispose(); 
+			}
 		}
 	}
 }

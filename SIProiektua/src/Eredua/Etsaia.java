@@ -32,14 +32,14 @@ public class Etsaia extends Entitatea {
 			}
 		}
 		//Libre badagoen begiratu
-		if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria)) {
+		if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria, this)) {
 	        this.x = xBerria;
 	        this.y = yBerria;
 		}
 	}
 
 	@Override
-	public String getMota() {
-		return "ETSAIA";
+	public Egoera getEgoeraObject() {
+	    return new EtsaiaEgoera();
 	}
 }

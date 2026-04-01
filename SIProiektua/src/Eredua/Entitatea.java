@@ -23,5 +23,5 @@ public abstract class Entitatea {
 	public int getAltuera() { return this.altuera; }   
 	
 	public abstract void mugitu(); 
-	public abstract String getMota();
+	public abstract Egoera getEgoeraObject();
 }
