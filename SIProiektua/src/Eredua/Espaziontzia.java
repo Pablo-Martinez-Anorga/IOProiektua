@@ -1,27 +1,50 @@
 package Eredua;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Espaziontzia extends Entitatea {
 	
 	//Atributuak
-	private TiroEstrategia[] armak;
+	private String mota; // "RED", "GREEN", "BLUE"
+	private List<TiroEstrategia> armak;
 	private int armaAktiboaIndex;
 	
+	// Munizioa
+	private int geziMunizioa;
+	private int erronboMunizioa;
+	
 	//Eraikitzailea
-	public Espaziontzia(int x, int y) { 
+	public Espaziontzia(int x, int y, String mota) { 
 		super(x, y, 5, 3);
-		//3 estrategiak kargatu
-		this.armak = new TiroEstrategia[] {
-				new TiroPixelEstrategia(),
-				new TiroGeziEstrategia(),
-				new TiroErronboEstrategia()
-			};
-		//Lehehengo estrategiarekin hasieratu
+		this.mota = mota;
+		this.armak = new ArrayList<>();
 		this.armaAktiboaIndex = 0;
+		
+		// Munizioa hasieratu
+		this.geziMunizioa = 30;
+		this.erronboMunizioa = 20;
+		
+		// Ontziaren kolorearen arabera estrategiak kargatu
+		armakKargatu();
 	}
 	
 	//Metodoak
+	private void armakKargatu() {
+		// Lehenengo estrategia: Denek daukate pixel bakarrekoa (Infinitoa)
+		this.armak.add(new TiroPixelEstrategia());
+		
+		// Bigarren estrategia: GREEN eta RED ontziek gezi tiroa dute (30 bala)
+		if (this.mota.equals("GREEN") || this.mota.equals("RED")) {
+			this.armak.add(new TiroGeziEstrategia());
+		}
+		
+		// Hirugarren estrategia: BLUE eta RED ontziek erronbo tiroa dute (20 bala)
+		if (this.mota.equals("BLUE") || this.mota.equals("RED")) {
+			this.armak.add(new TiroErronboEstrategia());
+		}
+	}
+	
 	public void mugitu(String norabidea) {
 		int zabaleraErdia = this.zabalera / 2;
 		int altueraErdia = this.altuera / 2;
@@ -54,10 +77,22 @@ public class Espaziontzia extends Entitatea {
     }
 
 	public void aldatuArma() {
-		this.armaAktiboaIndex = (this.armaAktiboaIndex + 1) % this.armak.length;
+		this.armaAktiboaIndex = (this.armaAktiboaIndex + 1) % this.armak.size();
 	}
 	
 	public List<Tiroa> tiroEgin() {
-		return this.armak[this.armaAktiboaIndex].tiroEgin(this.x, this.y, this.altuera);
+		TiroEstrategia unekoArma = this.armak.get(this.armaAktiboaIndex);
+		
+		// Munizioa kudeatu tiro egin aurretik
+		if (unekoArma instanceof TiroGeziEstrategia) {
+			if (this.geziMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
+			this.geziMunizioa--;
+		} else if (unekoArma instanceof TiroErronboEstrategia) {
+			if (this.erronboMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
+			this.erronboMunizioa--;
+		}
+		
+		// Dena ondo badago, tiroa sortu
+		return unekoArma.tiroEgin(this.x, this.y, this.altuera);
 	}
 }
