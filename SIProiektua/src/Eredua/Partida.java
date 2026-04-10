@@ -23,11 +23,9 @@ public class Partida extends Observable {
 	public void hasiPartida(String pKolorea) {
 		this.jokoaHasiDa = true;
 		JokoKudeatzailea.getNireJK().setOntziKolorea(pKolorea);
-		JokoKudeatzailea.getNireJK().hasiJokoa();
-		
-		// Bistari abisatu
 		setChanged();
 		notifyObservers("HASI");
+		JokoKudeatzailea.getNireJK().hasiJokoa();
 	}
 
 	// Jokoa amaitu eta egoera jakinarazi

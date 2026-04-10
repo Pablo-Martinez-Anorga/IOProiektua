@@ -6,12 +6,10 @@ import java.util.List;
 public class TiroErronboEstrategia implements TiroEstrategia{
 	
 	@Override
-    public List<Tiroa> tiroEgin(int ontziX, int ontziY, int ontziAltuera) {
-        //Pertsona 3 erronbo tiroak
-        List<Tiroa> berriak = new ArrayList<>();
-        int tiroY = ontziY - (ontziAltuera / 2) - 1;
-        berriak.add(new Tiroa(ontziX, tiroY));
-        return berriak;
-    }
+	public List<Tiroa> tiroEgin(int ontziX, int ontziY, int ontziAltuera) {
+		List<Tiroa> berriak = new ArrayList<>();
+		berriak.add(EntitateFaktoria.getNireFaktoria().sortuTiroa(ontziX, ontziY - 2, "ERRONBO"));
+		return berriak;
+	}
 
 }

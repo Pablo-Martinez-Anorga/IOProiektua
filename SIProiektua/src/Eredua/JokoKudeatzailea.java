@@ -72,17 +72,31 @@ public class JokoKudeatzailea {
 		taulaEguneratu();
 	}
 	
-	private void garbituMatrizea() {
-		for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 60; j++) {
-				if (!this.gelaxkak[i][j].isHutsik()) { 
-					this.gelaxkak[i][j].hustu();
-				}
-			}
-		}
+	private synchronized void taulaEguneratu() { 
+	    Egoera[][] matrizVirtual = new Egoera[100][60];
+	    for (int i = 0; i < 100; i++) {
+	        for (int j = 0; j < 60; j++) {
+	            matrizVirtual[i][j] = new HutsaEgoera();
+	        }
+	    }
+
+	    markatuMatrizean(matrizVirtual, this.espaziontzia);
+	    for (Etsaia e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
+	    for (Tiroa t : tiroak) { markatuMatrizean(matrizVirtual, t); }
+
+	    for (int i = 0; i < 100; i++) {
+	        for (int j = 0; j < 60; j++) {
+	            String unekoIzena = this.gelaxkak[i][j].getEgoera();
+	            String berriaIzena = matrizVirtual[i][j].getIzena();
+	            
+	            if (!unekoIzena.equals(berriaIzena)) {
+	                this.gelaxkak[i][j].egoeraAldatu(matrizVirtual[i][j]);
+	            }
+	        }
+	    }
 	}
-	
-	private void entitateaSartu(Entitatea e) {
+
+	private void markatuMatrizean(Egoera[][] matrizVirtual, Entitatea e) {
 		if (e != null) {
 			int ex = e.getX();
 			int ey = e.getY();
@@ -90,43 +104,34 @@ public class JokoKudeatzailea {
 				int nx = ex + p.getDx();
 				int ny = ey + p.getDy();
 				if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
-					this.gelaxkak[nx][ny].egoeraAldatu(e.getEgoeraObject());
+					matrizVirtual[nx][ny] = e.getEgoeraObject();
 				}
 			}
 		}
 	}
-	
-	// ----------------------------------
-	
-	private synchronized void taulaEguneratu() {
-		garbituMatrizea();
-		entitateaSartu(this.espaziontzia);
-		for (Etsaia e : etsaiak) { entitateaSartu(e); }	
-		for (Tiroa t : tiroak) { entitateaSartu(t); }
-	}	
 
 	private void etsaiakSortu() {
-	    int y_posizioa = 5;
+	    int y_posizioa = 10;
 	    this.etsaiak.clear();
 	    int etsaiKopurua = (int)(Math.random() * 5) + 4;
 	    ArrayList<Integer> erabilitakoX = new ArrayList<>();
 	    
 	    for (int i = 0; i < etsaiKopurua; i++) {
-	        int x_posizioa = (int)(Math.random() * 98) + 1; 
-	        boolean posizioaOndo = false;	        
-	        while (!posizioaOndo) {
-	            posizioaOndo = true;
-	            for (int x_zaharra : erabilitakoX) {           
-	                if (Math.abs(x_zaharra - x_posizioa) <= 2) {
-	                    posizioaOndo = false;
-	                    x_posizioa = (int)(Math.random() * 98) + 1; 
+	        int x_posizioa = (int)(Math.random() * 93) + 3; 
+	        boolean posizioaValida = false;
+	        
+	        while (!posizioaValida) {
+	            posizioaValida = true;
+	            for (int x_existente : erabilitakoX) {
+	                if (Math.abs(x_existente - x_posizioa) < 5) {
+	                    posizioaValida = false;
+	                    x_posizioa = (int)(Math.random() * 93) + 3;
 	                    break;
 	                }
 	            }
-	        }       
-	        erabilitakoX.add(x_posizioa);
+	        }
 	        
-	        // FACTORY PATROIA: Etsaia sortu posizio seguruan
+	        erabilitakoX.add(x_posizioa);
 	        this.etsaiak.add(EntitateFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
 	    }
 	    taulaEguneratu();
@@ -176,22 +181,27 @@ public class JokoKudeatzailea {
 	}
 	
 	private void jokoEgoeraEgiaztatu() {
-		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		
-		if (this.etsaiak.isEmpty()) { 
-			Partida.getNirePartida().amaituJokoa(true);
-			return;
-		}
-		
-		boolean inbasioa = false;
-		int i = 0;
-		while (i < etsaiak.size() && !inbasioa) {
-			if (etsaiak.get(i).getY() >= 59) { 
-				Partida.getNirePartida().amaituJokoa(false); 
-				inbasioa = true;
-			}
-			i++;
-		}
+	    if (!Partida.getNirePartida().isJokoaHasiDa()) return;
+	    
+	    if (this.etsaiak.isEmpty()) { 
+	        Partida.getNirePartida().amaituJokoa(true);
+	        return;
+	    }
+	    
+	    boolean inbasioa = false;
+	    for (Etsaia e : etsaiak) {
+	        for (Puntu p : e.getPixelek()) {
+	            if (e.getY() + p.getDy() >= 59) {
+	                inbasioa = true;
+	                break;
+	            }
+	        }
+	        if (inbasioa) break;
+	    }
+
+	    if (inbasioa) {
+	        Partida.getNirePartida().amaituJokoa(false);
+	    }
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
