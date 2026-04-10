@@ -138,17 +138,20 @@ public class JokoKudeatzailea {
 	}
 	
 	public synchronized void mugituOntzia(String norabidea) {
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		this.espaziontzia.mugitu(norabidea);
 		talkakEgiaztatu();
 		taulaEguneratu();
 	}
 	
 	public synchronized void tiroEgin() {
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		this.tiroak.addAll(this.espaziontzia.tiroEgin());
 		taulaEguneratu();
 	}
 	
 	private synchronized void eguneratuEtsaiak() {
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		for (Etsaia e : etsaiak) { e.mugitu(); }
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
