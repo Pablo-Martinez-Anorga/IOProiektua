@@ -106,19 +106,30 @@ public class JokoKudeatzailea {
 	}	
 
 	private void etsaiakSortu() {
-		int y_posizioa = 5;
-		this.etsaiak.clear();
-		int etsaiKopurua = (int)(Math.random() * 5) + 4;
-		ArrayList<Integer> erabilitakoX = new ArrayList<>();
-		for (int i = 0; i < etsaiKopurua; i++) {
-			int x_posizioa = (int)(Math.random() * 100); 
-			while (erabilitakoX.contains(x_posizioa)) { x_posizioa = (int)(Math.random() * 100); }       
-			erabilitakoX.add(x_posizioa);
-			
-			// FACTORY PATROIA: Etsaia sortu
-			this.etsaiak.add(EntitateFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
-		}
-		taulaEguneratu();
+	    int y_posizioa = 5;
+	    this.etsaiak.clear();
+	    int etsaiKopurua = (int)(Math.random() * 5) + 4;
+	    ArrayList<Integer> erabilitakoX = new ArrayList<>();
+	    
+	    for (int i = 0; i < etsaiKopurua; i++) {
+	        int x_posizioa = (int)(Math.random() * 98) + 1; 
+	        boolean posizioaOndo = false;	        
+	        while (!posizioaOndo) {
+	            posizioaOndo = true;
+	            for (int x_zaharra : erabilitakoX) {           
+	                if (Math.abs(x_zaharra - x_posizioa) <= 2) {
+	                    posizioaOndo = false;
+	                    x_posizioa = (int)(Math.random() * 98) + 1; 
+	                    break;
+	                }
+	            }
+	        }       
+	        erabilitakoX.add(x_posizioa);
+	        
+	        // FACTORY PATROIA: Etsaia sortu posizio seguruan
+	        this.etsaiak.add(EntitateFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
+	    }
+	    taulaEguneratu();
 	}
 	
 	public synchronized void mugituOntzia(String norabidea) {

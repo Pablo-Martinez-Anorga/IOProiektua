@@ -55,7 +55,7 @@ public class Espaziontzia extends Entitatea {
 	        if (this.x + p.getDx() - 1 < 0) ezkerreraAhalDa = false;
 	        if (this.x + p.getDx() + 1 >= 100) eskumaraAhalDa = false;
 	        if (this.y + p.getDy() - 1 < 0) goraAhalDa = false;
-	        if (this.y + p.getDy() + 1 >= 59) beheraAhalDa = false;
+	        if (this.y + p.getDy() + 1 >= 60) beheraAhalDa = false;
 	    }
 
 	    if (norabidea.equals("Eskumara") && eskumaraAhalDa) this.x += 1;
