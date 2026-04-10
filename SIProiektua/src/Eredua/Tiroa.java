@@ -4,8 +4,8 @@ public class Tiroa extends Entitatea {
 	
 	//Eraikitzailea
 	public Tiroa(int x, int y) {
-		// Pasamos x, y, ancho (1) y alto (2)
-        super(x, y, 1, 2);
+        super(x, y);
+        this.irudia.gehituOsagaia(new Puntu(0, 0));
     }
 	
 	//Metodoak

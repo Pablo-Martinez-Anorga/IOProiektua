@@ -4,37 +4,36 @@ public class Etsaia extends Entitatea {
 	
 	//Eraikitzailea
 	public Etsaia(int x, int y) {
-        super(x, y, 3, 3);
+        super(x,y);
     }
 	
 	//Metodoak
 	@Override
-    public void mugitu() {
-		int norabidea = (int)(Math.random() * 3);
+	public void mugitu() {
+		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
+		boolean ezkerreraAhalDa = true;
+		boolean eskumaraAhalDa = true;
+
+		// Paretekin talkak pixel bakoitzarekin egiaztatu
+		for (Puntu p : this.getPixelek()) {
+			if (this.x + p.getDx() - 1 < 0) ezkerreraAhalDa = false;
+			if (this.x + p.getDx() + 1 >= 100) eskumaraAhalDa = false;
+		}
+
 		int xBerria = this.x;
-	    int yBerria = this.y;
-		//Ezkerrera
-		if (norabidea == 0) {
-			if (this.x > 0) {
-				xBerria = this.x - 1;
-			}
+		int yBerria = this.y;
+
+		if (norabidea == 0 && ezkerreraAhalDa) {
+			xBerria = this.x - 1;
+		} else if (norabidea == 1 && eskumaraAhalDa) {
+			xBerria = this.x + 1;
+		} else {
+			yBerria = this.y + 1;
 		}
-		//Eskumara
-		else if (norabidea == 1) {
-			if (this.x + this.zabalera < 100) {
-				xBerria = this.x + 1;
-			}
-		}
-		//Behera
-		else if (norabidea == 2) {
-			if (this.y + this.altuera < 60) {
-				yBerria = this.y + 1;
-			}
-		}
-		//Libre badagoen begiratu
+
 		if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria, this)) {
-	        this.x = xBerria;
-	        this.y = yBerria;
+			this.x = xBerria;
+			this.y = yBerria;
 		}
 	}
 

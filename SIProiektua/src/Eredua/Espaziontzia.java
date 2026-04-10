@@ -16,7 +16,7 @@ public class Espaziontzia extends Entitatea {
 	
 	//Eraikitzailea
 	public Espaziontzia(int x, int y, String mota) { 
-		super(x, y, 5, 3);
+		super(x, y);
 		this.mota = mota;
 		this.armak = new ArrayList<>();
 		this.armaAktiboaIndex = 0;
@@ -46,25 +46,22 @@ public class Espaziontzia extends Entitatea {
 	}
 	
 	public void mugitu(String norabidea) {
-		int zabaleraErdia = this.zabalera / 2;
-		int altueraErdia = this.altuera / 2;
-		if (norabidea.equals("Eskumara")) {
-			if (this.x + zabaleraErdia < 99){
-				this.x = this.x + 1;
-			}
-		}else if (norabidea.equals("Ezkerrera")) {
-			if (this.x - zabaleraErdia > 0) {
-				this.x = this.x - 1;
-			}
-		}else if (norabidea.equals("Gora")) {
-			if (this.y - altueraErdia > 0) {
-				this.y = this.y - 1;
-			}
-		}else if (norabidea.equals("Behera")) {
-			if (this.y + altueraErdia < 59) {
-				this.y = this.y + 1;
-			}
-		}
+	    boolean ezkerreraAhalDa = true;
+	    boolean eskumaraAhalDa = true;
+	    boolean goraAhalDa = true;
+	    boolean beheraAhalDa = true;
+	    
+	    for (Puntu p : this.getPixelek()) {
+	        if (this.x + p.getDx() - 1 < 0) ezkerreraAhalDa = false;
+	        if (this.x + p.getDx() + 1 >= 100) eskumaraAhalDa = false;
+	        if (this.y + p.getDy() - 1 < 0) goraAhalDa = false;
+	        if (this.y + p.getDy() + 1 >= 59) beheraAhalDa = false;
+	    }
+
+	    if (norabidea.equals("Eskumara") && eskumaraAhalDa) this.x += 1;
+	    else if (norabidea.equals("Ezkerrera") && ezkerreraAhalDa) this.x -= 1;
+	    else if (norabidea.equals("Gora") && goraAhalDa) this.y -= 1;
+	    else if (norabidea.equals("Behera") && beheraAhalDa) this.y += 1;
 	}
 	
 	@Override
@@ -93,6 +90,6 @@ public class Espaziontzia extends Entitatea {
 		}
 		
 		// Dena ondo badago, tiroa sortu
-		return unekoArma.tiroEgin(this.x, this.y, this.altuera);
+		return unekoArma.tiroEgin(this.x, this.y, 3);
 	}
 }
