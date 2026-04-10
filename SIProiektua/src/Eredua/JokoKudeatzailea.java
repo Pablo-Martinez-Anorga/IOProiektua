@@ -84,20 +84,18 @@ public class JokoKudeatzailea {
 	
 	private void entitateaSartu(Entitatea e) {
 		if (e != null) {
-			int erdiaX = e.getX();
-			int erdiaY = e.getY();
-			int zabaleraErdia = e.getZabalera() / 2; 
-			int altueraErdia = e.getAltuera() / 2;   
-
-			for (int i = erdiaX - zabaleraErdia; i <= erdiaX + zabaleraErdia; i++) {
-				for (int j = erdiaY - altueraErdia; j <= erdiaY + altueraErdia; j++) {
-					if (i >= 0 && i < 100 && j >= 0 && j < 60) {
-						this.gelaxkak[i][j].egoeraAldatu(e.getEgoeraObject());
-					}
+			int ex = e.getX();
+			int ey = e.getY();
+			for (Puntu p : e.getPixelek()) {
+				int nx = ex + p.getDx();
+				int ny = ey + p.getDy();
+				if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
+					this.gelaxkak[nx][ny].egoeraAldatu(e.getEgoeraObject());
 				}
 			}
 		}
 	}
+	
 	// ----------------------------------
 	
 	private synchronized void taulaEguneratu() {
@@ -142,13 +140,13 @@ public class JokoKudeatzailea {
 	}
 	
 	private synchronized void talkakEgiaztatu() {
-		//Tiroak vs etsaiak
+		// Tiroak vs etsaiak (Biak Entitateak direnez, gainjartzenDira erabili dezakegu)
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
 			Tiroa t = tiroak.get(i);
 			boolean tiroakAsmatuDu = false;
 			for (int j = etsaiak.size() - 1; j >= 0; j--) {
 				Etsaia e = etsaiak.get(j);
-				if (barruanDago(t.getX(), t.getY(), e)) {
+				if (gainjartzenDira(t, e)) {
 					etsaiak.remove(j); 
 					tiroakAsmatuDu = true; 
 					break; 
@@ -157,10 +155,9 @@ public class JokoKudeatzailea {
 			if (tiroakAsmatuDu) { tiroak.remove(i); }
 		}
 
-		//Tiroak vs espaziontzia
+		// Espaziontzia vs etsaiak
 		for (int i = 0; i < etsaiak.size(); i++) {
-			Etsaia e = etsaiak.get(i);
-			if (gainjartzenDira(e, espaziontzia)) {
+			if (gainjartzenDira(etsaiak.get(i), espaziontzia)) {
 				Partida.getNirePartida().amaituJokoa(false); 
 			}
 		}
@@ -187,21 +184,16 @@ public class JokoKudeatzailea {
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
-		int eMinX = x - (mugitzenDenEtsaia.getZabalera() / 2);
-		int eMaxX = x + (mugitzenDenEtsaia.getZabalera() / 2);
-		int eMinY = y - (mugitzenDenEtsaia.getAltuera() / 2);
-		int eMaxY = y + (mugitzenDenEtsaia.getAltuera() / 2);
-
-		if (eMinX < 0 || eMaxX >= 100 || eMaxY >= 60) return false;
-		for (Etsaia e : etsaiak) {
-			if (e != mugitzenDenEtsaia) {
-				int bMinX = e.getX() - (e.getZabalera() / 2);
-				int bMaxX = e.getX() + (e.getZabalera() / 2);
-				int bMinY = e.getY() - (e.getAltuera() / 2);
-				int bMaxY = e.getY() + (e.getAltuera() / 2);
-
-				if (eMinX <= bMaxX && eMaxX >= bMinX && eMinY <= bMaxY && eMaxY >= bMinY) {
-					return false; 
+		for (Puntu p : mugitzenDenEtsaia.getPixelek()) {
+			int nx = x + p.getDx();
+			int ny = y + p.getDy();
+			if (nx < 0 || nx >= 100 || ny >= 60) return false;
+			
+			for (Etsaia e : etsaiak) {
+				if (e != mugitzenDenEtsaia) {
+					for (Puntu ep : e.getPixelek()) {
+						if (nx == e.getX() + ep.getDx() && ny == e.getY() + ep.getDy()) return false;
+					}
 				}
 			}
 		}
@@ -221,28 +213,19 @@ public class JokoKudeatzailea {
 		taulaEguneratu();
 	}
 	
-	//Tiroa entitate baten barruan dagoen begiratu
-	private boolean barruanDago(int px, int py, Entitatea e) {
-		int eMinX = e.getX() - (e.getZabalera() / 2);
-		int eMaxX = e.getX() + (e.getZabalera() / 2);
-		int eMinY = e.getY() - (e.getAltuera() / 2);
-		int eMaxY = e.getY() + (e.getAltuera() / 2);
-		return (px >= eMinX && px <= eMaxX && py >= eMinY && py <= eMaxY);
-	}
 
 	//Espaziontzia eta etsaia elkar ukitzen duten begiratu
 	private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
-		int e1MinX = e1.getX() - (e1.getZabalera() / 2);
-		int e1MaxX = e1.getX() + (e1.getZabalera() / 2);
-		int e1MinY = e1.getY() - (e1.getAltuera() / 2);
-		int e1MaxY = e1.getY() + (e1.getAltuera() / 2);
-
-		int e2MinX = e2.getX() - (e2.getZabalera() / 2);
-		int e2MaxX = e2.getX() + (e2.getZabalera() / 2);
-		int e2MinY = e2.getY() - (e2.getAltuera() / 2); 
-		int e2MaxY = e2.getY() + (e2.getAltuera() / 2);
-
-		return (e1MinX <= e2MaxX && e1MaxX >= e2MinX && e1MinY <= e2MaxY && e1MaxY >= e2MinY);
+		for (Puntu p1 : e1.getPixelek()) {
+			int x1 = e1.getX() + p1.getDx();
+			int y1 = e1.getY() + p1.getDy();
+			for (Puntu p2 : e2.getPixelek()) {
+				int x2 = e2.getX() + p2.getDx();
+				int y2 = e2.getY() + p2.getDy();
+				if (x1 == x2 && y1 == y2) return true;
+			}
+		}
+		return false;
 	}
 	
 	public synchronized void aldatuArma() {
