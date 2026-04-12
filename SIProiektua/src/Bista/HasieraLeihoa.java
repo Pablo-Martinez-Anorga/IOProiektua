@@ -1,20 +1,23 @@
 package Bista;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Kontrolatzailea.BotoiKontroladorea;
 import Eredua.Partida;
+import Kontrolatzailea.BotoiKontroladorea;
 
-public class HasieraLeihoa extends JFrame implements Observer {
+public class HasieraLeihoa extends JFrame implements Observer{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -25,35 +28,41 @@ public class HasieraLeihoa extends JFrame implements Observer {
 	public HasieraLeihoa() {
 		setTitle("Space Invaders - Hasiera");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 500, 350); 
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
+		JPanel panelErdian = new JPanel();
+		panelErdian.setLayout(new GridLayout(2, 1)); 
+		
+		JPanel tituluPanela = new JPanel();
 		JLabel lblNewLabel = new JLabel("SPACE INVADERS");
-		lblNewLabel.setBounds(40, 11, 356, 57);
-		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 40));
-		contentPane.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Monospaced", Font.BOLD, 50));
+		tituluPanela.add(lblNewLabel);
+		panelErdian.add(tituluPanela); 
 		
+		JPanel botoiPanela = new JPanel();
 		btnGreen = new JButton("GREEN");
 		btnGreen.setActionCommand("G");
-		btnGreen.setBounds(40, 157, 98, 33);
-		contentPane.add(btnGreen);
+		botoiPanela.add(btnGreen);
 		
 		btnBlue = new JButton("BLUE");
 		btnBlue.setActionCommand("B");
-		btnBlue.setBounds(173, 157, 98, 33);
-		contentPane.add(btnBlue);
+		botoiPanela.add(btnBlue);
 		
 		btnRed = new JButton("RED");
 		btnRed.setActionCommand("R");
-		btnRed.setBounds(306, 157, 98, 33);
-		contentPane.add(btnRed);
+		botoiPanela.add(btnRed);
+		
+		panelErdian.add(botoiPanela); 
+		
+		contentPane.add(panelErdian, BorderLayout.CENTER);
 		
 		this.setFocusable(true);
 		
-		// Partida behatu
 		Partida.getNirePartida().addObserver(this);
 	}
 
@@ -72,7 +81,6 @@ public class HasieraLeihoa extends JFrame implements Observer {
 		});
 	}
 
-	// Ereduak abisatzean leihoa itxi eta jokoa ireki
 	@Override
 	public void update(Observable o, Object arg) {
 		if (arg instanceof String) {
