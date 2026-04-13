@@ -14,6 +14,9 @@ public class EntitateFaktoria {
         return nireFaktoria;
     }
 
+    
+    // HIRUTAN BANATU FAKTORIAK
+    
     public Espaziontzia sortuEspaziontzia(String mota, int x, int y) {
 		Espaziontzia ontzia = new Espaziontzia(x, y, mota);
 		IrudiKonposatua irudia = ontzia.getIrudia();

@@ -5,3 +5,5 @@ public interface Egoera {
     
     String getIzena();
 }
+
+//ISHUTSIK???

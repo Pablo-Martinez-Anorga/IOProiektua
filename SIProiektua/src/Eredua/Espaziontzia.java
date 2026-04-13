@@ -5,7 +5,9 @@ import java.util.List;
 
 public class Espaziontzia extends Entitatea {
 	
-	//Atributuak
+	//Atributuak  
+	
+	// ESTRATEGIA BAKARRA
 	private String mota; // "RED", "GREEN", "BLUE"
 	private List<TiroEstrategia> armak;
 	private int armaAktiboaIndex;

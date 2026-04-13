@@ -46,6 +46,7 @@ public class JokoKudeatzailea {
 		
 		etsaiakSortu(); 
 		
+		//WHILEAK KENDU HARIETAN
 		Thread tiroenHaria = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -95,7 +96,7 @@ public class JokoKudeatzailea {
 	        }
 	    }
 	}
-
+	
 	private void markatuMatrizean(Egoera[][] matrizVirtual, Entitatea e) {
 		if (e != null) {
 			int ex = e.getX();
@@ -237,7 +238,7 @@ public class JokoKudeatzailea {
 		taulaEguneratu();
 	}
 	
-
+	
 	//Espaziontzia eta etsaia elkar ukitzen duten begiratu
 	private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
 		for (Puntu p1 : e1.getPixelek()) {
