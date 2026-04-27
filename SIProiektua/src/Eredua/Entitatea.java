@@ -1,5 +1,6 @@
 package Eredua;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entitatea {
@@ -19,7 +20,9 @@ public abstract class Entitatea {
 	
 	// Metodo lagungarria zuzenean pixelak eskatzeko
 	public List<Puntu> getPixelek() {
-		return this.irudia.getPixelek();
+		List<Puntu> pixelGuztiak = new ArrayList<>();
+		this.irudia.betePixelekin(pixelGuztiak);
+		return pixelGuztiak;
 	}
 	
 	public abstract void mugitu(); 

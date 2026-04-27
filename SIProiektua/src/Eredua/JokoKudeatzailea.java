@@ -2,6 +2,8 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class JokoKudeatzailea { 
 	
@@ -17,7 +19,7 @@ public class JokoKudeatzailea {
 		this.etsaiak = new ArrayList<>();
 		this.tiroak = new ArrayList<>();
 		// FACTORY PATROIA: Defektuzko ontzia sortu (Gero hasiJokoa-n aldatuko da)
-		this.espaziontzia = EntitateFaktoria.getNireFaktoria().sortuEspaziontzia("GREEN", 50, 55);
+		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia("GREEN", 50, 55);
 		this.gelaxkak = new Gelaxka[100][60];
 		for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 60; j++) {
@@ -42,33 +44,36 @@ public class JokoKudeatzailea {
 	
 	public void hasiJokoa() {
 		// Kolorearen araberako ontzia sortu
-		this.espaziontzia = EntitateFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
+		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
 		
 		etsaiakSortu(); 
 		
-		//WHILEAK KENDU HARIETAN
-		Thread tiroenHaria = new Thread(new Runnable() {
+		//Thread tiroenHaria = new Thread(new Runnable() {
+		Timer tiroenTimer = new Timer();
+		tiroenTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				while (Partida.getNirePartida().isJokoaHasiDa()) {
+				if (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuTiroak(); 		
-					try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+				} else {
+					this.cancel();
 				}
 			}
-		});
-		tiroenHaria.start();
+		}, 0, 50);
 		
 		
-		Thread etsaienHaria = new Thread(new Runnable() {
+		//Thread etsaienHaria = new Thread(new Runnable() {
+		Timer etsaienTimer = new Timer();
+		etsaienTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				while (Partida.getNirePartida().isJokoaHasiDa()) {
+				if (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
-					try { Thread.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+				} else {
+					this.cancel();
 				}
 			}
-		});
-		etsaienHaria.start();
+		}, 0, 200);
 		
 		taulaEguneratu();
 	}
@@ -133,7 +138,7 @@ public class JokoKudeatzailea {
 	        }
 	        
 	        erabilitakoX.add(x_posizioa);
-	        this.etsaiak.add(EntitateFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
+	        this.etsaiak.add(EtsaiaFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
 	    }
 	    taulaEguneratu();
 	}

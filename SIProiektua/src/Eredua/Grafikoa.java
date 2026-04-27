@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Grafikoa {
 
-    List<Puntu> getPixelek();
+	public void betePixelekin(List<Puntu> pixelGuztiak);
 }

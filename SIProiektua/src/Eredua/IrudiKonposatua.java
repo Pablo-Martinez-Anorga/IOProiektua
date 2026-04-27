@@ -15,11 +15,9 @@ public class IrudiKonposatua implements Grafikoa {
     }
 
     @Override
-    public List<Puntu> getPixelek() {
-        List<Puntu> pixelGuztiak = new ArrayList<>();
+    public void betePixelekin(List<Puntu> pixelGuztiak) {
         for (Grafikoa g : osagaiak) {
-            pixelGuztiak.addAll(g.getPixelek());
+            g.betePixelekin(pixelGuztiak);
         }
-        return pixelGuztiak;
     }
 }

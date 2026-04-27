@@ -1,9 +1,9 @@
 package Eredua;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Puntu implements Grafikoa {
+	//Hostoa
     private int dx;
     private int dy;
 
@@ -16,9 +16,7 @@ public class Puntu implements Grafikoa {
     public int getDy() { return dy; }
 
     @Override
-    public List<Puntu> getPixelek() {
-        List<Puntu> nirePixela = new ArrayList<>();
-        nirePixela.add(this);
-        return nirePixela;
+    public void betePixelekin(List<Puntu> pixelGuztiak) {
+        pixelGuztiak.add(this);
     }
 }
