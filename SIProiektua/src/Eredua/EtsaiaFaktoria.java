@@ -1,7 +1,7 @@
 package Eredua;
 
 public class EtsaiaFaktoria {
-	private static EtsaiaFaktoria nireFaktoria = null;
+    private static EtsaiaFaktoria nireFaktoria;
 
     private EtsaiaFaktoria() {}
 
@@ -10,16 +10,15 @@ public class EtsaiaFaktoria {
         return nireFaktoria;
     }
 
-    public Etsaia sortuEtsaia(int x, int y) {
-        Etsaia etsaia = new Etsaia(x, y);
-        IrudiKonposatua irudia = etsaia.getIrudia();
-        
-        irudia.gehituOsagaia(new Puntu(0, 0));
-        irudia.gehituOsagaia(new Puntu(-1, -1));
-        irudia.gehituOsagaia(new Puntu(1, -1));
-        irudia.gehituOsagaia(new Puntu(-2, -2));
-        irudia.gehituOsagaia(new Puntu(2, -2));
-        
-        return etsaia;
+    public Entitatea sortuEtsaia(int x, int y, String mota) {
+        if (mota.equals("MULTIPIXEL")) {
+            EtsaiNodo nodo = new EtsaiNodo(x, y);
+            nodo.gehituOsagaia(new Etsaia(0, 0));  // Erdia
+            nodo.gehituOsagaia(new Etsaia(-1, 0)); // Ezkerra
+            nodo.gehituOsagaia(new Etsaia(1, 0));  // Eskuma
+            return nodo;
+        } else {
+            return new Etsaia(x, y); // Monopixela
+        }
     }
 }

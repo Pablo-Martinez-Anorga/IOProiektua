@@ -14,10 +14,9 @@ public class Etsaia extends Entitatea {
 		boolean ezkerreraAhalDa = true;
 		boolean eskumaraAhalDa = true;
 
-		// Paretekin talkak pixel bakoitzarekin egiaztatu
-		for (Puntu p : this.getPixelek()) {
-			if (this.x + p.getDx() - 1 < 0) ezkerreraAhalDa = false;
-			if (this.x + p.getDx() + 1 >= 100) eskumaraAhalDa = false;
+		for (Entitatea p : this.getPixelek()) {
+			if (this.x + p.getX() - 1 < 0) ezkerreraAhalDa = false;
+			if (this.x + p.getX() + 1 >= 100) eskumaraAhalDa = false;
 		}
 
 		int xBerria = this.x;
