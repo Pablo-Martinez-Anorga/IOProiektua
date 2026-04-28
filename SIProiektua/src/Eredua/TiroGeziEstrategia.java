@@ -8,7 +8,7 @@ public class TiroGeziEstrategia implements TiroEstrategia{
 	@Override
 	public List<Tiroa> tiroEgin(int ontziX, int ontziY, int ontziAltuera) {
 		List<Tiroa> berriak = new ArrayList<>();
-		berriak.add(EntitateFaktoria.getNireFaktoria().sortuTiroa(ontziX, ontziY - 2, "GEZI"));
+		berriak.add(TiroFaktoria.getNireFaktoria().sortuTiroa(ontziX, ontziY - 2, "GEZI"));
 		return berriak;
 	}
 }
