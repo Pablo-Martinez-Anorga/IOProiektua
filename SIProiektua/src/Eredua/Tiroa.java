@@ -1,5 +1,8 @@
 package Eredua;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tiroa extends Entitatea {
 	
 	//Eraikitzailea
@@ -16,5 +19,13 @@ public class Tiroa extends Entitatea {
 	@Override
 	public Egoera getEgoeraObject() {
 	    return new TiroaEgoera();
+	}
+	
+	// GAKOA COMPOSITE-RAKO: Monopixelaren offset-a (0,0) itzuli behar da beti.
+	@Override
+	public List<Entitatea> getPixelek() {
+		List<Entitatea> pixelGuztiak = new ArrayList<>();
+		pixelGuztiak.add(new Tiroa(0, 0)); 
+		return pixelGuztiak;
 	}
 }
