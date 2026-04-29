@@ -155,8 +155,7 @@ public class JokoKudeatzailea {
 	
 	private synchronized void eguneratuEtsaiak() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		for (Entitatea e : etsaiak) { e.mugitu(); }
-		talkakEgiaztatu();
+		etsaiak.forEach(Entitatea::mugitu); // Java 8: forEach erabilita
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
 	}
@@ -177,12 +176,10 @@ public class JokoKudeatzailea {
 			if (tiroakAsmatuDu) { tiroak.remove(i); }
 		}
 
-		// Espaziontzia vs etsaiak
-		for (int i = 0; i < etsaiak.size(); i++) {
-			if (gainjartzenDira(etsaiak.get(i), espaziontzia)) {
-				Partida.getNirePartida().amaituJokoa(false); 
+		// Espaziontzia vs etsaiak (Java 8: anyMatch erabilita)
+			if (etsaiak.stream().anyMatch(e -> gainjartzenDira(e, espaziontzia))) {
+					Partida.getNirePartida().amaituJokoa(false); 
 			}
-		}
 		jokoEgoeraEgiaztatu();
 	}
 	
@@ -194,16 +191,8 @@ public class JokoKudeatzailea {
 	        return;
 	    }
 	    
-	    boolean inbasioa = false;
-	    for (Entitatea e : etsaiak) {
-	        for (Entitatea p : e.getPixelek()) {
-	            if (e.getY() + p.getY() >= 59) {
-	                inbasioa = true;
-	                break;
-	            }
-	        }
-	        if (inbasioa) break;
-	    }
+	    // Java 8: anyMatch erabiliz inbasioa gertatzen den ikusteko
+	    boolean inbasioa = etsaiak.stream().anyMatch(e -> e.getPixelek().stream().anyMatch(p -> e.getY() + p.getY() >= 59));
 
 	    if (inbasioa) {
 	        Partida.getNirePartida().amaituJokoa(false);
@@ -211,31 +200,24 @@ public class JokoKudeatzailea {
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
-		for (Entitatea p : mugitzenDenEtsaia.getPixelek()) {
+		// Etsaiaren pixel BATEK ERE EZ noneMatch-ekin talka egiten ez duela egiaztatu
+		return mugitzenDenEtsaia.getPixelek().stream().noneMatch(p -> {
 			int nx = x + p.getX();
 			int ny = y + p.getY();
-			if (nx < 0 || nx >= 100 || ny >= 60) return false;
 			
-			for (Entitatea e : etsaiak) {
-				if (e != mugitzenDenEtsaia) {
-					for (Entitatea ep : e.getPixelek()) {
-						if (nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY()) return false;
-					}
-				}
-			}
-		}
-		return true;
+			// 1. Muga 
+			boolean mugatikKanpo = (nx < 0 || nx >= 100 || ny >= 60);
+			
+			// 2. Beste etsaiak
+			boolean talkaBesteEtsaiBatekin = etsaiak.stream().filter(e -> e != mugitzenDenEtsaia).anyMatch(e -> e.getPixelek().stream().anyMatch(ep -> nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY()));
+			
+			return mugatikKanpo || talkaBesteEtsaiBatekin; 
+		});
 	}
 	
 	private synchronized void eguneratuTiroak() {
-		for (int i = 0; i < tiroak.size(); i++) {
-			Entitatea t = tiroak.get(i);
-			t.mugitu();
-			if (t.getY() < 0) {
-				tiroak.remove(i);
-				i--; 
-			}
-		}
+		tiroak.forEach(Entitatea::mugitu); // Java 8: forEach
+		tiroak.removeIf(t -> t.getY() < 0); // Java 8: removeIf lambdarekin
 		talkakEgiaztatu();
 		taulaEguneratu();
 	}
