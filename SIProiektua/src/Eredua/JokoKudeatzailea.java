@@ -120,18 +120,19 @@ public class JokoKudeatzailea {
 	    ArrayList<Integer> erabilitakoX = new ArrayList<>();
 	    
 	    for (int i = 0; i < etsaiKopurua; i++) {
-	        int x_posizioa = (int)(Math.random() * 93) + 3; 
+	        int x_posizioa = 0; 
 	        boolean posizioaValida = false;
 	        
 	        while (!posizioaValida) {
-	            posizioaValida = true;
-	            for (int x_existente : erabilitakoX) {
-	                if (Math.abs(x_existente - x_posizioa) < 5) {
-	                    posizioaValida = false;
-	                    x_posizioa = (int)(Math.random() * 93) + 3;
-	                    break;
-	                }
-	            }
+	        	// Posizio berri bat probatu
+	        	int probaX = (int)(Math.random() * 93) + 3;
+	            
+	        	// Java 8: Posizioa baliozkoa den jakiteko (dist > 5) noneMatch-en bidez
+	        	posizioaValida = erabilitakoX.stream().noneMatch(x_existente -> Math.abs(x_existente - probaX) < 5);
+	            
+	        	if (posizioaValida) {
+	        		x_posizioa = probaX;
+	        	}
 	        }
 	        
 	        erabilitakoX.add(x_posizioa);
@@ -139,7 +140,6 @@ public class JokoKudeatzailea {
 	    }
 	    taulaEguneratu();
 	}
-	
 	public synchronized void mugituOntzia(String norabidea) {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		this.espaziontzia.mugitu(norabidea);
