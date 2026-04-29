@@ -9,9 +9,9 @@ public class JokoKudeatzailea {
 	
 	private static JokoKudeatzailea nireJK = null;
 	
-	private Espaziontzia espaziontzia;
-	private List<Etsaia> etsaiak;
-	private List<Tiroa> tiroak;
+	private EspaziontziNodo espaziontzia;
+	private List<Entitatea> etsaiak;
+	private List<Entitatea> tiroak;
 	private String ontziKolorea; 
 	private Gelaxka[][] gelaxkak;
 	
@@ -48,7 +48,6 @@ public class JokoKudeatzailea {
 		
 		etsaiakSortu(); 
 		
-		//Thread tiroenHaria = new Thread(new Runnable() {
 		Timer tiroenTimer = new Timer();
 		tiroenTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -61,8 +60,6 @@ public class JokoKudeatzailea {
 			}
 		}, 0, 50);
 		
-		
-		//Thread etsaienHaria = new Thread(new Runnable() {
 		Timer etsaienTimer = new Timer();
 		etsaienTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -87,8 +84,8 @@ public class JokoKudeatzailea {
 	    }
 
 	    markatuMatrizean(matrizVirtual, this.espaziontzia);
-	    for (Etsaia e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
-	    for (Tiroa t : tiroak) { markatuMatrizean(matrizVirtual, t); }
+	    for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
+	    for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
 
 	    for (int i = 0; i < 100; i++) {
 	        for (int j = 0; j < 60; j++) {
@@ -106,9 +103,9 @@ public class JokoKudeatzailea {
 		if (e != null) {
 			int ex = e.getX();
 			int ey = e.getY();
-			for (Puntu p : e.getPixelek()) {
-				int nx = ex + p.getDx();
-				int ny = ey + p.getDy();
+			for (Entitatea p : e.getPixelek()) {
+				int nx = ex + p.getX();
+				int ny = ey + p.getY();
 				if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
 					matrizVirtual[nx][ny] = e.getEgoeraObject();
 				}
@@ -138,7 +135,7 @@ public class JokoKudeatzailea {
 	        }
 	        
 	        erabilitakoX.add(x_posizioa);
-	        this.etsaiak.add(EtsaiaFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
+	        this.etsaiak.add(EtsaiaFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa, "MULTIPIXEL"));
 	    }
 	    taulaEguneratu();
 	}
@@ -158,7 +155,7 @@ public class JokoKudeatzailea {
 	
 	private synchronized void eguneratuEtsaiak() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		for (Etsaia e : etsaiak) { e.mugitu(); }
+		for (Entitatea e : etsaiak) { e.mugitu(); }
 		talkakEgiaztatu();
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
@@ -167,10 +164,10 @@ public class JokoKudeatzailea {
 	private synchronized void talkakEgiaztatu() {
 		// Tiroak vs etsaiak (Biak Entitateak direnez, gainjartzenDira erabili dezakegu)
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
-			Tiroa t = tiroak.get(i);
+			Entitatea t = tiroak.get(i);
 			boolean tiroakAsmatuDu = false;
 			for (int j = etsaiak.size() - 1; j >= 0; j--) {
-				Etsaia e = etsaiak.get(j);
+				Entitatea e = etsaiak.get(j);
 				if (gainjartzenDira(t, e)) {
 					etsaiak.remove(j); 
 					tiroakAsmatuDu = true; 
@@ -198,9 +195,9 @@ public class JokoKudeatzailea {
 	    }
 	    
 	    boolean inbasioa = false;
-	    for (Etsaia e : etsaiak) {
-	        for (Puntu p : e.getPixelek()) {
-	            if (e.getY() + p.getDy() >= 59) {
+	    for (Entitatea e : etsaiak) {
+	        for (Entitatea p : e.getPixelek()) {
+	            if (e.getY() + p.getY() >= 59) {
 	                inbasioa = true;
 	                break;
 	            }
@@ -214,15 +211,15 @@ public class JokoKudeatzailea {
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
-		for (Puntu p : mugitzenDenEtsaia.getPixelek()) {
-			int nx = x + p.getDx();
-			int ny = y + p.getDy();
+		for (Entitatea p : mugitzenDenEtsaia.getPixelek()) {
+			int nx = x + p.getX();
+			int ny = y + p.getY();
 			if (nx < 0 || nx >= 100 || ny >= 60) return false;
 			
-			for (Etsaia e : etsaiak) {
+			for (Entitatea e : etsaiak) {
 				if (e != mugitzenDenEtsaia) {
-					for (Puntu ep : e.getPixelek()) {
-						if (nx == e.getX() + ep.getDx() && ny == e.getY() + ep.getDy()) return false;
+					for (Entitatea ep : e.getPixelek()) {
+						if (nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY()) return false;
 					}
 				}
 			}
@@ -232,7 +229,7 @@ public class JokoKudeatzailea {
 	
 	private synchronized void eguneratuTiroak() {
 		for (int i = 0; i < tiroak.size(); i++) {
-			Tiroa t = tiroak.get(i);
+			Entitatea t = tiroak.get(i);
 			t.mugitu();
 			if (t.getY() < 0) {
 				tiroak.remove(i);
@@ -243,15 +240,14 @@ public class JokoKudeatzailea {
 		taulaEguneratu();
 	}
 	
-	
 	//Espaziontzia eta etsaia elkar ukitzen duten begiratu
 	private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
-		for (Puntu p1 : e1.getPixelek()) {
-			int x1 = e1.getX() + p1.getDx();
-			int y1 = e1.getY() + p1.getDy();
-			for (Puntu p2 : e2.getPixelek()) {
-				int x2 = e2.getX() + p2.getDx();
-				int y2 = e2.getY() + p2.getDy();
+		for (Entitatea p1 : e1.getPixelek()) {
+			int x1 = e1.getX() + p1.getX();
+			int y1 = e1.getY() + p1.getY();
+			for (Entitatea p2 : e2.getPixelek()) {
+				int x2 = e2.getX() + p2.getX();
+				int y2 = e2.getY() + p2.getY();
 				if (x1 == x2 && y1 == y2) return true;
 			}
 		}
@@ -261,5 +257,4 @@ public class JokoKudeatzailea {
 	public synchronized void aldatuArma() {
 		this.espaziontzia.aldatuArma();
 	}
-
 }
