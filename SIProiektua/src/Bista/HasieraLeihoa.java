@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import Eredua.Partida;
@@ -24,11 +26,14 @@ public class HasieraLeihoa extends JFrame implements Observer{
 	private JButton btnGreen;
 	private JButton btnBlue;
 	private JButton btnRed;
+	
+	// Elementu berriak jokalariarentzat
+	private JTextField txtIzena; 
 
 	public HasieraLeihoa() {
 		setTitle("Space Invaders - Hasiera");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 350); 
+		setBounds(100, 100, 600, 400); 
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -36,14 +41,36 @@ public class HasieraLeihoa extends JFrame implements Observer{
 		setContentPane(contentPane);
 		
 		JPanel panelErdian = new JPanel();
-		panelErdian.setLayout(new GridLayout(2, 1)); 
+		panelErdian.setLayout(new GridLayout(3, 1)); 
 		
+		// 1. Tituluaren panela
 		JPanel tituluPanela = new JPanel();
 		JLabel lblNewLabel = new JLabel("SPACE INVADERS");
 		lblNewLabel.setFont(new Font("Monospaced", Font.BOLD, 50));
 		tituluPanela.add(lblNewLabel);
 		panelErdian.add(tituluPanela); 
 		
+		// 2. Jokalariaren datuak eta Ranking-a 
+		JPanel datuPanela = new JPanel();
+		datuPanela.setLayout(new GridLayout(1, 2)); 
+		
+		// 2.A Ezkerrean: Izena sartzeko koadroa
+		JPanel izenPanela = new JPanel();
+		izenPanela.add(new JLabel("Sartu zure izena: "));
+		txtIzena = new JTextField(12); 
+		izenPanela.add(txtIzena);
+		datuPanela.add(izenPanela);
+		
+		// 2.B Eskuinean: Top jokalarien testua
+		// Partidari eskatzen dio String-a 
+		JTextArea txtTop = new JTextArea("--- TOP JOKALARIAK ---\n" + Partida.getNirePartida().getTopJokalariak());
+		txtTop.setEditable(false);
+		txtTop.setBackground(this.getBackground());
+		datuPanela.add(txtTop);
+		
+		panelErdian.add(datuPanela);
+		
+		// 3. Botoien panela
 		JPanel botoiPanela = new JPanel();
 		btnGreen = new JButton("GREEN");
 		btnGreen.setActionCommand("G");
@@ -62,7 +89,6 @@ public class HasieraLeihoa extends JFrame implements Observer{
 		contentPane.add(panelErdian, BorderLayout.CENTER);
 		
 		this.setFocusable(true);
-		
 		Partida.getNirePartida().addObserver(this);
 	}
 
@@ -79,6 +105,11 @@ public class HasieraLeihoa extends JFrame implements Observer{
 				if (e.getKeyCode() == KeyEvent.VK_R) btnRed.doClick();
 			}
 		});
+	}
+	
+	// Kontrolatzaileak sartutako izena irakurtzeko
+	public String getSartutakoIzena() {
+		return txtIzena.getText();
 	}
 
 	@Override

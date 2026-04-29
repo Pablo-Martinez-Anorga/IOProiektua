@@ -170,6 +170,7 @@ public class JokoKudeatzailea {
 				if (gainjartzenDira(t, e)) {
 					etsaiak.remove(j); 
 					tiroakAsmatuDu = true; 
+					Partida.getNirePartida().gehituPuntuak(10);
 					break; 
 				}
 			}

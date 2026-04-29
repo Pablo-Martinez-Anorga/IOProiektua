@@ -48,15 +48,13 @@ public class Partida extends Observable {
 		}
 	}
 
-	// --- JOKALARIEN KUDEAKETA METODOAK ---
-	
 	// Hasierako pantailatik deituko da jokoa hasi baino lehen
 	public void ezarriUnekoJokalaria(String izena) {
 		this.unekoJokalaria = new Jokalaria(izena);
 		this.jokalariak.add(this.unekoJokalaria);
 	}
 	
-	// JokoKudeatzailetik deituko da etsai bat hiltzean
+	// JokoKudeatzailetik etsai bat hiltzean
 	public void gehituPuntuak(int puntuak) {
 		if (this.unekoJokalaria != null) {
 			this.unekoJokalaria.gehituPuntuak(puntuak);
@@ -69,12 +67,8 @@ public class Partida extends Observable {
 			return "Ez dago jokalaririk oraindik.";
 		}
 
-		// Ordenatu (handienetik txikienera), mugatu 5era, String bihurtu eta elkartu (\n erabiliz)
-		return jokalariak.stream()
-				.sorted(Comparator.comparingInt(Jokalaria::getPuntuazioa).reversed())
-				.limit(5)
-				.map(j -> j.getIzena() + " - " + j.getPuntuazioa() + " puntu")
-				.collect(Collectors.joining("\n"));
+		// Ordenatu, mugatu 5era, String bihurtu eta elkartu (\n erabiliz)
+		return jokalariak.stream().sorted(Comparator.comparingInt(Jokalaria::getPuntuazioa).reversed()).limit(5).map(j -> j.getIzena() + " - " + j.getPuntuazioa() + " puntu").collect(Collectors.joining("\n"));
 	}
 
 	// --- GETTER ETA DELEGATUAK ---
