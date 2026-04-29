@@ -2,6 +2,7 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class EspaziontziNodo extends Entitatea {
 	
@@ -37,13 +38,7 @@ public abstract class EspaziontziNodo extends Entitatea {
 
 	@Override
 	public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelGuztiak = new ArrayList<>();
-		for (Entitatea e : osagaiak) {
-			for (Entitatea p : e.getPixelek()) {
-				pixelGuztiak.add(new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()));
-			}
-		}
-		return pixelGuztiak;
+		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
 	}
 	
 	// Metodoak
