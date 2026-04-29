@@ -31,6 +31,8 @@ public class EspaziontziaGorria extends EspaziontziNodo {
 		// GORRIAREN pertsonalizazioa: U forma (Goiko bi pixelak)
 		this.gehituOsagaia(new Espaziontzia(-1, -1)); // Goian ezkerrean
 		this.gehituOsagaia(new Espaziontzia(1, -1));  // Goian eskuinean
+		this.gehituOsagaia(new Espaziontzia(-2, 0));
+		this.gehituOsagaia(new Espaziontzia(2, 0));
 	}
 
 	@Override

@@ -21,8 +21,6 @@ public class TiroFaktoria {
 			nodo.gehituOsagaia(new Tiroa(0, 0));  // Punta
 			nodo.gehituOsagaia(new Tiroa(-1, 1)); // Ala ezkerraldea
 			nodo.gehituOsagaia(new Tiroa(1, 1));  // Ala eskuinaldea
-			nodo.gehituOsagaia(new Tiroa(0, 1));  // Gorputza
-			nodo.gehituOsagaia(new Tiroa(0, 2));  // Isatsa
 			return nodo;
 			
 		} else if (mota.equals("ERRONBO")) {
