@@ -3,11 +3,12 @@ package Eredua;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TiroPixelEstrategia implements TiroEstrategia{
+public class TiroPixelEstrategia implements TiroEstrategia {
 
 	@Override
-	public List<Tiroa> tiroEgin(int ontziX, int ontziY, int ontziAltuera) {
-		List<Tiroa> berriak = new ArrayList<>();
+	public List<Entitatea> tiroEgin(int ontziX, int ontziY, int ontziAltuera) {
+		List<Entitatea> berriak = new ArrayList<>();
+		// Faktoriari eskatzen diogu "PIXEL" (monopixela) bat sortzeko
 		berriak.add(TiroFaktoria.getNireFaktoria().sortuTiroa(ontziX, ontziY - 2, "PIXEL"));
 		return berriak;
 	}
