@@ -26,11 +26,24 @@ public class TiroFaktoria {
 		} else if (mota.equals("ERRONBO")) {
 			// ERRONBO: Multipixela
 			TiroNodo nodo = new TiroNodo(x, y);
-			nodo.gehituOsagaia(new Tiroa(0, -1)); // Goiko punta
-			nodo.gehituOsagaia(new Tiroa(-1, 0)); // Ezkerreko punta
-			nodo.gehituOsagaia(new Tiroa(1, 0));  // Eskuineko punta
-			nodo.gehituOsagaia(new Tiroa(0, 1));  // Beheko punta
-			nodo.gehituOsagaia(new Tiroa(0, 0));  // Erdigunea
+			nodo.gehituOsagaia(new Tiroa(0, -2)); // Goiko punta
+
+			nodo.gehituOsagaia(new Tiroa(-1, -1));
+			nodo.gehituOsagaia(new Tiroa(0, -1));
+			nodo.gehituOsagaia(new Tiroa(1, -1));
+
+			nodo.gehituOsagaia(new Tiroa(-2, 0));
+			nodo.gehituOsagaia(new Tiroa(-1, 0));
+			nodo.gehituOsagaia(new Tiroa(0, 0));
+			nodo.gehituOsagaia(new Tiroa(1, 0));
+			nodo.gehituOsagaia(new Tiroa(2, 0));
+
+			nodo.gehituOsagaia(new Tiroa(-1, 1));
+			nodo.gehituOsagaia(new Tiroa(0, 1));
+			nodo.gehituOsagaia(new Tiroa(1, 1));
+
+			nodo.gehituOsagaia(new Tiroa(0, 2)); // Beheko punta
+
 			return nodo;
 			
 		} else {

@@ -26,6 +26,10 @@ public class EspaziontziaGorria extends EspaziontziNodo {
 		this.gehituOsagaia(new Espaziontzia(1, -1));  // Goian eskuinean
 		this.gehituOsagaia(new Espaziontzia(-2, 0));
 		this.gehituOsagaia(new Espaziontzia(2, 0));
+
+		this.gehituOsagaia(new Espaziontzia(0, -1));
+		this.gehituOsagaia(new Espaziontzia(-1, -2));
+		this.gehituOsagaia(new Espaziontzia(1, -2));
 	}
 
 	@Override
