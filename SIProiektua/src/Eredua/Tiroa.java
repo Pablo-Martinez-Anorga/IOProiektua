@@ -24,8 +24,8 @@ public class Tiroa extends Entitatea {
 	// GAKOA COMPOSITE-RAKO: Monopixelaren offset-a (0,0) itzuli behar da beti.
 	@Override
 	public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelGuztiak = new ArrayList<>();
-		pixelGuztiak.add(new Tiroa(0, 0)); 
-		return pixelGuztiak;
+	    List<Entitatea> pixelak = new ArrayList<>();
+	    pixelak.add(new Tiroa(0, 0)); 
+	    return pixelak;
 	}
 }

@@ -17,14 +17,15 @@ public class TiroNodo extends Entitatea {
     }
 
     @Override
-    public List<Entitatea> getPixelek() {
-        List<Entitatea> pixelGuztiak = new ArrayList<>();
-        for (Entitatea e : osagaiak) {
-            // Nodoaren barruko elementu bakoitzari bere pixelak eskatzen dizkiogu
-            pixelGuztiak.addAll(e.getPixelek());
-        }
-        return pixelGuztiak;
-    }
+	public List<Entitatea> getPixelek() {
+		List<Entitatea> pixelGuztiak = new ArrayList<>();
+		for (Entitatea e : osagaiak) {
+			for (Entitatea p : e.getPixelek()) {
+				pixelGuztiak.add(new Tiroa(e.getX() + p.getX(), e.getY() + p.getY()));
+			}
+		}
+		return pixelGuztiak;
+	}
 
     @Override
     public void mugitu() {

@@ -1,5 +1,8 @@
 package Eredua;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Etsaia extends Entitatea {
 	
 	//Eraikitzailea
@@ -39,5 +42,12 @@ public class Etsaia extends Entitatea {
 	@Override
 	public Egoera getEgoeraObject() {
 	    return new EtsaiaEgoera();
+	}
+	
+	@Override
+	public List<Entitatea> getPixelek() {
+	    List<Entitatea> pixelak = new ArrayList<>();
+	    pixelak.add(new Etsaia(0, 0)); 
+	    return pixelak;
 	}
 }

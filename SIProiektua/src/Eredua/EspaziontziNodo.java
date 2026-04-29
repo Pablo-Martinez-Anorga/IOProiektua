@@ -39,7 +39,9 @@ public abstract class EspaziontziNodo extends Entitatea {
 	public List<Entitatea> getPixelek() {
 		List<Entitatea> pixelGuztiak = new ArrayList<>();
 		for (Entitatea e : osagaiak) {
-			pixelGuztiak.addAll(e.getPixelek());
+			for (Entitatea p : e.getPixelek()) {
+				pixelGuztiak.add(new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()));
+			}
 		}
 		return pixelGuztiak;
 	}

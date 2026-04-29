@@ -16,13 +16,16 @@ public class EtsaiNodo extends Entitatea {
     }
 
     @Override
-    public List<Entitatea> getPixelek() {
-        List<Entitatea> pixelGuztiak = new ArrayList<>();
-        for (Entitatea e : osagaiak) {
-            pixelGuztiak.addAll(e.getPixelek());
-        }
-        return pixelGuztiak;
-    }
+	public List<Entitatea> getPixelek() {
+		List<Entitatea> pixelGuztiak = new ArrayList<>();
+		for (Entitatea e : osagaiak) {
+			for (Entitatea p : e.getPixelek()) {
+				// GAKOA: Nodoaren barruko elementuaren posizioa + bere pixelaren offset-a
+				pixelGuztiak.add(new Etsaia(e.getX() + p.getX(), e.getY() + p.getY()));
+			}
+		}
+		return pixelGuztiak;
+	}
 
     @Override
 	public void mugitu() {
