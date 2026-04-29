@@ -14,13 +14,8 @@ public class Etsaia extends Entitatea {
 	@Override
 	public void mugitu() {
 		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
-		boolean ezkerreraAhalDa = true;
-		boolean eskumaraAhalDa = true;
-
-		for (Entitatea p : this.getPixelek()) {
-			if (this.x + p.getX() - 1 < 0) ezkerreraAhalDa = false;
-			if (this.x + p.getX() + 1 >= 100) eskumaraAhalDa = false;
-		}
+		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
+		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
 
 		int xBerria = this.x;
 		int yBerria = this.y;

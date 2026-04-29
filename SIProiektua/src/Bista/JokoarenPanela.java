@@ -14,6 +14,7 @@ import Eredua.Partida;
 import Kontrolatzailea.TeklatuKontroladorea;
 
 import java.awt.GridLayout;
+import javax.swing.SwingUtilities;
 
 public class JokoarenPanela extends JFrame implements Observer {
 
@@ -52,24 +53,30 @@ public class JokoarenPanela extends JFrame implements Observer {
 	}
 
 	// Partidaren mezuak prozesatu
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg instanceof String) {
-			String mezua = (String) arg;
-			
-			if (mezua.equals("HASI")) {
-				matrizeaSortu(); 
-				this.setVisible(true);
-				this.requestFocusInWindow();
-			}else if (mezua.equals("GALDU")) {
-				JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
-				this.dispose(); 
-			} else if (mezua.equals("IRABAZI")) {
-				JOptionPane.showMessageDialog(this, "ZORIONAK! IRABAZI DUZU!", "Garaipena", JOptionPane.INFORMATION_MESSAGE);
-				this.dispose(); 
+		@Override
+		public void update(Observable o, Object arg) {
+			if (arg instanceof String) {
+				String mezua = (String) arg;
+				
+				if (mezua.equals("HASI")) {
+					matrizeaSortu(); 
+					this.setVisible(true);
+					this.requestFocusInWindow();
+				} else if (mezua.equals("GALDU")) {
+					// Interfaze grafikoari lotutako ekintzak hari nagusian exekutatu
+					SwingUtilities.invokeLater(() -> {
+						JOptionPane.showMessageDialog(this, "GALDU DUZU!", "Game Over", JOptionPane.ERROR_MESSAGE);
+						this.dispose(); 
+					});
+				} else if (mezua.equals("IRABAZI")) {
+					// Interfaze grafikoari lotutako ekintzak hari nagusian exekutatu
+					SwingUtilities.invokeLater(() -> {
+						JOptionPane.showMessageDialog(this, "ZORIONAK! IRABAZI DUZU!", "Garaipena", JOptionPane.INFORMATION_MESSAGE);
+						this.dispose(); 
+					});
+				}
 			}
-		}
-	}	
+		}	
 
 	private JPanel getPnlMatrizea() {
 		if (pnlMatrizea == null) {

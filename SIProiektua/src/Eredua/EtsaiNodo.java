@@ -2,6 +2,7 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EtsaiNodo extends Entitatea {
     private List<Entitatea> osagaiak;
@@ -17,27 +18,13 @@ public class EtsaiNodo extends Entitatea {
 
     @Override
 	public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelGuztiak = new ArrayList<>();
-		for (Entitatea e : osagaiak) {
-			for (Entitatea p : e.getPixelek()) {
-				// GAKOA: Nodoaren barruko elementuaren posizioa + bere pixelaren offset-a
-				pixelGuztiak.add(new Etsaia(e.getX() + p.getX(), e.getY() + p.getY()));
-			}
-		}
-		return pixelGuztiak;
+		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Etsaia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
 	}
-
     @Override
 	public void mugitu() {
 		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
-		boolean ezkerreraAhalDa = true;
-		boolean eskumaraAhalDa = true;
-
-		// Paretekin talkak pixel bakoitzarekin egiaztatu
-		for (Entitatea p : this.getPixelek()) {
-			if (this.x + p.getX() - 1 < 0) ezkerreraAhalDa = false;
-			if (this.x + p.getX() + 1 >= 100) eskumaraAhalDa = false;
-		}
+		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
+		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
 
 		int xBerria = this.x;
 		int yBerria = this.y;

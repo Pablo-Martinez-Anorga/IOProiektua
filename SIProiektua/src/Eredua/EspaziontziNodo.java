@@ -2,6 +2,7 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class EspaziontziNodo extends Entitatea {
 	
@@ -36,13 +37,7 @@ public abstract class EspaziontziNodo extends Entitatea {
 
 	@Override
 	public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelGuztiak = new ArrayList<>();
-		for (Entitatea e : osagaiak) {
-			for (Entitatea p : e.getPixelek()) {
-				pixelGuztiak.add(new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()));
-			}
-		}
-		return pixelGuztiak;
+		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
 	}
 	
 	// Metodoak
@@ -54,24 +49,17 @@ public abstract class EspaziontziNodo extends Entitatea {
 	}
 	
 	public void mugitu(String norabidea) {
-		boolean ezkerreraAhalDa = true;
-		boolean eskumaraAhalDa = true;
-		boolean goraAhalDa = true;
-		boolean beheraAhalDa = true;
-		
-		for (Entitatea p : this.getPixelek()) {
-			if (this.x + p.getX() - 1 < 0) ezkerreraAhalDa = false;
-			if (this.x + p.getX() + 1 >= 100) eskumaraAhalDa = false;
-			if (this.y + p.getY() - 1 < 0) goraAhalDa = false;
-			if (this.y + p.getY() + 1 >= 60) beheraAhalDa = false;
-		}
+		// Java 8: for guztiak kendu noneMatch erabili
+		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
+		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
+		boolean goraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() - 1 < 0);
+		boolean beheraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() + 1 >= 60);
 
 		if (norabidea.equals("Eskumara") && eskumaraAhalDa) this.x += 1;
 		else if (norabidea.equals("Ezkerrera") && ezkerreraAhalDa) this.x -= 1;
 		else if (norabidea.equals("Gora") && goraAhalDa) this.y -= 1;
 		else if (norabidea.equals("Behera") && beheraAhalDa) this.y += 1;
 	}
-	
 	@Override
 	public void mugitu() {
 	}

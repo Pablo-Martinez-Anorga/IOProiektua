@@ -2,6 +2,7 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TiroNodo extends Entitatea {
     private List<Entitatea> osagaiak; // Tiroaren osagaiak (bilduma)
@@ -18,13 +19,7 @@ public class TiroNodo extends Entitatea {
 
     @Override
 	public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelGuztiak = new ArrayList<>();
-		for (Entitatea e : osagaiak) {
-			for (Entitatea p : e.getPixelek()) {
-				pixelGuztiak.add(new Tiroa(e.getX() + p.getX(), e.getY() + p.getY()));
-			}
-		}
-		return pixelGuztiak;
+		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Tiroa(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
 	}
 
     @Override
