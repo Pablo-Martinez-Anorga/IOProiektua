@@ -1,15 +1,24 @@
 package Eredua;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Observable;
+import java.util.stream.Collectors;
 
 public class Partida extends Observable {
 	
 	// Singleton patroia
 	private static Partida nirePartida = null;
 	private boolean jokoaHasiDa;
+	
+	// Jokalariak kudeatzeko atributuak berriak
+	private List<Jokalaria> jokalariak;
+	private Jokalaria unekoJokalaria;
 
 	private Partida() {
 		this.jokoaHasiDa = false;
+		this.jokalariak = new ArrayList<>(); // Zerrenda hasieratu
 	}
 
 	public static Partida getNirePartida() {
@@ -38,6 +47,37 @@ public class Partida extends Observable {
 			notifyObservers("GALDU");
 		}
 	}
+
+	// --- JOKALARIEN KUDEAKETA METODOAK ---
+	
+	// Hasierako pantailatik deituko da jokoa hasi baino lehen
+	public void ezarriUnekoJokalaria(String izena) {
+		this.unekoJokalaria = new Jokalaria(izena);
+		this.jokalariak.add(this.unekoJokalaria);
+	}
+	
+	// JokoKudeatzailetik deituko da etsai bat hiltzean
+	public void gehituPuntuak(int puntuak) {
+		if (this.unekoJokalaria != null) {
+			this.unekoJokalaria.gehituPuntuak(puntuak);
+		}
+	}
+	
+	// Java 8: Stream erabiliz Top 5 jokalariak lortzeko
+	public String getTopJokalariak() {
+		if (jokalariak.isEmpty()) {
+			return "Ez dago jokalaririk oraindik.";
+		}
+
+		// Ordenatu (handienetik txikienera), mugatu 5era, String bihurtu eta elkartu (\n erabiliz)
+		return jokalariak.stream()
+				.sorted(Comparator.comparingInt(Jokalaria::getPuntuazioa).reversed())
+				.limit(5)
+				.map(j -> j.getIzena() + " - " + j.getPuntuazioa() + " puntu")
+				.collect(Collectors.joining("\n"));
+	}
+
+	// --- GETTER ETA DELEGATUAK ---
 
 	public boolean isJokoaHasiDa() {
 		return jokoaHasiDa;
