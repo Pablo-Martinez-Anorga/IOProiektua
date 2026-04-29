@@ -8,16 +8,9 @@ public class EspaziontziaBerdea extends EspaziontziNodo {
 	private List<TiroEstrategia> armak;
 
 	public EspaziontziaBerdea(int x, int y) {
-		super(x, y);
-		
-		// Armak hasieratu (Pixel eta Gezi bakarrik)
-		this.armak = new ArrayList<>();
-		this.armak.add(new TiroPixelEstrategia());
-		this.armak.add(new TiroGeziEstrategia());
-		
-		// Defektuzko arma ezarri
-		this.setArma(this.armak.get(this.armaAktiboaIndex));
-	}
+        super(x, y);
+        this.setArma(new TiroPixelEstrategia()); //Defektuzko arma
+    }
 
 	@Override
 	protected void itxuraSortu() {
@@ -32,9 +25,11 @@ public class EspaziontziaBerdea extends EspaziontziNodo {
 	}
 
 	@Override
-	public void aldatuArma() {
-		// % erabiliz, zerrendako 2 armen artean txandakatzen du (0 eta 1)
-		this.armaAktiboaIndex = (this.armaAktiboaIndex + 1) % this.armak.size();
-		this.setArma(this.armak.get(this.armaAktiboaIndex));
-	}
+    public void aldatuArma() {
+        if (this.armaAktiboa instanceof TiroPixelEstrategia) {
+            this.setArma(new TiroGeziEstrategia());
+        } else {
+            this.setArma(new TiroPixelEstrategia());
+        }
+    }
 }

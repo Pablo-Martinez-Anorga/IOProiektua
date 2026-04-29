@@ -8,9 +8,9 @@ public abstract class EspaziontziNodo extends Entitatea {
 	// COMPOSITE: Entitate bilduma
 	protected List<Entitatea> osagaiak;
 
-	// Atributuak  
+	// Strategy 
 	protected TiroEstrategia armaAktiboa;
-	protected int armaAktiboaIndex;
+
 	// Munizioa
 	protected int geziMunizioa;
 	protected int erronboMunizioa;
@@ -19,7 +19,6 @@ public abstract class EspaziontziNodo extends Entitatea {
 	public EspaziontziNodo(int x, int y) { 
 		super(x, y);
 		this.osagaiak = new ArrayList<>(); //itxuraSortu baino lehen hasieratu
-		this.armaAktiboaIndex = 0;
 		
 		// Munizioa hasieratu
 		this.geziMunizioa = 30;
