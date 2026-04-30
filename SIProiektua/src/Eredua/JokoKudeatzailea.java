@@ -47,7 +47,7 @@ public class JokoKudeatzailea {
 		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
 		
 		etsaiakSortu(); 
-		
+		//TIMER-AK HIL BEHAR DIRA
 		Timer tiroenTimer = new Timer();
 		tiroenTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override

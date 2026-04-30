@@ -12,6 +12,7 @@ public abstract class EspaziontziNodo extends Entitatea {
 	// Strategy 
 	protected TiroEstrategia armaAktiboa;
 
+	
 	// Munizioa
 	protected int geziMunizioa;
 	protected int erronboMunizioa;
