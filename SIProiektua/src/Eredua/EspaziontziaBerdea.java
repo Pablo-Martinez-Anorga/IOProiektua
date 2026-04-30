@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EspaziontziaBerdea extends EspaziontziNodo {
 
-	private List<TiroEstrategia> armak;
+	//private List<TiroEstrategia> armak;
 
 	public EspaziontziaBerdea(int x, int y) {
         super(x, y);
