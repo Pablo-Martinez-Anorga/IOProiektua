@@ -2,16 +2,25 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Etsaia extends Entitatea {
-	
-	//Eraikitzailea
-	public Etsaia(int x, int y) {
-        super(x,y);
+public class EtsaiNodo extends Entitatea {
+    private List<Entitatea> osagaiak;
+
+    public EtsaiNodo(int x, int y) {
+        super(x, y);
+        this.osagaiak = new ArrayList<>();
     }
-	
-	//Metodoak
-	@Override
+
+    public void gehituOsagaia(Entitatea e) {
+        this.osagaiak.add(e);
+    }
+
+    @Override
+	public List<Entitatea> getPixelek() {
+		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Etsaia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
+	}
+    @Override
 	public void mugitu() {
 		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
 		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
@@ -34,15 +43,8 @@ public class Etsaia extends Entitatea {
 		}
 	}
 
-	@Override
-	public Egoera getEgoeraObject() {
-	    return new EtsaiaEgoera();
-	}
-	
-	@Override
-	public List<Entitatea> getPixelek() {
-	    List<Entitatea> pixelak = new ArrayList<>();
-	    pixelak.add(new Etsaia(0, 0)); 
-	    return pixelak;
-	}
+    @Override
+    public Egoera getEgoeraObject() {
+        return new EtsaiaEgoera();
+    }
 }

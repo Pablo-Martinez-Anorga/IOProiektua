@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface TiroEstrategia {
 
-	List<Tiroa> tiroEgin(int ontziX, int ontziY, int ontziAltuera);
+	public List<Entitatea> tiroEgin(int ontziX, int ontziY, int ontziAltuera);
 }

@@ -1,27 +1,29 @@
 package Eredua;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entitatea {
-	protected int x;
+	protected int x; // Nodoan badago, dx (offset-a) izango da; JokoKudeatzailean badago, X absolutua.
 	protected int y;
-	protected IrudiKonposatua irudia; // HEMEN SARTZEN DA COMPOSITE-A
 	
 	public Entitatea(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.irudia = new IrudiKonposatua();
 	}
 	
-	public int getX() { return this.x; }
-	public int getY() { return this.y; }
-	public IrudiKonposatua getIrudia() { return this.irudia; }
+	public int getX() { return x; }
+	public int getY() { return y; }
+	public void setX(int x) { this.x = x; }
+	public void setY(int y) { this.y = y; }
 	
-	// Metodo lagungarria zuzenean pixelak eskatzeko
-	public List<Puntu> getPixelek() {
-		return this.irudia.getPixelek();
+	// COMPOSITE GAKOA: Monopixel batek bere burua itzultzen du zerrenda batean.
+	public List<Entitatea> getPixelek() {
+		List<Entitatea> pixelak = new ArrayList<>();
+		pixelak.add(this);
+		return pixelak;
 	}
 	
-	public abstract void mugitu(); 
+	public abstract void mugitu();
 	public abstract Egoera getEgoeraObject();
 }

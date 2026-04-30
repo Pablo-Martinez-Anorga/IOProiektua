@@ -2,14 +2,16 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class JokoKudeatzailea { 
 	
 	private static JokoKudeatzailea nireJK = null;
 	
-	private Espaziontzia espaziontzia;
-	private List<Etsaia> etsaiak;
-	private List<Tiroa> tiroak;
+	private EspaziontziNodo espaziontzia;
+	private List<Entitatea> etsaiak;
+	private List<Entitatea> tiroak;
 	private String ontziKolorea; 
 	private Gelaxka[][] gelaxkak;
 	
@@ -17,7 +19,7 @@ public class JokoKudeatzailea {
 		this.etsaiak = new ArrayList<>();
 		this.tiroak = new ArrayList<>();
 		// FACTORY PATROIA: Defektuzko ontzia sortu (Gero hasiJokoa-n aldatuko da)
-		this.espaziontzia = EntitateFaktoria.getNireFaktoria().sortuEspaziontzia("GREEN", 50, 55);
+		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia("GREEN", 50, 55);
 		this.gelaxkak = new Gelaxka[100][60];
 		for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 60; j++) {
@@ -42,32 +44,33 @@ public class JokoKudeatzailea {
 	
 	public void hasiJokoa() {
 		// Kolorearen araberako ontzia sortu
-		this.espaziontzia = EntitateFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
+		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
 		
 		etsaiakSortu(); 
 		
-		Thread tiroenHaria = new Thread(new Runnable() {
+		Timer tiroenTimer = new Timer();
+		tiroenTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				while (Partida.getNirePartida().isJokoaHasiDa()) {
+				if (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuTiroak(); 		
-					try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+				} else {
+					this.cancel();
 				}
 			}
-		});
-		tiroenHaria.start();
+		}, 0, 50);
 		
-		
-		Thread etsaienHaria = new Thread(new Runnable() {
+		Timer etsaienTimer = new Timer();
+		etsaienTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				while (Partida.getNirePartida().isJokoaHasiDa()) {
+				if (Partida.getNirePartida().isJokoaHasiDa()) {
 					eguneratuEtsaiak(); 
-					try { Thread.sleep(200); } catch (InterruptedException e) { e.printStackTrace(); }
+				} else {
+					this.cancel();
 				}
 			}
-		});
-		etsaienHaria.start();
+		}, 0, 200);
 		
 		taulaEguneratu();
 	}
@@ -81,8 +84,8 @@ public class JokoKudeatzailea {
 	    }
 
 	    markatuMatrizean(matrizVirtual, this.espaziontzia);
-	    for (Etsaia e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
-	    for (Tiroa t : tiroak) { markatuMatrizean(matrizVirtual, t); }
+	    for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
+	    for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
 
 	    for (int i = 0; i < 100; i++) {
 	        for (int j = 0; j < 60; j++) {
@@ -95,14 +98,14 @@ public class JokoKudeatzailea {
 	        }
 	    }
 	}
-
+	
 	private void markatuMatrizean(Egoera[][] matrizVirtual, Entitatea e) {
 		if (e != null) {
 			int ex = e.getX();
 			int ey = e.getY();
-			for (Puntu p : e.getPixelek()) {
-				int nx = ex + p.getDx();
-				int ny = ey + p.getDy();
+			for (Entitatea p : e.getPixelek()) {
+				int nx = ex + p.getX();
+				int ny = ey + p.getY();
 				if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
 					matrizVirtual[nx][ny] = e.getEgoeraObject();
 				}
@@ -117,26 +120,26 @@ public class JokoKudeatzailea {
 	    ArrayList<Integer> erabilitakoX = new ArrayList<>();
 	    
 	    for (int i = 0; i < etsaiKopurua; i++) {
-	        int x_posizioa = (int)(Math.random() * 93) + 3; 
+	        int x_posizioa = 0; 
 	        boolean posizioaValida = false;
 	        
 	        while (!posizioaValida) {
-	            posizioaValida = true;
-	            for (int x_existente : erabilitakoX) {
-	                if (Math.abs(x_existente - x_posizioa) < 5) {
-	                    posizioaValida = false;
-	                    x_posizioa = (int)(Math.random() * 93) + 3;
-	                    break;
-	                }
-	            }
+	        	// Posizio berri bat probatu
+	        	int probaX = (int)(Math.random() * 93) + 3;
+	            
+	        	// Java 8: Posizioa baliozkoa den jakiteko (dist > 5) noneMatch-en bidez
+	        	posizioaValida = erabilitakoX.stream().noneMatch(x_existente -> Math.abs(x_existente - probaX) < 5);
+	            
+	        	if (posizioaValida) {
+	        		x_posizioa = probaX;
+	        	}
 	        }
 	        
 	        erabilitakoX.add(x_posizioa);
-	        this.etsaiak.add(EntitateFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa));
+	        this.etsaiak.add(EtsaiaFaktoria.getNireFaktoria().sortuEtsaia(x_posizioa, y_posizioa, "MULTIPIXEL"));
 	    }
 	    taulaEguneratu();
 	}
-	
 	public synchronized void mugituOntzia(String norabidea) {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		this.espaziontzia.mugitu(norabidea);
@@ -152,8 +155,7 @@ public class JokoKudeatzailea {
 	
 	private synchronized void eguneratuEtsaiak() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		for (Etsaia e : etsaiak) { e.mugitu(); }
-		talkakEgiaztatu();
+		etsaiak.forEach(Entitatea::mugitu); // Java 8: forEach erabilita
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
 	}
@@ -161,25 +163,24 @@ public class JokoKudeatzailea {
 	private synchronized void talkakEgiaztatu() {
 		// Tiroak vs etsaiak (Biak Entitateak direnez, gainjartzenDira erabili dezakegu)
 		for (int i = tiroak.size() - 1; i >= 0; i--) {
-			Tiroa t = tiroak.get(i);
+			Entitatea t = tiroak.get(i);
 			boolean tiroakAsmatuDu = false;
 			for (int j = etsaiak.size() - 1; j >= 0; j--) {
-				Etsaia e = etsaiak.get(j);
+				Entitatea e = etsaiak.get(j);
 				if (gainjartzenDira(t, e)) {
 					etsaiak.remove(j); 
 					tiroakAsmatuDu = true; 
+					Partida.getNirePartida().gehituPuntuak(10);
 					break; 
 				}
 			}
 			if (tiroakAsmatuDu) { tiroak.remove(i); }
 		}
 
-		// Espaziontzia vs etsaiak
-		for (int i = 0; i < etsaiak.size(); i++) {
-			if (gainjartzenDira(etsaiak.get(i), espaziontzia)) {
-				Partida.getNirePartida().amaituJokoa(false); 
+		// Espaziontzia vs etsaiak (Java 8: anyMatch erabilita)
+			if (etsaiak.stream().anyMatch(e -> gainjartzenDira(e, espaziontzia))) {
+					Partida.getNirePartida().amaituJokoa(false); 
 			}
-		}
 		jokoEgoeraEgiaztatu();
 	}
 	
@@ -191,16 +192,8 @@ public class JokoKudeatzailea {
 	        return;
 	    }
 	    
-	    boolean inbasioa = false;
-	    for (Etsaia e : etsaiak) {
-	        for (Puntu p : e.getPixelek()) {
-	            if (e.getY() + p.getDy() >= 59) {
-	                inbasioa = true;
-	                break;
-	            }
-	        }
-	        if (inbasioa) break;
-	    }
+	    // Java 8: anyMatch erabiliz inbasioa gertatzen den ikusteko
+	    boolean inbasioa = etsaiak.stream().anyMatch(e -> e.getPixelek().stream().anyMatch(p -> e.getY() + p.getY() >= 59));
 
 	    if (inbasioa) {
 	        Partida.getNirePartida().amaituJokoa(false);
@@ -208,44 +201,36 @@ public class JokoKudeatzailea {
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
-		for (Puntu p : mugitzenDenEtsaia.getPixelek()) {
-			int nx = x + p.getDx();
-			int ny = y + p.getDy();
-			if (nx < 0 || nx >= 100 || ny >= 60) return false;
+		// Etsaiaren pixel BATEK ERE EZ noneMatch-ekin talka egiten ez duela egiaztatu
+		return mugitzenDenEtsaia.getPixelek().stream().noneMatch(p -> {
+			int nx = x + p.getX();
+			int ny = y + p.getY();
 			
-			for (Etsaia e : etsaiak) {
-				if (e != mugitzenDenEtsaia) {
-					for (Puntu ep : e.getPixelek()) {
-						if (nx == e.getX() + ep.getDx() && ny == e.getY() + ep.getDy()) return false;
-					}
-				}
-			}
-		}
-		return true;
+			// 1. Muga 
+			boolean mugatikKanpo = (nx < 0 || nx >= 100 || ny >= 60);
+			
+			// 2. Beste etsaiak
+			boolean talkaBesteEtsaiBatekin = etsaiak.stream().filter(e -> e != mugitzenDenEtsaia).anyMatch(e -> e.getPixelek().stream().anyMatch(ep -> nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY()));
+			
+			return mugatikKanpo || talkaBesteEtsaiBatekin; 
+		});
 	}
 	
 	private synchronized void eguneratuTiroak() {
-		for (int i = 0; i < tiroak.size(); i++) {
-			Tiroa t = tiroak.get(i);
-			t.mugitu();
-			if (t.getY() < 0) {
-				tiroak.remove(i);
-				i--; 
-			}
-		}
+		tiroak.forEach(Entitatea::mugitu); // Java 8: forEach
+		tiroak.removeIf(t -> t.getY() < 0); // Java 8: removeIf lambdarekin
 		talkakEgiaztatu();
 		taulaEguneratu();
 	}
 	
-
 	//Espaziontzia eta etsaia elkar ukitzen duten begiratu
 	private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
-		for (Puntu p1 : e1.getPixelek()) {
-			int x1 = e1.getX() + p1.getDx();
-			int y1 = e1.getY() + p1.getDy();
-			for (Puntu p2 : e2.getPixelek()) {
-				int x2 = e2.getX() + p2.getDx();
-				int y2 = e2.getY() + p2.getDy();
+		for (Entitatea p1 : e1.getPixelek()) {
+			int x1 = e1.getX() + p1.getX();
+			int y1 = e1.getY() + p1.getY();
+			for (Entitatea p2 : e2.getPixelek()) {
+				int x2 = e2.getX() + p2.getX();
+				int y2 = e2.getY() + p2.getY();
 				if (x1 == x2 && y1 == y2) return true;
 			}
 		}
@@ -255,5 +240,4 @@ public class JokoKudeatzailea {
 	public synchronized void aldatuArma() {
 		this.espaziontzia.aldatuArma();
 	}
-
 }
