@@ -6,7 +6,7 @@ import java.util.List;
 public class EspaziontziaGorria extends EspaziontziNodo {
 
 	// Ontzi gorriaren arma-zerrenda (Strategy patroia)
-	private List<TiroEstrategia> armak;
+	//private List<TiroEstrategia> armak;
 
 	public EspaziontziaGorria(int x, int y) {
         super(x, y);
