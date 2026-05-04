@@ -5,72 +5,89 @@ import java.util.List;
 
 public class EtsaiNodo extends Entitatea {
     private List<Entitatea> osagaiak = new ArrayList<>();
+    private int id;
 
     public EtsaiNodo(int x, int y) {
         super(x, y);
-        this.osagaiak = new ArrayList<>();
     }
 
     public void gehituOsagaia(Entitatea e) {
         this.osagaiak.add(e);
     }
 
+    public List<Entitatea> getPixelek() {
+        return this.osagaiak;
+    }
+
     @Override
     public Egoera getEgoeraObject() {
-        return new GelaxkaEtsai(); // 1. urratsean aldatu genuen izen berria
-    }
-    
-    public List<Entitatea> getPixelek() {
-        return osagaiak; // Zuzenean hostoen zerrenda itzultzen du
-    }
-    
-    public boolean mugituDaiteke(String norabidea) {
-        for (Entitatea pixel : osagaiak) {
-            if (norabidea.equals("Eskumara") && pixel.getX() >= 99) return false;
-            if (norabidea.equals("Ezkerrera") && pixel.getX() <= 0) return false;
-        }
-        return true; 
+        return new GelaxkaEtsai();
     }
 
-    // 1. METODOA: Parametrorik gabea (Etsaiaren IA: Zorizko norabidea erabaki)
     @Override
     public void mugitu() {
-        int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
-        String norabideStr = "";
-        
-        if (norabidea == 0) norabideStr = "Ezkerrera";
-        else if (norabidea == 1) norabideStr = "Eskumara";
-        else norabideStr = "Behera";
+    	int random = (int)(Math.random() * 3);
+    	String norabidea = "Behera"; 
+    	if (random == 1) norabidea = "Ezkerrera";
+    	else if (random == 2) norabidea = "Eskumara"; 
 
-        // Gure metodo berria erabiltzen dugu mugak pasatzen ez dituela ziurtatzeko
-        if (mugituDaiteke(norabideStr)) {
-            
-            int xBerria = this.x;
-            int yBerria = this.y;
+        // GAKOA: Norabide BERA konprobatu eta mugitu
+        if (this.mugituDaiteke(norabidea)) {
+            if (norabidea.equals("Eskumara")) this.x++;
+            else if (norabidea.equals("Ezkerrera")) this.x--;
+            else if (norabidea.equals("Behera")) this.y++;
+        }
+    }
 
-            if (norabidea == 0) xBerria--;
-            else if (norabidea == 1) xBerria++;
-            else yBerria++;
+    public boolean mugituDaiteke(String norabidea) {
+    	for (Entitatea p : osagaiak) {
+            // POSIZIO ERREALA = Nodoaren aingurua (this.x) + Pixelaren desplazamendua (p.getX)
+            int pxReal = this.x + p.getX();
+            int pyReal = this.y + p.getY();
 
-            // JokoKudeatzaileari galdetu ea posizioa libre dagoen
-            if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria, this)) {
-                // Nodoaren koordenatu nagusiak eguneratu
-                this.x = xBerria;
-                this.y = yBerria;
-                
-                // IRAKASLEAREN TEORIA: Begizta erabili pixel guztiak banan-banan mugitzeko
-                for (Entitatea pixel : osagaiak) {
-                    pixel.mugitu(norabideStr); // Hostoen mugitu(String) deitzen du
-                }
-            }
+            int hurrengoX = pxReal + (norabidea.equals("Eskumara") ? 1 : norabidea.equals("Ezkerrera") ? -1 : 0);
+            int hurrengoY = pyReal + (norabidea.equals("Behera") ? 1 : 0);
+
+            // Orain bai, 0 eta 99 artean konprobatu dezakegu
+            if (hurrengoX < 0 || hurrengoX > 99 || hurrengoY > 59) return false;
+
+            // Kolisioak (JokoKudeatzaileari posizio ERREALA galdetu behar diogu)
+            int besteId = JokoKudeatzailea.getNireJK().getEtsaiaId(hurrengoX, hurrengoY);
+            if (besteId != -1 && besteId != this.id) return false;
+        }
+        return true;
+    }
+    
+    private boolean nirePixelaDa(int x, int y) {
+        for (Entitatea p : osagaiak) {
+            if (p.getX() == x && p.getY() == y) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void mugitu(String norabidea) {
+    	if (this.mugituDaiteke(norabidea)) {
+            if (norabidea.equals("Eskumara")) this.x++;
+            else if (norabidea.equals("Ezkerrera")) this.x--;
+            else if (norabidea.equals("Behera")) this.y++;
         }
     }
     
-    // 2. METODOA: Parametroarekin (Norabide zehatz bat ematen zaionean)
-    @Override
-    public void mugitu(String norabidea) {
-        for (Entitatea pixel : osagaiak) {
-            pixel.mugitu(norabidea);
-        }
+    public void setId(int id) {
+        this.id = id;
     }
-}
+    public int getId() {
+        return this.id;
+    }
+    
+    public boolean duPixela(int x, int y) {
+        for (Entitatea p : osagaiak) {
+            if (p.getX() == x && p.getY() == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+    }
+

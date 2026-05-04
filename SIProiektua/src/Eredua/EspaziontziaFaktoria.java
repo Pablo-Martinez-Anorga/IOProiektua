@@ -14,14 +14,16 @@ public class EspaziontziaFaktoria {
     }
     
     public EspaziontziNodo sortuEspaziontzia(String kolorea, int x, int y) {
-    	if (kolorea != null && kolorea.equalsIgnoreCase("GORRIA")) {
-            return new EspaziontziaGorria(x, y);
-        } else if (kolorea != null && kolorea.equalsIgnoreCase("URDINA")) {
-            return new EspaziontziaUrdina(x, y);
+    	if (kolorea != null) {
+            if (kolorea.equalsIgnoreCase("RED")) {
+                return new EspaziontziaGorria(x, y);
+            } else if (kolorea.equalsIgnoreCase("BLUE")) {
+                return new EspaziontziaUrdina(x, y);
+            } else if (kolorea.equalsIgnoreCase("GREEN")) {
+                return new EspaziontziaBerdea(x, y); 
+            }
         }
-        
-        // Defektuz Gorria itzuli (edo daukazun beste bat)
-        return new EspaziontziaGorria(x, y);
+        return new EspaziontziaBerdea(x, y);
 	}
 
 }

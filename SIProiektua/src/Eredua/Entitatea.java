@@ -16,17 +16,8 @@ public abstract class Entitatea {
 	public int getY() { return y; }
 	public void setX(int x) { this.x = x; }
 	public void setY(int y) { this.y = y; }
-	
-	// COMPOSITE GAKOA: Monopixel batek bere burua itzultzen du zerrenda batean.
-	//BAKARRIK NODOETAN, HEMENDIK KENDU
-	/*public List<Entitatea> getPixelek() {
-		List<Entitatea> pixelak = new ArrayList<>();
-		pixelak.add(this);
-		return pixelak;
-	}
-	*/
+
 	public abstract void mugitu();
 	public abstract Egoera getEgoeraObject();
-
 	public abstract void mugitu(String norabidea);
 }

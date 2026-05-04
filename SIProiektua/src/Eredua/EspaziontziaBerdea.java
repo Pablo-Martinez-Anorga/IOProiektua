@@ -14,20 +14,26 @@ public class EspaziontziaBerdea extends EspaziontziNodo {
 
 	@Override
 	protected void itxuraSortu() {
-		// Oinarria
-		this.gehituOsagaia(new Espaziontzia(0, 0));   // Erdigunea
-		this.gehituOsagaia(new Espaziontzia(-1, 0));  // Ezkerra
-		this.gehituOsagaia(new Espaziontzia(1, 0));   // Eskuina
-		
-		// BERDEAREN pertsonalizazioa: Gurutzea (Pixel bat goian eta beste bat behean)
-		this.gehituOsagaia(new Espaziontzia(0, -1));  // Goian
-		this.gehituOsagaia(new Espaziontzia(0, 1));   // Behean
+		Entitatea erdia = new Espaziontzia(0, 0); 
+        Entitatea goian = new Espaziontzia(0, -1);
+        Entitatea behean = new Espaziontzia(0, 1);
+        Entitatea ezkerrean = new Espaziontzia(-1, 0);
+        Entitatea eskuinean = new Espaziontzia(1, 0);
+        
+        gehituOsagaia(erdia);
+        gehituOsagaia(goian);
+        gehituOsagaia(behean);
+        gehituOsagaia(ezkerrean);
+        gehituOsagaia(eskuinean);
+
+        // Funtsezkoa tiroak nondik aterako diren jakiteko
+        setZentroa(erdia);
 	}
 
 	@Override
     public void aldatuArma() {
         if (this.armaAktiboa instanceof TiroPixelEstrategia) {
-            this.setArma(new TiroGeziEstrategia());
+            this.setArma(new TiroErronboEstrategia());
         } else {
             this.setArma(new TiroPixelEstrategia());
         }

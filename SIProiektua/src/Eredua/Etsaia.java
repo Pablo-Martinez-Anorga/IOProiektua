@@ -26,22 +26,5 @@ public class Etsaia extends Entitatea {
 	}
 	
 	@Override
-	public void mugitu(String norabidea) {
-	    if (norabidea.equals("Eskumara")) {
-	        this.x++;
-	    } else if (norabidea.equals("Ezkerrera")) {
-	        this.x--;
-	    } else if (norabidea.equals("Behera")) {
-	        this.y++;
-	    }
-	}
-	
-	/*
-	@Override
-	public List<Entitatea> getPixelek() {
-	    List<Entitatea> pixelak = new ArrayList<>();
-	    pixelak.add(new Etsaia(0, 0)); 
-	    return pixelak;
-	}
-	*/
+	public void mugitu(String norabidea) {}
 }

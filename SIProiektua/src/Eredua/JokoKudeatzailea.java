@@ -76,61 +76,58 @@ public class JokoKudeatzailea {
 	}
 	
 	private synchronized void taulaEguneratu() { 
-	    Egoera[][] matrizVirtual = new Egoera[100][60];
-	    for (int i = 0; i < 100; i++) {
-	        for (int j = 0; j < 60; j++) {
-	            matrizVirtual[i][j] = new GelaxkaHutsa();
-	        }
-	    }
+		Egoera[][] matrizVirtual = new Egoera[100][60];
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 60; j++) {
+                matrizVirtual[i][j] = new GelaxkaHutsa(); 
+            }
+        }
 
-	    markatuMatrizean(matrizVirtual, this.espaziontzia);
-	    for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
-	    for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
+     // 2. Marcar entidades
+        markatuMatrizean(matrizVirtual, this.espaziontzia);
+        for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
+        for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
 
-	    for (int i = 0; i < 100; i++) {
-	        for (int j = 0; j < 60; j++) {
-	            String unekoIzena = this.gelaxkak[i][j].getEgoera();
-	            String berriaIzena = matrizVirtual[i][j].getIzena();
-	            
-	            if (!unekoIzena.equals(berriaIzena)) {
-	                this.gelaxkak[i][j].egoeraAldatu(matrizVirtual[i][j]);
-	            }
-	        }
-	    }
-	}
+        // 3. Volcar a las celdas reales comprobando el nombre del estado
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 60; j++) {
+                String unekoIzena = this.gelaxkak[i][j].getEgoera();
+                String berriaIzena = matrizVirtual[i][j].getIzena();
+                
+                if (!unekoIzena.equals(berriaIzena)) {
+                    this.gelaxkak[i][j].egoeraAldatu(matrizVirtual[i][j]);
+                }
+            }
+        }
+    }
 	
 	private void markatuMatrizean(Egoera[][] matrizVirtual, Entitatea e) {
 		if (e != null) {
-			int ex = e.getX();
-			int ey = e.getY();
-
-			if (e instanceof EspaziontziNodo) {
-				for (Entitatea p : ((EspaziontziNodo) e).getPixelek()) {
-					int nx = ex + p.getX();
-					int ny = ey + p.getY();
-					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
-						matrizVirtual[nx][ny] = new GelaxkaEspaziontzi(); // Izen berria
-					}
-				}
-			} else if (e instanceof EtsaiNodo) {
-				for (Entitatea p : ((EtsaiNodo) e).getPixelek()) {
-					int nx = ex + p.getX();
-					int ny = ey + p.getY();
-					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
-						matrizVirtual[nx][ny] = new GelaxkaEtsai(); // Izen berria
-					}
-				}
-			} else if (e instanceof TiroNodo) {
-				for (Entitatea p : ((TiroNodo) e).getPixelek()) {
-					int nx = ex + p.getX();
-					int ny = ey + p.getY();
-					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
-						matrizVirtual[nx][ny] = new GelaxkaTiro(); // Izen berria
-					}
-				}
-			}
-		}
-	}
+            int ex = e.getX();
+            int ey = e.getY();
+            
+            // Lógica para NODOS: Recorrer píxeles y sumar posición del Nodo
+            if (e instanceof EtsaiNodo) {
+                for (Entitatea p : ((EtsaiNodo) e).getPixelek()) {
+                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaEtsai());
+                }
+            } else if (e instanceof EspaziontziNodo) {
+                for (Entitatea p : ((EspaziontziNodo) e).getPixelek()) {
+                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaEspaziontzi());
+                }
+            } else if (e instanceof TiroNodo) {
+                for (Entitatea p : ((TiroNodo) e).getPixelek()) {
+                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaTiro());
+                }
+            }
+        }
+    }
+	
+	private void pintatuMatrizan(Egoera[][] matriz, int x, int y, Egoera egoera) {
+        if (x >= 0 && x < 100 && y >= 0 && y < 60) {
+            matriz[x][y] = egoera;
+        }
+    }
 
 	private void etsaiakSortu() {
 	    int y_posizioa = 10;
@@ -173,8 +170,14 @@ public class JokoKudeatzailea {
 	
 	public synchronized void tiroEgin() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
+		
+		System.out.println("Espazio barra sakatu da!"); // 1. Konprobazioa
+		
 		if (this.espaziontzia instanceof EspaziontziNodo) {
-			this.tiroak.addAll(((EspaziontziNodo) this.espaziontzia).tiroEgin());
+			List<Entitatea> sortutakoTiroak = ((EspaziontziNodo) this.espaziontzia).tiroEgin();
+			this.tiroak.addAll(sortutakoTiroak);
+			
+			System.out.println("Tiroak sortu dira. Orain " + this.tiroak.size() + " tiro daude zerrendan."); // 2. Konprobazioa
 		}
 		taulaEguneratu();
 	}
@@ -182,13 +185,7 @@ public class JokoKudeatzailea {
 	private synchronized void eguneratuEtsaiak() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 		for (Entitatea e : etsaiak) {
-			if (e instanceof EtsaiNodo) {
-				EtsaiNodo nodo = (EtsaiNodo) e;
-				// Adibidez, behera mugitzen badira:
-				if (nodo.mugituDaiteke("Behera")) {
-					nodo.mugitu("Behera");
-				}
-			}
+			e.mugitu();
 		}
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
@@ -297,8 +294,41 @@ public class JokoKudeatzailea {
 	}
 	
 	public synchronized void aldatuArma() {
-		if (this.espaziontzia instanceof EspaziontziNodo) {
-			((EspaziontziNodo) this.espaziontzia).aldatuArma();
-		}
+		System.out.println("2. JokoKudeatzailea: Agindua jaso da!");
+        if (this.espaziontzia instanceof EspaziontziNodo) {
+            System.out.println("3. JokoKudeatzailea: Ontzia Nodoa da, aldatzen...");
+            ((EspaziontziNodo) this.espaziontzia).aldatuArma();
+        } else {
+             System.out.println("ERROR: espaziontzia EZ da EspaziontziNodo bat.");
+        }
 	}
+	
+	public boolean gelaxkaEtsaiaDa(int x, int y) {
+		for (Entitatea e : this.etsaiak) {
+            if (e instanceof EtsaiNodo) {
+            	EtsaiNodo nodo = (EtsaiNodo) e;
+                for (Entitatea p : nodo.getPixelek()) {
+                	if ((nodo.getX() + p.getX()) == x && (nodo.getY() + p.getY()) == y) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+	}
+	
+	public int getEtsaiaId(int x, int y) {
+        for (Entitatea e : this.etsaiak) {
+            if (e instanceof EtsaiNodo) {
+            	EtsaiNodo nodo = (EtsaiNodo) e;
+                for (Entitatea p : nodo.getPixelek()) {
+                    if ((nodo.getX() + p.getX()) == x && (nodo.getY() + p.getY()) == y) {
+                        // Pixel hori aurkitzen badu, bere ID-a itzuli
+                        return ((Etsaia) p).getId(); 
+                    }
+                }
+            }
+        }
+        return -1; // Ez badago etsairik gelaxka horretan
+    }
 }

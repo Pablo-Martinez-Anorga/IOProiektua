@@ -13,17 +13,12 @@ public abstract class EspaziontziNodo extends Entitatea {
 	protected TiroEstrategia armaAktiboa;
 	
 	// Munizioa
-	protected int geziMunizioa;
-	protected int erronboMunizioa;
+	protected int geziMunizioa = 30;
+	protected int erronboMunizioa = 20;
 	
 	// Eraikitzailea
 	public EspaziontziNodo(int x, int y) { 
 		super(x, y);
-		
-		// Munizioa hasieratu
-		this.geziMunizioa = 30;
-		this.erronboMunizioa = 20;
-		
 		itxuraSortu(); // Gorria, Urdina, Berdea osagaiak gehituko dituzte hemen
 		
 		this.armaAktiboa = new TiroPixelEstrategia();
@@ -57,29 +52,33 @@ public abstract class EspaziontziNodo extends Entitatea {
 	}
 	
 	public boolean mugituDaiteke(String norabidea) {
-        for (Entitatea pixel : osagaiak) {
-            if (norabidea.equals("Eskumara") && pixel.getX() >= 99) return false;
-            if (norabidea.equals("Ezkerrera") && pixel.getX() <= 0) return false;
-            // Ontzia gora eta behera ere mugitu badaiteke:
-            if (norabidea.equals("Gora") && pixel.getY() <= 0) return false;
-            if (norabidea.equals("Behera") && pixel.getY() >= 59) return false;
+		for (Entitatea p : osagaiak) {
+            int px = this.x + p.getX(); //Nodoaren posizioa + Pixelaren posizio erlatiboa
+            int py = this.y + p.getY();
+            
+            if (norabidea.equals("Ezkerrera") && px <= 1) return false;
+            if (norabidea.equals("Eskumara") && px >= 99) return false;
+            if (norabidea.equals("Gora") && py <= 1) return false;
+            if (norabidea.equals("Behera") && py >= 59) return false;
         }
         return true;
     }
 	
 	@Override
     public void mugitu(String norabidea) {
-        if (mugituDaiteke(norabidea)) { // Ontziak bere burua konprobatzen du mugitu aurretik
-            // Nodoaren koordenatu nagusiak eguneratu
+		if (mugituDaiteke(norabidea)) {
+            // 1. Nodoaren posizioa eguneratu
             if (norabidea.equals("Eskumara")) this.x++;
             else if (norabidea.equals("Ezkerrera")) this.x--;
             else if (norabidea.equals("Gora")) this.y--;
             else if (norabidea.equals("Behera")) this.y++;
-        	
-            // Pixel bakoitza (hostoa) banan-banan mugitu
-            for (Entitatea pixel : osagaiak) {
-                pixel.mugitu(norabidea);
+            
+            // 2. Hostoak (pixelak) mugitu
+            /*
+            for (Entitatea p : osagaiak) {
+                p.mugitu(norabidea);
             }
+     		*/
         }
     }
 	
@@ -92,20 +91,22 @@ public abstract class EspaziontziNodo extends Entitatea {
 	}
 	
 	public List<Entitatea> tiroEgin() {
-		// 1. Munizioaren logika zaharretik berreskuratuta
-		if (this.armaAktiboa instanceof TiroGeziEstrategia) {
-			if (this.geziMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
-			this.geziMunizioa--;
-		} else if (this.armaAktiboa instanceof TiroErronboEstrategia) {
-			if (this.erronboMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
-			this.erronboMunizioa--;
-		}
-		
-		// 2. Tiroa ZENTROTIK bakarrik sortu
+		if (this.armaAktiboa instanceof TiroErronboEstrategia) {
+            if (this.erronboMunizioa <= 0) return new ArrayList<>(); 
+            this.erronboMunizioa--;
+        } else if (this.armaAktiboa instanceof TiroGeziEstrategia) {
+        	System.out.println("Munición Gezi actual: " + this.geziMunizioa);
+            if (this.geziMunizioa <= 0) {
+            	System.out.println("¡SIN MUNICIÓN GEZI!");
+            	return new ArrayList<>(); 
+            }
+            this.geziMunizioa--;
+        }
+
         if (armaAktiboa != null && zentroa != null) {
-            // Zentroko pixelaren X eta Y pasatzen dizkiogu estrategiari
-        	// Oharra: "3" pasatzen diot zure kodigo zaharrean horrela zegoelako
-            return armaAktiboa.tiroEgin(zentroa.getX(), zentroa.getY() - 1, 3); 
+            int absX = this.x + zentroa.getX();
+            int absY = this.y + zentroa.getY();
+            return armaAktiboa.tiroEgin(absX, absY - 1, 1);
         }
         return new ArrayList<>();
     }

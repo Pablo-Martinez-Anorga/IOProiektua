@@ -1,46 +1,36 @@
 package Eredua;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EspaziontziaGorria extends EspaziontziNodo {
-
-	// Ontzi gorriaren arma-zerrenda (Strategy patroia)
-	//private List<TiroEstrategia> armak;
-
-	public EspaziontziaGorria(int x, int y) {
-        super(x, y);
-        // Hasieraketa defektuzko armarekin
+	
+    public EspaziontziaGorria(int x, int y) {
+        super(x, y); 
         this.setArma(new TiroPixelEstrategia());
     }
 
-	@Override
-	protected void itxuraSortu() {
-		// Oinarria (Denentzat berdina zena)
-		this.gehituOsagaia(new Espaziontzia(0, 0));   // Erdigunea
-		this.gehituOsagaia(new Espaziontzia(-1, 0));  // Ezkerra
-		this.gehituOsagaia(new Espaziontzia(1, 0));   // Eskuina
-		
-		// GORRIAREN pertsonalizazioa: U forma (Goiko bi pixelak)
-		this.gehituOsagaia(new Espaziontzia(-1, -1)); // Goian ezkerrean
-		this.gehituOsagaia(new Espaziontzia(1, -1));  // Goian eskuinean
-		this.gehituOsagaia(new Espaziontzia(-2, 0));
-		this.gehituOsagaia(new Espaziontzia(2, 0));
+    @Override
+    protected void itxuraSortu() {
+        Entitatea ezker = new Espaziontzia(-1, 0);
+        Entitatea zentro = new Espaziontzia(0, 0); 
+        Entitatea eskuin = new Espaziontzia(1, 0);
+        Entitatea punta = new Espaziontzia(0, -1);
 
-		this.gehituOsagaia(new Espaziontzia(0, -1));
-		this.gehituOsagaia(new Espaziontzia(-1, -2));
-		this.gehituOsagaia(new Espaziontzia(1, -2));
-	}
+        gehituOsagaia(ezker);
+        gehituOsagaia(zentro);
+        gehituOsagaia(eskuin);
+        gehituOsagaia(punta);
 
-	@Override
+        setZentroa(zentro); 
+    }
+
+    @Override
     public void aldatuArma() {
-        // Lógica de intercambio usando instanceof
-        if (this.armaAktiboa instanceof TiroPixelEstrategia) {
-            this.setArma(new TiroGeziEstrategia());
-        } else if (this.armaAktiboa instanceof TiroGeziEstrategia) {
-            this.setArma(new TiroErronboEstrategia());
+        // Al no haber variable local, esto cambia la variable del padre
+    	if (this.armaAktiboa instanceof TiroPixelEstrategia) {
+            this.armaAktiboa = new TiroErronboEstrategia();
+        } else if (this.armaAktiboa instanceof TiroErronboEstrategia) {
+            this.armaAktiboa = new TiroGeziEstrategia();
         } else {
-            this.setArma(new TiroPixelEstrategia());
+            this.armaAktiboa = new TiroPixelEstrategia();
         }
     }
 }

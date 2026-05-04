@@ -1,29 +1,31 @@
 package Eredua;
 
 public class EtsaiaFaktoria {
-    private static EtsaiaFaktoria nireFaktoria = null;
-    private int etsaiKontagailua = 0;
+	//singleton
+	private static EtsaiaFaktoria nireFaktoria = null;
+    private int idKont = 0;
 
-    private EtsaiaFaktoria() {}
+    // 2. ERAIKITZAILEA: Pribatua
+    private EtsaiaFaktoria() { }
 
+    // 3. METODOA: Estatikoa izan behar da eta mota berekoa
     public static EtsaiaFaktoria getNireFaktoria() {
-        if (nireFaktoria == null) nireFaktoria = new EtsaiaFaktoria();
-        return nireFaktoria;
+        if (nireFaktoria == null) {
+            nireFaktoria = new EtsaiaFaktoria();
+        }
+        return nireFaktoria; // Hemen jada ez dizu errorerik emango
     }
 
     public Entitatea sortuEtsaia(int x, int y, String mota) {
-    	EtsaiNodo nodoBerria = new EtsaiNodo(x, y); 
-        etsaiKontagailua++; 
-        
-        // 3x3-ko etsaia sortzen du adibidez. 
-        // (Zure etsaiaren itxura ezberdina bada, for hau aldatu dezakezu)
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                Etsaia pixel = new Etsaia(i, j, etsaiKontagailua); 
-                nodoBerria.gehituOsagaia(pixel); 
-            }
-        }
-        return nodoBerria;
+    	EtsaiNodo nodo = new EtsaiNodo(x, y);
+        int id = (int)(Math.random() * 10000);
+        nodo.setId(id);
+
+        nodo.gehituOsagaia(new Etsaia(-1, 0, id)); // Ezkerreko "besoa"
+        nodo.gehituOsagaia(new Etsaia(0, 0, id));  // Zentroa
+        nodo.gehituOsagaia(new Etsaia(1, 0, id));  // Eskumako "besoa"
+        nodo.gehituOsagaia(new Etsaia(0, 1, id));  // Beheko "pata"
+
+        return nodo;
     }
 }
-
