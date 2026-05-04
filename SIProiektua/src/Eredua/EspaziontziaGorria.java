@@ -9,10 +9,10 @@ public class EspaziontziaGorria extends EspaziontziNodo {
 
     @Override
     protected void itxuraSortu() {
-        Entitatea ezker = new Espaziontzia(-1, 0);
-        Entitatea zentro = new Espaziontzia(0, 0); 
-        Entitatea eskuin = new Espaziontzia(1, 0);
-        Entitatea punta = new Espaziontzia(0, -1);
+    	Entitatea ezker = new Espaziontzia(this.x - 1, this.y + 0);
+        Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0); 
+        Entitatea eskuin = new Espaziontzia(this.x + 1, this.y + 0);
+        Entitatea punta = new Espaziontzia(this.x + 0, this.y - 1);
 
         gehituOsagaia(ezker);
         gehituOsagaia(zentro);
@@ -24,13 +24,12 @@ public class EspaziontziaGorria extends EspaziontziNodo {
 
     @Override
     public void aldatuArma() {
-        // Al no haber variable local, esto cambia la variable del padre
     	if (this.armaAktiboa instanceof TiroPixelEstrategia) {
-            this.armaAktiboa = new TiroErronboEstrategia();
+            this.setArma(new TiroErronboEstrategia());
         } else if (this.armaAktiboa instanceof TiroErronboEstrategia) {
-            this.armaAktiboa = new TiroGeziEstrategia();
+            this.setArma(new TiroGeziEstrategia());
         } else {
-            this.armaAktiboa = new TiroPixelEstrategia();
+            this.setArma(new TiroPixelEstrategia());
         }
     }
 }

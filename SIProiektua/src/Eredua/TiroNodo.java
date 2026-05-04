@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TiroNodo extends Entitatea {
-    private List<Entitatea> osagaiak = new ArrayList<>();
+	protected List<Entitatea> osagaiak = new ArrayList<>();
 
     public TiroNodo(int x, int y) {
         super(x, y);
@@ -23,11 +23,18 @@ public class TiroNodo extends Entitatea {
 
     @Override
     public void mugitu() {
-        this.y--;
+    	this.y--;
+        for (Entitatea p : osagaiak) {
+            p.mugitu();
+        }
     }
 
     @Override
     public void mugitu(String norabidea) {
-        for (Entitatea p : osagaiak) { p.mugitu(norabidea); }
+    	if (norabidea.equals("Gora")) this.y--;
+        else if (norabidea.equals("Behera")) this.y++;
+        for (Entitatea p : osagaiak) {
+            p.mugitu(norabidea);
+        }
     }
 }

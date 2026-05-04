@@ -21,10 +21,13 @@ public class Etsaia extends Entitatea {
 	    return new GelaxkaEtsai();
 	}
 	
-	public int getId() { 
-		return id;
-	}
+	public int getId() { return this.id; }
+    public void setId(int id) { this.id = id; }
 	
 	@Override
-	public void mugitu(String norabidea) {}
+	public void mugitu(String norabidea) {
+		if (norabidea.equals("Ezkerrera")) this.x--;
+        else if (norabidea.equals("Eskumara")) this.x++;
+        else if (norabidea.equals("Behera")) this.y++;
+	}
 }

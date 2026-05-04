@@ -14,16 +14,14 @@ public class EspaziontziaUrdina extends EspaziontziNodo {
 
 	@Override
 	protected void itxuraSortu() {
-		Entitatea zentro = new Espaziontzia(0, 0); 
-        Entitatea ezker_behe = new Espaziontzia(-1, 1);
-        Entitatea eskuin_behe = new Espaziontzia(1, 1);
+		Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0); 
+        Entitatea ezker_behe = new Espaziontzia(this.x - 1, this.y + 1);
+        Entitatea eskuin_behe = new Espaziontzia(this.x + 1, this.y + 1);
         
-        // Gehitu
         gehituOsagaia(zentro);
         gehituOsagaia(ezker_behe);
         gehituOsagaia(eskuin_behe);
 
-        // Zentroa gorde, bestela ez du tiro egingo! 🔥
         setZentroa(zentro);
 	}
 

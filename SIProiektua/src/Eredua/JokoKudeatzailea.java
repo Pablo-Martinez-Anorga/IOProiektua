@@ -18,7 +18,6 @@ public class JokoKudeatzailea {
 	private JokoKudeatzailea() {
 		this.etsaiak = new ArrayList<>();
 		this.tiroak = new ArrayList<>();
-		// FACTORY PATROIA: Defektuzko ontzia sortu (Gero hasiJokoa-n aldatuko da)
 		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia("GREEN", 50, 55);
 		this.gelaxkak = new Gelaxka[100][60];
 		for (int i = 0; i < 100; i++) {
@@ -45,7 +44,6 @@ public class JokoKudeatzailea {
 	public void hasiJokoa() {
 		// Kolorearen araberako ontzia sortu
 		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
-		
 		etsaiakSortu(); 
 		//TIMER-AK HIL BEHAR DIRA
 		Timer tiroenTimer = new Timer();
@@ -83,12 +81,10 @@ public class JokoKudeatzailea {
             }
         }
 
-     // 2. Marcar entidades
         markatuMatrizean(matrizVirtual, this.espaziontzia);
         for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
         for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
 
-        // 3. Volcar a las celdas reales comprobando el nombre del estado
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 60; j++) {
                 String unekoIzena = this.gelaxkak[i][j].getEgoera();
@@ -103,21 +99,17 @@ public class JokoKudeatzailea {
 	
 	private void markatuMatrizean(Egoera[][] matrizVirtual, Entitatea e) {
 		if (e != null) {
-            int ex = e.getX();
-            int ey = e.getY();
-            
-            // Lógica para NODOS: Recorrer píxeles y sumar posición del Nodo
             if (e instanceof EtsaiNodo) {
                 for (Entitatea p : ((EtsaiNodo) e).getPixelek()) {
-                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaEtsai());
+                    pintatuMatrizan(matrizVirtual, p.getX(), p.getY(), new GelaxkaEtsai());
                 }
             } else if (e instanceof EspaziontziNodo) {
                 for (Entitatea p : ((EspaziontziNodo) e).getPixelek()) {
-                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaEspaziontzi());
+                    pintatuMatrizan(matrizVirtual, p.getX(), p.getY(), new GelaxkaEspaziontzi());
                 }
             } else if (e instanceof TiroNodo) {
                 for (Entitatea p : ((TiroNodo) e).getPixelek()) {
-                    pintatuMatrizan(matrizVirtual, ex + p.getX(), ey + p.getY(), new GelaxkaTiro());
+                    pintatuMatrizan(matrizVirtual, p.getX(), p.getY(), new GelaxkaTiro());
                 }
             }
         }
@@ -170,13 +162,9 @@ public class JokoKudeatzailea {
 	
 	public synchronized void tiroEgin() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		
-		System.out.println("Espazio barra sakatu da!"); // 1. Konprobazioa
-		
 		if (this.espaziontzia instanceof EspaziontziNodo) {
 			List<Entitatea> sortutakoTiroak = ((EspaziontziNodo) this.espaziontzia).tiroEgin();
 			this.tiroak.addAll(sortutakoTiroak);
-			
 			System.out.println("Tiroak sortu dira. Orain " + this.tiroak.size() + " tiro daude zerrendan."); // 2. Konprobazioa
 		}
 		taulaEguneratu();
@@ -209,9 +197,9 @@ public class JokoKudeatzailea {
 		}
 
 		// Espaziontzia vs etsaiak (Java 8: anyMatch erabilita)
-			if (etsaiak.stream().anyMatch(e -> gainjartzenDira(e, espaziontzia))) {
-					Partida.getNirePartida().amaituJokoa(false); 
-			}
+		if (etsaiak.stream().anyMatch(e -> gainjartzenDira(e, espaziontzia))) {
+				Partida.getNirePartida().amaituJokoa(false); 
+		}
 		jokoEgoeraEgiaztatu();
 	}
 	
@@ -225,37 +213,34 @@ public class JokoKudeatzailea {
 	    
 	    boolean inbasioa = etsaiak.stream().anyMatch(e -> {
 	    	if (e instanceof EtsaiNodo) {
-	    		return ((EtsaiNodo) e).getPixelek().stream().anyMatch(p -> e.getY() + p.getY() >= 59);
+	    		return ((EtsaiNodo) e).getPixelek().stream().anyMatch(p -> p.getY() >= 59);
 	    	}
 	    	return false;
 	    });
 
-	    if (inbasioa) {
-	        Partida.getNirePartida().amaituJokoa(false);
-	    }
+	    if (inbasioa) Partida.getNirePartida().amaituJokoa(false);
 	}
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
-		// Etsaiaren pixel BATEK ERE EZ noneMatch-ekin talka egiten ez duela egiaztatu
 		if (!(mugitzenDenEtsaia instanceof EtsaiNodo)) return false;
 		EtsaiNodo etsaiNodoa = (EtsaiNodo) mugitzenDenEtsaia;
 		
 		return etsaiNodoa.getPixelek().stream().noneMatch(p -> {
-			int nx = x + p.getX();
-			int ny = y + p.getY();
+            int offsetX = p.getX() - etsaiNodoa.getX();
+            int offsetY = p.getY() - etsaiNodoa.getY();
+			int nx = x + offsetX;
+			int ny = y + offsetY;
 			
 			boolean mugatikKanpo = (nx < 0 || nx >= 100 || ny >= 60);
-			
 			boolean talkaBesteEtsaiBatekin = etsaiak.stream()
 				.filter(e -> e != mugitzenDenEtsaia)
 				.anyMatch(e -> {
 					if (e instanceof EtsaiNodo) {
 						return ((EtsaiNodo) e).getPixelek().stream()
-							.anyMatch(ep -> nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY());
+							.anyMatch(ep -> nx == ep.getX() && ny == ep.getY());
 					}
 					return false;
 				});
-			
 			return mugatikKanpo || talkaBesteEtsaiBatekin; 
 		});
 	}
@@ -282,11 +267,11 @@ public class JokoKudeatzailea {
 		List<Entitatea> pixelek2 = lortuPixelak(e2);
 		
 		for (Entitatea p1 : pixelek1) {
-			int x1 = e1.getX() + p1.getX();
-			int y1 = e1.getY() + p1.getY();
+			int x1 = p1.getX();
+			int y1 = p1.getY();
 			for (Entitatea p2 : pixelek2) {
-				int x2 = e2.getX() + p2.getX();
-				int y2 = e2.getY() + p2.getY();
+				int x2 = p2.getX();
+				int y2 = p2.getY();
 				if (x1 == x2 && y1 == y2) return true;
 			}
 		}
@@ -294,12 +279,8 @@ public class JokoKudeatzailea {
 	}
 	
 	public synchronized void aldatuArma() {
-		System.out.println("2. JokoKudeatzailea: Agindua jaso da!");
-        if (this.espaziontzia instanceof EspaziontziNodo) {
-            System.out.println("3. JokoKudeatzailea: Ontzia Nodoa da, aldatzen...");
+		if (this.espaziontzia instanceof EspaziontziNodo) {
             ((EspaziontziNodo) this.espaziontzia).aldatuArma();
-        } else {
-             System.out.println("ERROR: espaziontzia EZ da EspaziontziNodo bat.");
         }
 	}
 	
@@ -308,9 +289,7 @@ public class JokoKudeatzailea {
             if (e instanceof EtsaiNodo) {
             	EtsaiNodo nodo = (EtsaiNodo) e;
                 for (Entitatea p : nodo.getPixelek()) {
-                	if ((nodo.getX() + p.getX()) == x && (nodo.getY() + p.getY()) == y) {
-                        return true;
-                    }
+                	if (p.getX() == x && p.getY() == y) return true;
                 }
             }
         }
@@ -318,17 +297,14 @@ public class JokoKudeatzailea {
 	}
 	
 	public int getEtsaiaId(int x, int y) {
-        for (Entitatea e : this.etsaiak) {
+		for (Entitatea e : this.etsaiak) {
             if (e instanceof EtsaiNodo) {
             	EtsaiNodo nodo = (EtsaiNodo) e;
                 for (Entitatea p : nodo.getPixelek()) {
-                    if ((nodo.getX() + p.getX()) == x && (nodo.getY() + p.getY()) == y) {
-                        // Pixel hori aurkitzen badu, bere ID-a itzuli
-                        return ((Etsaia) p).getId(); 
-                    }
+                    if (p.getX() == x && p.getY() == y) return ((Etsaia) p).getId(); 
                 }
             }
         }
-        return -1; // Ez badago etsairik gelaxka horretan
+        return -1;
     }
 }

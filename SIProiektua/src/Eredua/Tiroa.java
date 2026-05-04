@@ -13,7 +13,7 @@ public class Tiroa extends Entitatea {
 	//Metodoak
 	@Override
     public void mugitu() {
-        this.y = this.y - 1;
+		this.y--;
 	}
 
 	@Override
@@ -23,9 +23,6 @@ public class Tiroa extends Entitatea {
 	
 	@Override
 	public void mugitu(String norabidea) {
-	    if (norabidea.equals("Gora")) {
-	        this.y--;
+		if (norabidea.equals("Gora")) this.y--;
 	}
-
-}
 }

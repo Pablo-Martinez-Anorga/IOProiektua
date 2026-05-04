@@ -10,19 +10,18 @@ public class Espaziontzia extends Entitatea {
 	}
 
 	@Override
-	public void mugitu() {
-	}
+	public void mugitu() {}
 
 	@Override
 	public Egoera getEgoeraObject() {
-		return new GelaxkaHutsa();
+		return new GelaxkaEspaziontzi();
 	}
 
 	@Override
 	public void mugitu(String norabidea) {
 		if (norabidea.equals("Eskumara")) this.x++;
-	    else if (norabidea.equals("Ezkerrera")) this.x--;
-	    else if (norabidea.equals("Gora")) this.y--;
-	    else if (norabidea.equals("Behera")) this.y++;
+        else if (norabidea.equals("Ezkerrera")) this.x--;
+        else if (norabidea.equals("Gora")) this.y--;
+        else if (norabidea.equals("Behera")) this.y++;
 	}
 }
