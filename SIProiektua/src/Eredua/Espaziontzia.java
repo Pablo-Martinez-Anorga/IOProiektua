@@ -15,14 +15,23 @@ public class Espaziontzia extends Entitatea {
 
 	@Override
 	public Egoera getEgoeraObject() {
-		return new EspaziontziaEgoera();
+		return new GelaxkaHutsa();
 	}
 
-	//Monopixelaren offset-a itzuli (0,0)
 	@Override
+	public void mugitu(String norabidea) {
+	    if (norabidea.equals("Eskumara")) {
+	        this.x++;
+	    } else if (norabidea.equals("Ezkerrera")) {
+	        this.x--;
+	    }
+	}
+	//Monopixelaren offset-a itzuli (0,0)
+	/*@Override
 	public List<Entitatea> getPixelek() {
 		List<Entitatea> pixelGuztiak = new ArrayList<>();
 		pixelGuztiak.add(new Espaziontzia(0, 0)); 
 		return pixelGuztiak;
 	}
+	*/
 }

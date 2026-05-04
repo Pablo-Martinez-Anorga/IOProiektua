@@ -9,9 +9,9 @@ public class JokoKudeatzailea {
 	
 	private static JokoKudeatzailea nireJK = null;
 	
-	private EspaziontziNodo espaziontzia;
-	private List<Entitatea> etsaiak;
-	private List<Entitatea> tiroak;
+	private Entitatea espaziontzia;
+	private List<Entitatea> etsaiak = new ArrayList<>();
+	private List<Entitatea> tiroak = new ArrayList<>();
 	private String ontziKolorea; 
 	private Gelaxka[][] gelaxkak;
 	
@@ -79,7 +79,7 @@ public class JokoKudeatzailea {
 	    Egoera[][] matrizVirtual = new Egoera[100][60];
 	    for (int i = 0; i < 100; i++) {
 	        for (int j = 0; j < 60; j++) {
-	            matrizVirtual[i][j] = new HutsaEgoera();
+	            matrizVirtual[i][j] = new GelaxkaHutsa();
 	        }
 	    }
 
@@ -103,11 +103,30 @@ public class JokoKudeatzailea {
 		if (e != null) {
 			int ex = e.getX();
 			int ey = e.getY();
-			for (Entitatea p : e.getPixelek()) {
-				int nx = ex + p.getX();
-				int ny = ey + p.getY();
-				if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
-					matrizVirtual[nx][ny] = e.getEgoeraObject();
+
+			if (e instanceof EspaziontziNodo) {
+				for (Entitatea p : ((EspaziontziNodo) e).getPixelek()) {
+					int nx = ex + p.getX();
+					int ny = ey + p.getY();
+					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
+						matrizVirtual[nx][ny] = new GelaxkaEspaziontzi(); // Izen berria
+					}
+				}
+			} else if (e instanceof EtsaiNodo) {
+				for (Entitatea p : ((EtsaiNodo) e).getPixelek()) {
+					int nx = ex + p.getX();
+					int ny = ey + p.getY();
+					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
+						matrizVirtual[nx][ny] = new GelaxkaEtsai(); // Izen berria
+					}
+				}
+			} else if (e instanceof TiroNodo) {
+				for (Entitatea p : ((TiroNodo) e).getPixelek()) {
+					int nx = ex + p.getX();
+					int ny = ey + p.getY();
+					if (nx >= 0 && nx < 100 && ny >= 0 && ny < 60) {
+						matrizVirtual[nx][ny] = new GelaxkaTiro(); // Izen berria
+					}
 				}
 			}
 		}
@@ -142,20 +161,35 @@ public class JokoKudeatzailea {
 	}
 	public synchronized void mugituOntzia(String norabidea) {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		this.espaziontzia.mugitu(norabidea);
+		if (this.espaziontzia instanceof EspaziontziNodo) {
+			EspaziontziNodo nodo = (EspaziontziNodo) this.espaziontzia;
+			if (nodo.mugituDaiteke(norabidea)) {
+				nodo.mugitu(norabidea);
+			}
+		}
 		talkakEgiaztatu();
 		taulaEguneratu();
 	}
 	
 	public synchronized void tiroEgin() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		this.tiroak.addAll(this.espaziontzia.tiroEgin());
+		if (this.espaziontzia instanceof EspaziontziNodo) {
+			this.tiroak.addAll(((EspaziontziNodo) this.espaziontzia).tiroEgin());
+		}
 		taulaEguneratu();
 	}
 	
 	private synchronized void eguneratuEtsaiak() {
 		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		etsaiak.forEach(Entitatea::mugitu); // Java 8: forEach erabilita
+		for (Entitatea e : etsaiak) {
+			if (e instanceof EtsaiNodo) {
+				EtsaiNodo nodo = (EtsaiNodo) e;
+				// Adibidez, behera mugitzen badira:
+				if (nodo.mugituDaiteke("Behera")) {
+					nodo.mugitu("Behera");
+				}
+			}
+		}
 		jokoEgoeraEgiaztatu();
 		taulaEguneratu();
 	}
@@ -185,15 +219,19 @@ public class JokoKudeatzailea {
 	}
 	
 	private void jokoEgoeraEgiaztatu() {
-	    if (!Partida.getNirePartida().isJokoaHasiDa()) return;
+		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
 	    
 	    if (this.etsaiak.isEmpty()) { 
 	        Partida.getNirePartida().amaituJokoa(true);
 	        return;
 	    }
 	    
-	    // Java 8: anyMatch erabiliz inbasioa gertatzen den ikusteko
-	    boolean inbasioa = etsaiak.stream().anyMatch(e -> e.getPixelek().stream().anyMatch(p -> e.getY() + p.getY() >= 59));
+	    boolean inbasioa = etsaiak.stream().anyMatch(e -> {
+	    	if (e instanceof EtsaiNodo) {
+	    		return ((EtsaiNodo) e).getPixelek().stream().anyMatch(p -> e.getY() + p.getY() >= 59);
+	    	}
+	    	return false;
+	    });
 
 	    if (inbasioa) {
 	        Partida.getNirePartida().amaituJokoa(false);
@@ -202,33 +240,54 @@ public class JokoKudeatzailea {
 
 	public boolean posizioaLibreDa(int x, int y, Entitatea mugitzenDenEtsaia) {
 		// Etsaiaren pixel BATEK ERE EZ noneMatch-ekin talka egiten ez duela egiaztatu
-		return mugitzenDenEtsaia.getPixelek().stream().noneMatch(p -> {
+		if (!(mugitzenDenEtsaia instanceof EtsaiNodo)) return false;
+		EtsaiNodo etsaiNodoa = (EtsaiNodo) mugitzenDenEtsaia;
+		
+		return etsaiNodoa.getPixelek().stream().noneMatch(p -> {
 			int nx = x + p.getX();
 			int ny = y + p.getY();
 			
-			// 1. Muga 
 			boolean mugatikKanpo = (nx < 0 || nx >= 100 || ny >= 60);
 			
-			// 2. Beste etsaiak
-			boolean talkaBesteEtsaiBatekin = etsaiak.stream().filter(e -> e != mugitzenDenEtsaia).anyMatch(e -> e.getPixelek().stream().anyMatch(ep -> nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY()));
+			boolean talkaBesteEtsaiBatekin = etsaiak.stream()
+				.filter(e -> e != mugitzenDenEtsaia)
+				.anyMatch(e -> {
+					if (e instanceof EtsaiNodo) {
+						return ((EtsaiNodo) e).getPixelek().stream()
+							.anyMatch(ep -> nx == e.getX() + ep.getX() && ny == e.getY() + ep.getY());
+					}
+					return false;
+				});
 			
 			return mugatikKanpo || talkaBesteEtsaiBatekin; 
 		});
 	}
 	
 	private synchronized void eguneratuTiroak() {
-		tiroak.forEach(Entitatea::mugitu); // Java 8: forEach
-		tiroak.removeIf(t -> t.getY() < 0); // Java 8: removeIf lambdarekin
+		for (Entitatea t : tiroak) {
+			t.mugitu("Gora"); // Jokalariaren tiroa bada gora, edo logika sartu
+		}
+		tiroak.removeIf(t -> t.getY() < 0); 
 		talkakEgiaztatu();
 		taulaEguneratu();
 	}
 	
+	private List<Entitatea> lortuPixelak(Entitatea e) {
+		if (e instanceof EspaziontziNodo) return ((EspaziontziNodo) e).getPixelek();
+		if (e instanceof EtsaiNodo) return ((EtsaiNodo) e).getPixelek();
+		if (e instanceof TiroNodo) return ((TiroNodo) e).getPixelek();
+		return new ArrayList<>();
+	}
+	
 	//Espaziontzia eta etsaia elkar ukitzen duten begiratu
 	private boolean gainjartzenDira(Entitatea e1, Entitatea e2) {
-		for (Entitatea p1 : e1.getPixelek()) {
+		List<Entitatea> pixelek1 = lortuPixelak(e1);
+		List<Entitatea> pixelek2 = lortuPixelak(e2);
+		
+		for (Entitatea p1 : pixelek1) {
 			int x1 = e1.getX() + p1.getX();
 			int y1 = e1.getY() + p1.getY();
-			for (Entitatea p2 : e2.getPixelek()) {
+			for (Entitatea p2 : pixelek2) {
 				int x2 = e2.getX() + p2.getX();
 				int y2 = e2.getY() + p2.getY();
 				if (x1 == x2 && y1 == y2) return true;
@@ -238,6 +297,8 @@ public class JokoKudeatzailea {
 	}
 	
 	public synchronized void aldatuArma() {
-		this.espaziontzia.aldatuArma();
+		if (this.espaziontzia instanceof EspaziontziNodo) {
+			((EspaziontziNodo) this.espaziontzia).aldatuArma();
+		}
 	}
 }

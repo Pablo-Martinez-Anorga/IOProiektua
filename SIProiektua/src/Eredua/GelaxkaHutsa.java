@@ -1,6 +1,6 @@
 package Eredua;
 
-public class EspaziontziaEgoera implements Egoera {
+public class GelaxkaHutsa implements Egoera {
 
     @Override
     public String getIzena() { return "ESPAZIONTZIA"; }

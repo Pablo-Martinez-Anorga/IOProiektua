@@ -2,16 +2,15 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class EspaziontziNodo extends Entitatea {
 	
 	// COMPOSITE: Entitate bilduma
-	protected List<Entitatea> osagaiak;
-
+	protected List<Entitatea> osagaiak = new ArrayList<>();
+	protected Entitatea zentroa;
+	
 	// Strategy 
 	protected TiroEstrategia armaAktiboa;
-
 	
 	// Munizioa
 	protected int geziMunizioa;
@@ -20,7 +19,6 @@ public abstract class EspaziontziNodo extends Entitatea {
 	// Eraikitzailea
 	public EspaziontziNodo(int x, int y) { 
 		super(x, y);
-		this.osagaiak = new ArrayList<>(); //itxuraSortu baino lehen hasieratu
 		
 		// Munizioa hasieratu
 		this.geziMunizioa = 30;
@@ -35,13 +33,13 @@ public abstract class EspaziontziNodo extends Entitatea {
 	public void gehituOsagaia(Entitatea e) {
 		this.osagaiak.add(e);
 	}
-
-	@Override
-	public List<Entitatea> getPixelek() {
-		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
-	}
 	
-	// Metodoak
+	// Zentroa esleitzeko metodoa Faktoriak erabili dezan
+	public void setZentroa(Entitatea z) {
+		this.zentroa = z;
+	}
+
+	// Metodo abstraktuak
 	protected abstract void itxuraSortu();
 	public abstract void aldatuArma();
 	
@@ -49,29 +47,52 @@ public abstract class EspaziontziNodo extends Entitatea {
 		this.armaAktiboa = armaBerria;
 	}
 	
-	public void mugitu(String norabidea) {
-		// Java 8: for guztiak kendu noneMatch erabili
-		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
-		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
-		boolean goraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() - 1 < 0);
-		boolean beheraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() + 1 >= 60);
-
-		if (norabidea.equals("Eskumara") && eskumaraAhalDa) this.x += 1;
-		else if (norabidea.equals("Ezkerrera") && ezkerreraAhalDa) this.x -= 1;
-		else if (norabidea.equals("Gora") && goraAhalDa) this.y -= 1;
-		else if (norabidea.equals("Behera") && beheraAhalDa) this.y += 1;
-	}
-	@Override
-	public void mugitu() {
-	}
-
 	@Override
 	public Egoera getEgoeraObject() {
-		return new EspaziontziaEgoera();
+		return new GelaxkaEspaziontzi(); // HutsaEgoera-ren ordez, ontziarena itzuli
 	}
 	
-	//List<Entitatea> itzultzen du, TiroFaktoriarekin bat egiteko
+	public List<Entitatea> getPixelek() {
+	    return osagaiak; // Zuzenean hostoen zerrenda itzultzen du
+	}
+	
+	public boolean mugituDaiteke(String norabidea) {
+        for (Entitatea pixel : osagaiak) {
+            if (norabidea.equals("Eskumara") && pixel.getX() >= 99) return false;
+            if (norabidea.equals("Ezkerrera") && pixel.getX() <= 0) return false;
+            // Ontzia gora eta behera ere mugitu badaiteke:
+            if (norabidea.equals("Gora") && pixel.getY() <= 0) return false;
+            if (norabidea.equals("Behera") && pixel.getY() >= 59) return false;
+        }
+        return true;
+    }
+	
+	@Override
+    public void mugitu(String norabidea) {
+        if (mugituDaiteke(norabidea)) { // Ontziak bere burua konprobatzen du mugitu aurretik
+            // Nodoaren koordenatu nagusiak eguneratu
+            if (norabidea.equals("Eskumara")) this.x++;
+            else if (norabidea.equals("Ezkerrera")) this.x--;
+            else if (norabidea.equals("Gora")) this.y--;
+            else if (norabidea.equals("Behera")) this.y++;
+        	
+            // Pixel bakoitza (hostoa) banan-banan mugitu
+            for (Entitatea pixel : osagaiak) {
+                pixel.mugitu(norabidea);
+            }
+        }
+    }
+	
+	// Entitatea klaseko derrigorrezko metodoa
+	@Override
+	public void mugitu() {
+		for (Entitatea pixel : osagaiak) {
+			pixel.mugitu();
+		}
+	}
+	
 	public List<Entitatea> tiroEgin() {
+		// 1. Munizioaren logika zaharretik berreskuratuta
 		if (this.armaAktiboa instanceof TiroGeziEstrategia) {
 			if (this.geziMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
 			this.geziMunizioa--;
@@ -80,7 +101,12 @@ public abstract class EspaziontziNodo extends Entitatea {
 			this.erronboMunizioa--;
 		}
 		
-		// Dena ondo badago, tiroa sortu
-		return this.armaAktiboa.tiroEgin(this.x, this.y, 3);
-	}
+		// 2. Tiroa ZENTROTIK bakarrik sortu
+        if (armaAktiboa != null && zentroa != null) {
+            // Zentroko pixelaren X eta Y pasatzen dizkiogu estrategiari
+        	// Oharra: "3" pasatzen diot zure kodigo zaharrean horrela zegoelako
+            return armaAktiboa.tiroEgin(zentroa.getX(), zentroa.getY() - 1, 3); 
+        }
+        return new ArrayList<>();
+    }
 }

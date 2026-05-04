@@ -1,7 +1,8 @@
 package Eredua;
 
 public class EtsaiaFaktoria {
-    private static EtsaiaFaktoria nireFaktoria;
+    private static EtsaiaFaktoria nireFaktoria = null;
+    private int etsaiKontagailua = 0;
 
     private EtsaiaFaktoria() {}
 
@@ -11,15 +12,18 @@ public class EtsaiaFaktoria {
     }
 
     public Entitatea sortuEtsaia(int x, int y, String mota) {
-        if (mota.equals("MULTIPIXEL")) {
-            EtsaiNodo nodo = new EtsaiNodo(x, y);
-            nodo.gehituOsagaia(new Etsaia(0, 0));  // Erdia
-            nodo.gehituOsagaia(new Etsaia(-1, 0)); // Ezkerra
-            nodo.gehituOsagaia(new Etsaia(1, 0));  // Eskuma
-            nodo.gehituOsagaia(new Etsaia(0, 1)); // Punta
-            return nodo;
-        } else {
-            return new Etsaia(x, y); // Monopixela
+    	EtsaiNodo nodoBerria = new EtsaiNodo(x, y); 
+        etsaiKontagailua++; 
+        
+        // 3x3-ko etsaia sortzen du adibidez. 
+        // (Zure etsaiaren itxura ezberdina bada, for hau aldatu dezakezu)
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Etsaia pixel = new Etsaia(i, j, etsaiKontagailua); 
+                nodoBerria.gehituOsagaia(pixel); 
+            }
         }
+        return nodoBerria;
     }
 }
+

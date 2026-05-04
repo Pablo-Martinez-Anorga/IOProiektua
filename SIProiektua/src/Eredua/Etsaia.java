@@ -4,45 +4,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Etsaia extends Entitatea {
+	private int id;
 	
 	//Eraikitzailea
-	public Etsaia(int x, int y) {
+	public Etsaia(int x, int y, int id) {
         super(x,y);
+        this.id = id;
     }
 	
 	//Metodoak
 	@Override
-	public void mugitu() {
-		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
-		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
-		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
-
-		int xBerria = this.x;
-		int yBerria = this.y;
-
-		if (norabidea == 0 && ezkerreraAhalDa) {
-			xBerria = this.x - 1;
-		} else if (norabidea == 1 && eskumaraAhalDa) {
-			xBerria = this.x + 1;
-		} else {
-			yBerria = this.y + 1;
-		}
-
-		if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria, this)) {
-			this.x = xBerria;
-			this.y = yBerria;
-		}
-	}
+	public void mugitu() {}
 
 	@Override
 	public Egoera getEgoeraObject() {
-	    return new EtsaiaEgoera();
+	    return new GelaxkaEtsai();
 	}
 	
+	public int getId() { 
+		return id;
+	}
+	
+	@Override
+	public void mugitu(String norabidea) {
+	    if (norabidea.equals("Eskumara")) {
+	        this.x++;
+	    } else if (norabidea.equals("Ezkerrera")) {
+	        this.x--;
+	    } else if (norabidea.equals("Behera")) {
+	        this.y++;
+	    }
+	}
+	
+	/*
 	@Override
 	public List<Entitatea> getPixelek() {
 	    List<Entitatea> pixelak = new ArrayList<>();
 	    pixelak.add(new Etsaia(0, 0)); 
 	    return pixelak;
 	}
+	*/
 }
