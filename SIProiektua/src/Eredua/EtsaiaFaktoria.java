@@ -22,10 +22,10 @@ public class EtsaiaFaktoria {
 
 		if (mota.equalsIgnoreCase("MULTIPIXEL")) {
 			nodo.gehituOsagaia(new Etsaia(x + 0, y + 0, unekoId));  
-			nodo.gehituOsagaia(new Etsaia(x - 1, y + 0, unekoId));  
-			nodo.gehituOsagaia(new Etsaia(x + 1, y + 0, unekoId));  
-			nodo.gehituOsagaia(new Etsaia(x + 0, y - 1, unekoId));  
-			nodo.gehituOsagaia(new Etsaia(x + 0, y + 1, unekoId));  
+			nodo.gehituOsagaia(new Etsaia(x - 1, y + 1, unekoId));  
+			nodo.gehituOsagaia(new Etsaia(x + 1, y + 1, unekoId));  
+			nodo.gehituOsagaia(new Etsaia(x - 2, y + 2, unekoId));  
+			nodo.gehituOsagaia(new Etsaia(x + 2, y + 2, unekoId));    
 		}
 		return nodo;
     }

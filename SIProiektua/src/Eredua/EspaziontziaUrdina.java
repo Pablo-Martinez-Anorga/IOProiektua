@@ -17,10 +17,13 @@ public class EspaziontziaUrdina extends EspaziontziNodo {
 		Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0); 
         Entitatea ezker_behe = new Espaziontzia(this.x - 1, this.y + 1);
         Entitatea eskuin_behe = new Espaziontzia(this.x + 1, this.y + 1);
+        Entitatea erdi_behe = new Espaziontzia(this.x + 0, this.y + 1);
         
         gehituOsagaia(zentro);
         gehituOsagaia(ezker_behe);
         gehituOsagaia(eskuin_behe);
+        gehituOsagaia(erdi_behe);
+
 
         setZentroa(zentro);
 	}
