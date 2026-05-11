@@ -9,15 +9,22 @@ public class EspaziontziaGorria extends EspaziontziNodo {
 
     @Override
     protected void itxuraSortu() {
-    	Entitatea ezker = new Espaziontzia(this.x - 1, this.y + 0);
-        Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0); 
-        Entitatea eskuin = new Espaziontzia(this.x + 1, this.y + 0);
-        Entitatea punta = new Espaziontzia(this.x + 0, this.y - 1);
-
-        gehituOsagaia(ezker);
+        // Beheko lerroa (5 pixel)
+        gehituOsagaia(new Espaziontzia(this.x - 2, this.y + 0));
+        gehituOsagaia(new Espaziontzia(this.x - 1, this.y + 0));
+        Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0);
         gehituOsagaia(zentro);
-        gehituOsagaia(eskuin);
-        gehituOsagaia(punta);
+        gehituOsagaia(new Espaziontzia(this.x + 1, this.y + 0));
+        gehituOsagaia(new Espaziontzia(this.x + 2, this.y + 0));
+
+        // Erdiko lerroa (3 pixel)
+        gehituOsagaia(new Espaziontzia(this.x - 1, this.y - 1));
+        gehituOsagaia(new Espaziontzia(this.x + 0, this.y - 1));
+        gehituOsagaia(new Espaziontzia(this.x + 1, this.y - 1));
+
+        // Goiko lerroa / Antenak (2 pixel)
+        gehituOsagaia(new Espaziontzia(this.x - 1, this.y - 2));
+        gehituOsagaia(new Espaziontzia(this.x + 1, this.y - 2));
 
         setZentroa(zentro); 
     }

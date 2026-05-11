@@ -19,15 +19,29 @@ public class TiroFaktoria {
 		if (mota.equalsIgnoreCase("PIXEL")) {
 	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0)); 
 	    } else if (mota.equalsIgnoreCase("ERRONBO")) {
-	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));   
-	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 1));  
-	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 1));   
-	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 2));   
-	    } else if (mota.equalsIgnoreCase("GEZI")) {
-	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));   
+	    	
+	    	tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y - 1));
+	    	
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 0));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 0));
+	        
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 2, y + 1));
 	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 1));  
 	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 1));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 2, y + 1));
 	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 1));
+	        
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 2));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 2));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 2));
+	        
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 3));
+	        
+	    } else if (mota.equalsIgnoreCase("GEZI")) {
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 1));  
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 1));
 	    }
 	    return tiroNodoa;
 	}

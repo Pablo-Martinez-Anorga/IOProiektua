@@ -32,7 +32,7 @@ public class EspaziontziaBerdea extends EspaziontziNodo {
 	@Override
     public void aldatuArma() {
 		if (this.armaAktiboa instanceof TiroPixelEstrategia) {
-            this.setArma(new TiroErronboEstrategia());
+            this.setArma(new TiroGeziEstrategia());
         } else {
             this.setArma(new TiroPixelEstrategia());
         }
