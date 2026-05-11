@@ -282,16 +282,7 @@ public class JokoKudeatzailea {
 		List<Entitatea> pixelek1 = lortuPixelak(e1);
 		List<Entitatea> pixelek2 = lortuPixelak(e2);
 		
-		for (Entitatea p1 : pixelek1) {
-			int x1 = p1.getX();
-			int y1 = p1.getY();
-			for (Entitatea p2 : pixelek2) {
-				int x2 = p2.getX();
-				int y2 = p2.getY();
-				if (x1 == x2 && y1 == y2) return true;
-			}
-		}
-		return false;
+		return pixelek1.stream().anyMatch(p1 -> pixelek2.stream().anyMatch(p2 -> p1.getX() == p2.getX() && p1.getY() == p2.getY()));
 	}
 	
 	public synchronized void aldatuArma() {
@@ -301,15 +292,10 @@ public class JokoKudeatzailea {
 	}
 	
 	public boolean gelaxkaEtsaiaDa(int x, int y) {
-		for (Entitatea e : this.etsaiak) {
-            if (e instanceof EtsaiNodo) {
-            	EtsaiNodo nodo = (EtsaiNodo) e;
-                for (Entitatea p : nodo.getPixelek()) {
-                	if (p.getX() == x && p.getY() == y) return true;
-                }
-            }
-        }
-        return false;
+		return this.etsaiak.stream()
+		        .filter(e -> e instanceof EtsaiNodo)
+		        .flatMap(e -> ((EtsaiNodo) e).getPixelek().stream())
+		        .anyMatch(p -> p.getX() == x && p.getY() == y);
 	}
 	
 	public int getEtsaiaId(int x, int y) {
