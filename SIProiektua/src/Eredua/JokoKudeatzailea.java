@@ -85,8 +85,8 @@ public class JokoKudeatzailea {
         }
 
         markatuMatrizean(matrizVirtual, this.espaziontzia);
-        for (Entitatea e : etsaiak) { markatuMatrizean(matrizVirtual, e); }
-        for (Entitatea t : tiroak) { markatuMatrizean(matrizVirtual, t); }
+        this.etsaiak.forEach(e -> markatuMatrizean(matrizVirtual, e));
+        this.tiroak.forEach(t -> markatuMatrizean(matrizVirtual, t));
 
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 60; j++) {
@@ -313,14 +313,12 @@ public class JokoKudeatzailea {
 	}
 	
 	public int getEtsaiaId(int x, int y) {
-		for (Entitatea e : this.etsaiak) {
-            if (e instanceof EtsaiNodo) {
-            	EtsaiNodo nodo = (EtsaiNodo) e;
-                for (Entitatea p : nodo.getPixelek()) {
-                    if (p.getX() == x && p.getY() == y) return ((Etsaia) p).getId(); 
-                }
-            }
-        }
-        return -1;
+		return this.etsaiak.stream()
+		        .filter(e -> e instanceof EtsaiNodo)
+		        .flatMap(e -> ((EtsaiNodo) e).getPixelek().stream())
+		        .filter(p -> p.getX() == x && p.getY() == y)
+		        .map(p -> ((Etsaia) p).getId())
+		        .findFirst()
+		        .orElse(-1);
     }
 }
