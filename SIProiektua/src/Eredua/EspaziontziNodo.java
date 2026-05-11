@@ -48,17 +48,16 @@ public abstract class EspaziontziNodo extends Entitatea {
 	    return osagaiak; // Zuzenean hostoen zerrenda itzultzen du
 	}
 	
+	@Override
 	public boolean mugituDaiteke(String norabidea) {
-		for (Entitatea p : osagaiak) {
-            int px = p.getX();
-            int py = p.getY();
-            if (norabidea.equals("Ezkerrera") && px <= 0) return false;
-            if (norabidea.equals("Eskumara") && px >= 99) return false;
-            if (norabidea.equals("Gora") && py <= 0) return false;
-            if (norabidea.equals("Behera") && py >= 59) return false;
-        }
-        return true;
-    }
+	    // Patroi Composite: Hosto guztiei galdetu ea mugitu daitezkeen
+	    for (Entitatea p : osagaiak) {
+	        if (!p.mugituDaiteke(norabidea)) {
+	            return false; // Bat ezin bada mugitu, talde osoa ezin da
+	        }
+	    }
+	    return true;
+	}
 	
 	@Override
     public void mugitu(String norabidea) {
@@ -74,13 +73,6 @@ public abstract class EspaziontziNodo extends Entitatea {
             }
         }
     }
-
-	@Override
-	public void mugitu() {
-		for (Entitatea pixel : osagaiak) {
-			pixel.mugitu();
-		}
-	}
 	
 	public List<Entitatea> tiroEgin() {
 		if (this.armaAktiboa instanceof TiroErronboEstrategia) {

@@ -1,9 +1,12 @@
 package Eredua;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Iterator;
 
 public class JokoKudeatzailea { 
 	
@@ -171,12 +174,23 @@ public class JokoKudeatzailea {
 	}
 	
 	private synchronized void eguneratuEtsaiak() {
-		if (!Partida.getNirePartida().isJokoaHasiDa()) return;
-		for (Entitatea e : etsaiak) {
-			e.mugitu();
-		}
-		jokoEgoeraEgiaztatu();
-		taulaEguneratu();
+	    if (!Partida.getNirePartida().isJokoaHasiDa()) return;
+
+	    for (Entitatea e : etsaiak) {
+	        // Norabide posibleak prestatu
+	        List<String> norabideak = new ArrayList<>(Arrays.asList("Ezkerrera", "Eskumara", "Behera"));
+	        Collections.shuffle(norabideak);
+	        
+	        // Banan-banan begiratu ea norabide horretan mugitu daitekeen
+	        for (String norabide : norabideak) {
+	            if (e.mugituDaiteke(norabide)) {
+	                e.mugitu(norabide); // Bakarrik mugitu ahal bada
+	                break; // Behin mugituta, hurrengo etsaiara pasatu
+	            }
+	        }
+	    }
+	    jokoEgoeraEgiaztatu();
+	    taulaEguneratu();
 	}
 	
 	private synchronized void talkakEgiaztatu() {
@@ -246,12 +260,20 @@ public class JokoKudeatzailea {
 	}
 	
 	private synchronized void eguneratuTiroak() {
-		for (Entitatea t : tiroak) {
-			t.mugitu("Gora"); // Jokalariaren tiroa bada gora, edo logika sartu
-		}
-		tiroak.removeIf(t -> t.getY() < 0); 
-		talkakEgiaztatu();
-		taulaEguneratu();
+	    Iterator<Entitatea> it = tiroak.iterator();
+	    while (it.hasNext()) {
+	        Entitatea t = it.next();
+	        
+	        // Tiroa gora mugitu badaiteke, mugitu egiten dugu
+	        if (t.mugituDaiteke("Gora")) {
+	            t.mugitu("Gora");
+	        } else {
+	            // Ezin bada mugitu (y < 0), zerrendatik kentzen dugu
+	            it.remove();
+	        }
+	    }
+	    talkakEgiaztatu();
+	    taulaEguneratu();
 	}
 	
 	private List<Entitatea> lortuPixelak(Entitatea e) {

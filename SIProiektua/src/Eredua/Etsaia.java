@@ -12,10 +12,6 @@ public class Etsaia extends Entitatea {
         this.id = id;
     }
 	
-	//Metodoak
-	@Override
-	public void mugitu() {}
-
 	@Override
 	public Egoera getEgoeraObject() {
 	    return new GelaxkaEtsai();
@@ -30,4 +26,12 @@ public class Etsaia extends Entitatea {
         else if (norabidea.equals("Eskumara")) this.x++;
         else if (norabidea.equals("Behera")) this.y++;
 	}
+	
+	@Override
+	public boolean mugituDaiteke(String norabidea) {
+	    if (norabidea.equals("Ezkerrera")) return this.x > 0;
+	    if (norabidea.equals("Eskumara")) return this.x < 99;
+	    if (norabidea.equals("Behera")) return this.y < 59;
+	    return true;
+	} 
 }

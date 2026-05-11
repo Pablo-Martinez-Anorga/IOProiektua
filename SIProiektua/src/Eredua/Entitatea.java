@@ -18,7 +18,7 @@ public abstract class Entitatea {
 	public void setY(int y) { this.y = y; }
 
 	// COMPOSITE: Metodo abstraktuak
-	public abstract void mugitu();
 	public abstract Egoera getEgoeraObject();
 	public abstract void mugitu(String norabidea);
+	public abstract boolean mugituDaiteke(String norabidea);
 }

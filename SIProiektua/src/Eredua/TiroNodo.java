@@ -19,14 +19,8 @@ public class TiroNodo extends Entitatea {
     }
 
     @Override
-    public Egoera getEgoeraObject() { return new GelaxkaTiro(); }
-
-    @Override
-    public void mugitu() {
-    	this.y--;
-        for (Entitatea p : osagaiak) {
-            p.mugitu();
-        }
+    public Egoera getEgoeraObject() {
+    	return new GelaxkaTiro();
     }
 
     @Override
@@ -36,5 +30,15 @@ public class TiroNodo extends Entitatea {
         for (Entitatea p : osagaiak) {
             p.mugitu(norabidea);
         }
+    }
+    
+    @Override
+    public boolean mugituDaiteke(String norabidea) {
+        for (Entitatea p : osagaiak) {
+            if (!p.mugituDaiteke(norabidea)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -24,19 +24,6 @@ public class EtsaiNodo extends Entitatea {
     public Egoera getEgoeraObject() {
         return new GelaxkaEtsai();
     }
-
-    @Override
-    public void mugitu() {
-    	List<String> norabideak = new ArrayList<>(Arrays.asList("Ezkerrera", "Eskumara", "Behera"));
-        Collections.shuffle(norabideak);
-        
-        for (String norabide : norabideak) {
-            if (mugituDaiteke(norabide)) {
-                this.mugitu(norabide);
-                break; // Behin mugituta, bukatu
-            }
-        }
-    }
     
     public boolean mugituDaiteke(String norabidea) {
     	int hurrengoX = this.x;
