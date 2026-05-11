@@ -14,41 +14,21 @@ public class TiroFaktoria {
 	}
 
 	public Entitatea sortuTiroa(int x, int y, String mota) {
+		TiroNodo tiroNodoa = new TiroNodo(x, y);
 		
-		if (mota.equals("GEZI")) {
-			// GEZI: Multipixela
-			TiroNodo nodo = new TiroNodo(x, y);
-			nodo.gehituOsagaia(new Tiroa(0, 0));  // Punta
-			nodo.gehituOsagaia(new Tiroa(-1, 1)); // Ala ezkerraldea
-			nodo.gehituOsagaia(new Tiroa(1, 1));  // Ala eskuinaldea
-			return nodo;
-			
-		} else if (mota.equals("ERRONBO")) {
-			// ERRONBO: Multipixela
-			TiroNodo nodo = new TiroNodo(x, y);
-			nodo.gehituOsagaia(new Tiroa(0, -2)); // Goiko punta
-
-			nodo.gehituOsagaia(new Tiroa(-1, -1));
-			nodo.gehituOsagaia(new Tiroa(0, -1));
-			nodo.gehituOsagaia(new Tiroa(1, -1));
-
-			nodo.gehituOsagaia(new Tiroa(-2, 0));
-			nodo.gehituOsagaia(new Tiroa(-1, 0));
-			nodo.gehituOsagaia(new Tiroa(0, 0));
-			nodo.gehituOsagaia(new Tiroa(1, 0));
-			nodo.gehituOsagaia(new Tiroa(2, 0));
-
-			nodo.gehituOsagaia(new Tiroa(-1, 1));
-			nodo.gehituOsagaia(new Tiroa(0, 1));
-			nodo.gehituOsagaia(new Tiroa(1, 1));
-
-			nodo.gehituOsagaia(new Tiroa(0, 2)); // Beheko punta
-
-			return nodo;
-			
-		} else {
-			// PIXEL
-			return new Tiroa(x, y);
-		}
+		if (mota.equalsIgnoreCase("PIXEL")) {
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0)); 
+	    } else if (mota.equalsIgnoreCase("ERRONBO")) {
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));   
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 1));  
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 1));   
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 2));   
+	    } else if (mota.equalsIgnoreCase("GEZI")) {
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 0));   
+	        tiroNodoa.gehituOsagaia(new Tiroa(x - 1, y + 1));  
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 1, y + 1));
+	        tiroNodoa.gehituOsagaia(new Tiroa(x + 0, y + 1));
+	    }
+	    return tiroNodoa;
 	}
 }

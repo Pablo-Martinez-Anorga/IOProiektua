@@ -13,19 +13,16 @@ public class Tiroa extends Entitatea {
 	//Metodoak
 	@Override
     public void mugitu() {
-        this.y = this.y - 1;
+		this.y--;
 	}
 
 	@Override
 	public Egoera getEgoeraObject() {
-	    return new TiroaEgoera();
+	    return new GelaxkaTiro();
 	}
 	
-	// GAKOA COMPOSITE-RAKO: Monopixelaren offset-a (0,0) itzuli behar da beti.
 	@Override
-	public List<Entitatea> getPixelek() {
-	    List<Entitatea> pixelak = new ArrayList<>();
-	    pixelak.add(new Tiroa(0, 0)); 
-	    return pixelak;
+	public void mugitu(String norabidea) {
+		if (norabidea.equals("Gora")) this.y--;
 	}
 }

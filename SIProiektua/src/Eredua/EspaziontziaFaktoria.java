@@ -13,14 +13,17 @@ public class EspaziontziaFaktoria {
         return nireFaktoria;
     }
     
-    public EspaziontziNodo sortuEspaziontzia(String mota, int x, int y) {
-		if (mota.equals("RED")) {
-			return new EspaziontziaGorria(x, y);
-		}else if (mota.equals("BLUE")) {
-			return new EspaziontziaUrdina(x, y);
-		}else {
-			return new EspaziontziaBerdea(x, y);
+    public EspaziontziNodo sortuEspaziontzia(String kolorea, int x, int y) {
+    	if (kolorea != null) {
+			if (kolorea.equalsIgnoreCase("RED")) {
+				return new EspaziontziaGorria(x, y);
+			} else if (kolorea.equalsIgnoreCase("BLUE")) {
+				return new EspaziontziaUrdina(x, y);
+			} else if (kolorea.equalsIgnoreCase("GREEN") || kolorea.equalsIgnoreCase("GREEN")) {
+				return new EspaziontziaBerdea(x, y);
+			}
 		}
+		return new EspaziontziaGorria(x, y);
 	}
 
 }

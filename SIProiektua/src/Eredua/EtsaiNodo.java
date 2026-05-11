@@ -1,50 +1,66 @@
 package Eredua;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EtsaiNodo extends Entitatea {
-    private List<Entitatea> osagaiak;
+	protected List<Entitatea> osagaiak = new ArrayList<>();
 
     public EtsaiNodo(int x, int y) {
         super(x, y);
-        this.osagaiak = new ArrayList<>();
     }
 
     public void gehituOsagaia(Entitatea e) {
         this.osagaiak.add(e);
     }
 
-    @Override
-	public List<Entitatea> getPixelek() {
-		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Etsaia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
-	}
-    @Override
-	public void mugitu() {
-		int norabidea = (int)(Math.random() * 3); // 0 ezker, 1 eskuin, 2 behera
-		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
-		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
-
-		int xBerria = this.x;
-		int yBerria = this.y;
-
-		if (norabidea == 0 && ezkerreraAhalDa) {
-			xBerria = this.x - 1;
-		} else if (norabidea == 1 && eskumaraAhalDa) {
-			xBerria = this.x + 1;
-		} else {
-			yBerria = this.y + 1;
-		}
-
-		if (Eredua.JokoKudeatzailea.getNireJK().posizioaLibreDa(xBerria, yBerria, this)) {
-			this.x = xBerria;
-			this.y = yBerria;
-		}
-	}
+    public List<Entitatea> getPixelek() {
+        return this.osagaiak;
+    }
 
     @Override
     public Egoera getEgoeraObject() {
-        return new EtsaiaEgoera();
+        return new GelaxkaEtsai();
+    }
+
+    @Override
+    public void mugitu() {
+    	List<String> norabideak = new ArrayList<>(Arrays.asList("Ezkerrera", "Eskumara", "Behera"));
+        Collections.shuffle(norabideak);
+        
+        for (String norabide : norabideak) {
+            if (mugituDaiteke(norabide)) {
+                this.mugitu(norabide);
+                break; // Behin mugituta, bukatu
+            }
+        }
+    }
+    
+    public boolean mugituDaiteke(String norabidea) {
+    	int hurrengoX = this.x;
+        int hurrengoY = this.y;
+        
+        if (norabidea.equals("Ezkerrera")) hurrengoX--;
+        else if (norabidea.equals("Eskumara")) hurrengoX++;
+        else if (norabidea.equals("Behera")) hurrengoY++;
+        else return false; 
+        
+        return JokoKudeatzailea.getNireJK().posizioaLibreDa(hurrengoX, hurrengoY, this);
+    }
+    
+    @Override
+    public void mugitu(String norabidea) {
+    	if (mugituDaiteke(norabidea)) {
+            if (norabidea.equals("Ezkerrera")) this.x--;
+            else if (norabidea.equals("Eskumara")) this.x++;
+            else if (norabidea.equals("Behera")) this.y++;
+            
+            for (Entitatea p : osagaiak) {
+                p.mugitu(norabidea); 
+            }
+        }
     }
 }
+

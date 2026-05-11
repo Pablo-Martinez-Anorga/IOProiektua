@@ -2,32 +2,22 @@ package Eredua;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class EspaziontziNodo extends Entitatea {
 	
 	// COMPOSITE: Entitate bilduma
-	protected List<Entitatea> osagaiak;
-
+	protected List<Entitatea> osagaiak = new ArrayList<>();
+	protected Entitatea zentroa;
 	// Strategy 
 	protected TiroEstrategia armaAktiboa;
-
-	
 	// Munizioa
-	protected int geziMunizioa;
-	protected int erronboMunizioa;
+	protected int geziMunizioa = 30;
+	protected int erronboMunizioa = 20;
 	
 	// Eraikitzailea
 	public EspaziontziNodo(int x, int y) { 
 		super(x, y);
-		this.osagaiak = new ArrayList<>(); //itxuraSortu baino lehen hasieratu
-		
-		// Munizioa hasieratu
-		this.geziMunizioa = 30;
-		this.erronboMunizioa = 20;
-		
-		itxuraSortu(); // Gorria, Urdina, Berdea osagaiak gehituko dituzte hemen
-		
+		itxuraSortu(); // Gorria, Urdina, Berdea 
 		this.armaAktiboa = new TiroPixelEstrategia();
 	}
 
@@ -35,13 +25,13 @@ public abstract class EspaziontziNodo extends Entitatea {
 	public void gehituOsagaia(Entitatea e) {
 		this.osagaiak.add(e);
 	}
-
-	@Override
-	public List<Entitatea> getPixelek() {
-		return osagaiak.stream().flatMap(e -> e.getPixelek().stream().map(p -> new Espaziontzia(e.getX() + p.getX(), e.getY() + p.getY()))).collect(Collectors.toList());
-	}
 	
-	// Metodoak
+	// Zentroa esleitzeko metodoa Faktoriak erabili dezan
+	public void setZentroa(Entitatea z) {
+		this.zentroa = z;
+	}
+
+	// Metodo abstraktuak
 	protected abstract void itxuraSortu();
 	public abstract void aldatuArma();
 	
@@ -49,38 +39,63 @@ public abstract class EspaziontziNodo extends Entitatea {
 		this.armaAktiboa = armaBerria;
 	}
 	
-	public void mugitu(String norabidea) {
-		// Java 8: for guztiak kendu noneMatch erabili
-		boolean ezkerreraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() - 1 < 0);
-		boolean eskumaraAhalDa = this.getPixelek().stream().noneMatch(p -> this.x + p.getX() + 1 >= 100);
-		boolean goraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() - 1 < 0);
-		boolean beheraAhalDa = this.getPixelek().stream().noneMatch(p -> this.y + p.getY() + 1 >= 60);
-
-		if (norabidea.equals("Eskumara") && eskumaraAhalDa) this.x += 1;
-		else if (norabidea.equals("Ezkerrera") && ezkerreraAhalDa) this.x -= 1;
-		else if (norabidea.equals("Gora") && goraAhalDa) this.y -= 1;
-		else if (norabidea.equals("Behera") && beheraAhalDa) this.y += 1;
-	}
-	@Override
-	public void mugitu() {
-	}
-
 	@Override
 	public Egoera getEgoeraObject() {
-		return new EspaziontziaEgoera();
+		return new GelaxkaEspaziontzi(); // HutsaEgoera-ren ordez, ontziarena itzuli
 	}
 	
-	//List<Entitatea> itzultzen du, TiroFaktoriarekin bat egiteko
-	public List<Entitatea> tiroEgin() {
-		if (this.armaAktiboa instanceof TiroGeziEstrategia) {
-			if (this.geziMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
-			this.geziMunizioa--;
-		} else if (this.armaAktiboa instanceof TiroErronboEstrategia) {
-			if (this.erronboMunizioa <= 0) return new ArrayList<>(); // Ez dago muniziorik
-			this.erronboMunizioa--;
-		}
-		
-		// Dena ondo badago, tiroa sortu
-		return this.armaAktiboa.tiroEgin(this.x, this.y, 3);
+	public List<Entitatea> getPixelek() {
+	    return osagaiak; // Zuzenean hostoen zerrenda itzultzen du
 	}
+	
+	public boolean mugituDaiteke(String norabidea) {
+		for (Entitatea p : osagaiak) {
+            int px = p.getX();
+            int py = p.getY();
+            if (norabidea.equals("Ezkerrera") && px <= 0) return false;
+            if (norabidea.equals("Eskumara") && px >= 99) return false;
+            if (norabidea.equals("Gora") && py <= 0) return false;
+            if (norabidea.equals("Behera") && py >= 59) return false;
+        }
+        return true;
+    }
+	
+	@Override
+    public void mugitu(String norabidea) {
+		if (mugituDaiteke(norabidea)) {
+            //Nodoaren posizioa eguneratu
+            if (norabidea.equals("Eskumara")) this.x++;
+            else if (norabidea.equals("Ezkerrera")) this.x--;
+            else if (norabidea.equals("Gora")) this.y--;
+            else if (norabidea.equals("Behera")) this.y++;
+            
+            for (Entitatea p : osagaiak) {
+                p.mugitu(norabidea);
+            }
+        }
+    }
+
+	@Override
+	public void mugitu() {
+		for (Entitatea pixel : osagaiak) {
+			pixel.mugitu();
+		}
+	}
+	
+	public List<Entitatea> tiroEgin() {
+		if (this.armaAktiboa instanceof TiroErronboEstrategia) {
+            if (this.erronboMunizioa <= 0) return new ArrayList<>(); 
+            this.erronboMunizioa--;
+        } else if (this.armaAktiboa instanceof TiroGeziEstrategia) {
+            if (this.geziMunizioa <= 0) return new ArrayList<>(); 
+            this.geziMunizioa--;
+        }
+
+        if (armaAktiboa != null && zentroa != null) {
+            int absX = zentroa.getX();
+            int absY = zentroa.getY();
+            return armaAktiboa.tiroEgin(absX, absY - 1, 1);
+        }
+        return new ArrayList<>();
+    }
 }

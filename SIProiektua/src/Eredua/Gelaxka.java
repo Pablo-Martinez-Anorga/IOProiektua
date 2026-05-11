@@ -12,13 +12,13 @@ public class Gelaxka extends Observable {
     public Gelaxka(int x, int y) {
         this.x = x;
         this.y = y;
-        this.egoera = new HutsaEgoera(); //Hasierako egoera
+        this.egoera = new GelaxkaHutsa(); //Hasierako egoera
     }
     
     //State patroiaren metodo estandar
     public void egoeraAldatu(Egoera egoeraBerria) {
     	if (egoeraBerria == null) {
-            egoeraBerria = new HutsaEgoera();
+            egoeraBerria = new GelaxkaHutsa();
         }
     	//Bakarrik abisatu egoera aldaltu denean
     	if (!this.egoera.getIzena().equals(egoeraBerria.getIzena())) {
@@ -38,6 +38,12 @@ public class Gelaxka extends Observable {
     
     
     public void hustu() { 
-        egoeraAldatu(new HutsaEgoera());
+        egoeraAldatu(new GelaxkaHutsa());
+    }
+    
+    public void setEgoera(Egoera pEgoera) {
+        this.egoera = pEgoera;
+        this.setChanged(); 
+        this.notifyObservers(pEgoera.getIzena());
     }
 }

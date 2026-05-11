@@ -14,18 +14,20 @@ public class EspaziontziaUrdina extends EspaziontziNodo {
 
 	@Override
 	protected void itxuraSortu() {
-		// Oinarria
-		this.gehituOsagaia(new Espaziontzia(0, 0));   // Erdigunea
-		this.gehituOsagaia(new Espaziontzia(-1, 0));  // Ezkerra
-		this.gehituOsagaia(new Espaziontzia(1, 0));   // Eskuina
-		
-		// URDINAREN pertsonalizazioa: T alderantzizkoa (Puntua goian)
-		this.gehituOsagaia(new Espaziontzia(0, -1));  // Goian erdi-erdian
+		Entitatea zentro = new Espaziontzia(this.x + 0, this.y + 0); 
+        Entitatea ezker_behe = new Espaziontzia(this.x - 1, this.y + 1);
+        Entitatea eskuin_behe = new Espaziontzia(this.x + 1, this.y + 1);
+        
+        gehituOsagaia(zentro);
+        gehituOsagaia(ezker_behe);
+        gehituOsagaia(eskuin_behe);
+
+        setZentroa(zentro);
 	}
 
 	@Override
     public void aldatuArma() {
-        if (this.armaAktiboa instanceof TiroPixelEstrategia) {
+		if (this.armaAktiboa instanceof TiroPixelEstrategia) {
             this.setArma(new TiroErronboEstrategia());
         } else {
             this.setArma(new TiroPixelEstrategia());
