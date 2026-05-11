@@ -30,6 +30,8 @@ public class Partida extends Observable {
 		this.jokoaHasiDa = true;
 		JokoKudeatzailea.getNireJK().setOntziKolorea(pKolorea);
 		setChanged();
+		notifyObservers("PUNTUAK_ALDATU");
+		setChanged();
 		notifyObservers("HASI");
 		JokoKudeatzailea.getNireJK().hasiJokoa();
 	}

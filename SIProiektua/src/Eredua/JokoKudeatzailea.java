@@ -189,6 +189,7 @@ public class JokoKudeatzailea {
 	            }
 	        }
 	    }
+	    talkakEgiaztatu();
 	    jokoEgoeraEgiaztatu();
 	    taulaEguneratu();
 	}
