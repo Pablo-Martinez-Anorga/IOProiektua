@@ -45,10 +45,10 @@ public class JokoKudeatzailea {
 	}
 	
 	public void hasiJokoa() {
-		// Kolorearen araberako ontzia sortu
+		this.tiroak.clear(); // Tiroak garbitu berrerazten bada
 		this.espaziontzia = EspaziontziaFaktoria.getNireFaktoria().sortuEspaziontzia(this.ontziKolorea, 50, 55);
 		etsaiakSortu(); 
-		//TIMER-AK HIL BEHAR DIRA
+		
 		Timer tiroenTimer = new Timer();
 		tiroenTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -260,18 +260,12 @@ public class JokoKudeatzailea {
 	}
 	
 	private synchronized void eguneratuTiroak() {
-	    Iterator<Entitatea> it = tiroak.iterator();
-	    while (it.hasNext()) {
-	        Entitatea t = it.next();
-	        
-	        // Tiroa gora mugitu badaiteke, mugitu egiten dugu
-	        if (t.mugituDaiteke("Gora")) {
-	            t.mugitu("Gora");
-	        } else {
-	            // Ezin bada mugitu (y < 0), zerrendatik kentzen dugu
-	            it.remove();
-	        }
-	    }
+	    // Tiroak kendu ezin badira igo
+	    tiroak.removeIf(t -> !t.mugituDaiteke("Gora"));
+	    
+	    // 2. Tiroak mugitu (usando forEach)
+	    tiroak.forEach(t -> t.mugitu("Gora"));
+	    
 	    talkakEgiaztatu();
 	    taulaEguneratu();
 	}

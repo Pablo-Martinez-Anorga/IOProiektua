@@ -16,17 +16,22 @@ public class BotoiKontroladorea implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String izena = leihoa.getSartutakoIzena();
+		String aukera = e.getActionCommand(); 
 		
+		// 1. Jokoa itxi nahi badu, erabat itxi aplikazioa
+		if ("EXIT".equals(aukera)) {
+			System.exit(0);
+			return;
+		}
+		
+		// 2. Izena lortu eta ezarri
+		String izena = leihoa.getSartutakoIzena();
 		if (izena == null || izena.trim().isEmpty()) {
 			izena = "Anonimoa";
 		}
-		
-		// 2. Izena Ereduan ezarri (jokalari berria sortu)
 		Partida.getNirePartida().ezarriUnekoJokalaria(izena);
 
-		// 3. Jokoa kolorearen arabera hasi
-		String aukera = e.getActionCommand(); 
+		// 3. Partida hasi kolorearen arabera
 		if ("G".equals(aukera)) {
 			Partida.getNirePartida().hasiPartida("GREEN");
 		} else if ("B".equals(aukera)) {
